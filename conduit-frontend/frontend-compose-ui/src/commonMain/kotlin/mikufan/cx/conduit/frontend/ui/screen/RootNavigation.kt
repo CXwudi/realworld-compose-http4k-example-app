@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
 import mikufan.cx.conduit.frontend.logic.component.RootComponentChild
+import mikufan.cx.conduit.frontend.ui.screen.main.MainPage
 
 @Composable
 fun RootNavigation(rootComponent: DefaultRootNavComponent, modifier: Modifier = Modifier) {
@@ -23,7 +24,8 @@ fun RootNavigation(rootComponent: DefaultRootNavComponent, modifier: Modifier = 
     when (it) {
       is RootComponentChild.Loading -> LoadingScreen()
       is RootComponentChild.LandingPage -> LandingPage(it.component)
-      else -> Unit
+      is RootComponentChild.MainPage -> MainPage()
+      null -> error("Unexpected null child in childSlot")
     }
   }
 }

@@ -3,12 +3,18 @@ package mikufan.cx.conduit.frontend.logic.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.landing.DefaultLandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
+import mikufan.cx.conduit.frontend.logic.service.UserConfigService
+import mikufan.cx.conduit.frontend.logic.service.UserConfigState
 import org.koin.core.component.get
 
 interface RootNavComponent {
@@ -21,12 +27,14 @@ sealed interface RootComponentChild {
   data class LandingPage(
     val component: LandingPageComponent
   ) : RootComponentChild
+  data class MainPage(val a: Int) : RootComponentChild
 
 }
 
 class DefaultRootNavComponent(
   componentContext: ComponentContext,
-  private val koin: LocalKoinComponent
+  private val koin: LocalKoinComponent,
+  private val userConfigService: UserConfigService,
 ) : RootNavComponent, ComponentContext by componentContext {
 
   private val slotNavigation = SlotNavigation<Config>()
@@ -39,6 +47,23 @@ class DefaultRootNavComponent(
       childFactory = ::childFactory
     )
 
+  init {
+    CoroutineScope(Dispatchers.Main).launch {
+      userConfigService.userConfigStateFlow.collect {
+        val config = when (it) {
+          is UserConfigState.Loading -> Config.Loading
+          is UserConfigState.Loaded -> {
+            if (it.url.isNullOrBlank()) {
+              Config.LandingPage
+            } else {
+              Config.MainPage
+            }
+          }
+        }
+        slotNavigation.activate(config)
+      }
+    }
+  }
   private fun childFactory(
     config: Config,
     componentContext: ComponentContext
@@ -48,6 +73,7 @@ class DefaultRootNavComponent(
       Config.LandingPage -> RootComponentChild.LandingPage(
         component = koin.createLandingPageComponent(componentContext)
       )
+      Config.MainPage -> RootComponentChild.MainPage(0)
     }
     return child
   }
@@ -57,10 +83,17 @@ class DefaultRootNavComponent(
   ) = DefaultLandingPageComponent(
     componentContext = componentContext,
     koinComponent = this,
-    storeFactory = get()
+    storeFactory = get(),
   )
 
 
+  /**
+   * This config doesn't need to contain any data,
+   * because each page is pretty much fetching the data from services,
+   *
+   * E.g. Landing page pretty much fetch data from [UserConfigService], and
+   * Main page will also fetch data mainly from various services.
+   */
   @Serializable
   sealed interface Config {
     @Serializable
@@ -68,5 +101,8 @@ class DefaultRootNavComponent(
 
     @Serializable
     data object LandingPage : Config
+
+    @Serializable
+    data object MainPage : Config
   }
 }
