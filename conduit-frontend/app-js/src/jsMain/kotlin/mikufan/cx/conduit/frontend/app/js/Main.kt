@@ -16,6 +16,7 @@ import mikufan.cx.conduit.frontend.ui.MainUI
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.core.KoinApplication
 import org.koin.dsl.koinApplication
+import org.lighthousegames.logging.logging
 import web.dom.DocumentVisibilityState
 import web.dom.document
 import web.events.EventType
@@ -40,8 +41,11 @@ fun main(args: Array<String>) {
 
   lifecycle.attachToDocument()
   GlobalScope.launch { // initialize within a global coroutine, workaround to initialize SqlDriver from koin
+    // from https://github.com/InsertKoinIO/koin/issues/388#issuecomment-1195262422
     val koin = initKoin().koin
     val rootComponent = DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())
+
+    log.i { "Starting" }
 
     onWasmReady {
       BrowserViewportWindow(title = "Conduit Web", canvasElementId = "ConduitCanvas") {
@@ -65,3 +69,5 @@ private fun LifecycleRegistry.attachToDocument() {
 
   document.addEventListener(type = EventType("visibilitychange"), handler = { onVisibilityChanged() })
 }
+
+private val log = logging()

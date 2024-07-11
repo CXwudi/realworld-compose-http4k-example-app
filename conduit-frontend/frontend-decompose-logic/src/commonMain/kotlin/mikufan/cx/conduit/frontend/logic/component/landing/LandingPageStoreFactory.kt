@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
+import org.lighthousegames.logging.logging
 
 
 sealed interface LandingPageIntent {
@@ -70,4 +71,6 @@ class LandingPageStoreFactory(
       reducer = reducer
     )
 }
+
+private val log = logging()
 

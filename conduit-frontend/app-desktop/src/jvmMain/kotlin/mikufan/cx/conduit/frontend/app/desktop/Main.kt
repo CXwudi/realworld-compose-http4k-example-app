@@ -12,6 +12,7 @@ import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
 import mikufan.cx.conduit.frontend.logic.component.util.toLocalKoinComponent
 import mikufan.cx.conduit.frontend.ui.MainUI
 import org.koin.dsl.koinApplication
+import org.lighthousegames.logging.logging
 
 fun initKoin() = koinApplication {
   modules(allModules)
@@ -26,6 +27,8 @@ fun main(args: Array<String>) {
   val rootComponent = runOnUiThread {
     DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())
   }
+
+  log.i { "Starting" }
 
   application {
 
@@ -43,3 +46,5 @@ fun main(args: Array<String>) {
     }
   }
 }
+
+private val log = logging()
