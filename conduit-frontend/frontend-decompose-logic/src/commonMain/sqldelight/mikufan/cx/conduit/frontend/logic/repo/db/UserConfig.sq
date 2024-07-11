@@ -1,3 +1,3 @@
 
 getSingleConfig:
-SELECT * FROM user_config WHERE id = 1;
+SELECT * FROM userConfig WHERE id = 1;

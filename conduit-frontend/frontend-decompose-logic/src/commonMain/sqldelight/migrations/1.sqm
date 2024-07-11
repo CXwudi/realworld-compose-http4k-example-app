@@ -1,8 +1,8 @@
-CREATE TABLE user_config (
+CREATE TABLE userConfig (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     url TEXT,
     username TEXT,
     token TEXT
 );
 
-INSERT INTO user_config (url, username, token) VALUES ('', '', '');
+INSERT INTO userConfig (url, username, token) VALUES ('', '', '');
