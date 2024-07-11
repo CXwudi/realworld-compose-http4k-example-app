@@ -34,11 +34,15 @@ develocity {
   buildScan {
     termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
     termsOfUseAgree = "yes"
+    publishing.onlyIf {
+      !System.getenv("CI").isNullOrEmpty()
+    }
   }
+
 }
 
 fileTree(".").matching {
-    include("*/build.gradle.kts")
-    include("*/build.gradle")
+  include("*/build.gradle.kts")
+  include("*/build.gradle")
 }.files.map { it.parentFile.name }.forEach { include(it) }
 
