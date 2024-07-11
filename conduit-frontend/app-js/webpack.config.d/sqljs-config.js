@@ -1,4 +1,4 @@
-// from https://github.com/cashapp/sqldelight/blob/master/sample-web/webpack.config.d/sqljs-config.js
+// from https://cashapp.github.io/sqldelight/2.0.2/js_sqlite/sqljs_worker/
 // and https://github.com/TarasovVP/Android-Architecure-Templates/tree/kmp_implementation/webApp/webpack.config.d
 
 // this is needed otherwise the sqldelight won't properly initialized
