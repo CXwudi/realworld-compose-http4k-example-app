@@ -35,5 +35,9 @@ kotlin {
       implementation(Libs.AndroidXLifecycleKtx)
       implementation(Libs.AndroidXAppCompat)
     }
+
+    jvmMain.dependencies {
+      implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing")
+    }
   }
 }
