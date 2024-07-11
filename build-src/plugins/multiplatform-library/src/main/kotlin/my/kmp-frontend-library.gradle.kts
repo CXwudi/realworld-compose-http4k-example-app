@@ -21,6 +21,7 @@ kotlin {
       implementation(Libs.MviKotlinMain)
       implementation(Libs.MviKotlinCoroutines)
       implementation(Libs.MviKotlinLogging)
+      implementation(Libs.KmLogging)
       implementation(project.dependencies.platform(Libs.KoinBom))
       implementation("io.insert-koin:koin-core")
     }
@@ -37,6 +38,7 @@ kotlin {
     }
 
     jvmMain.dependencies {
+      implementation(Libs.Logback)
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing")
     }
   }

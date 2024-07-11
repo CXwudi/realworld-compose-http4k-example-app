@@ -1,3 +1,5 @@
+import com.github.gmazzo.buildconfig.BuildConfigClassSpec
+
 plugins {
   `kotlin-dsl`
   alias(libs.plugins.buildConfig)
@@ -9,20 +11,41 @@ buildConfig {
   forClass(packageName = "my.util", className = "Versions") {
     buildConfigField(Int::class.java, "Java", libs.versions.java.map { it.toInt() })
   }
-  forClass(packageName = "my.util", className = "Libs", ) {
-    buildConfigField(String::class.java, "SerializationJson", libs.dev.serializationJson.map { "$it" })
-    buildConfigField(String::class.java, "CoroutinesBom", libs.dev.coroutinesBom.map { "$it" })
-    buildConfigField(String::class.java, "Decompose", libs.dev.decompose.map { "$it" })
-    buildConfigField(String::class.java, "DecomposeCompose", libs.dev.decomposeCompose.map { "$it" })
-    buildConfigField(String::class.java, "MviKotlin", libs.dev.mvikotlin.map { "$it" })
-    buildConfigField(String::class.java, "MviKotlinMain", libs.dev.mvikotlinMain.map { "$it" })
-    buildConfigField(String::class.java, "MviKotlinCoroutines", libs.dev.mvikotlinCoroutines.map { "$it" })
-    buildConfigField(String::class.java, "MviKotlinLogging", libs.dev.mvikotlinLogging.map { "$it" })
-    buildConfigField(String::class.java, "KoinBom", libs.dev.koinBom.map { "$it" })
-    buildConfigField(String::class.java, "KotlinWrapper", libs.dev.kotlinWrapper.map { "$it" })
-    buildConfigField(String::class.java, "AndroidXCoreKtx", libs.dev.androidx.coreKtx.map { "$it" })
-    buildConfigField(String::class.java, "AndroidXLifecycleKtx", libs.dev.androidx.lifecycleKtx.map { "$it" })
-    buildConfigField(String::class.java, "AndroidXAppCompat", libs.dev.androidx.appcompat.map { "$it" })
-    buildConfigField(String::class.java, "AndroidXActivityCompose", libs.dev.androidx.activityCompose.map { "$it" })
+  forClass(packageName = "my.util", className = "Libs") {
+    // Serialization
+    buildConfigStringField("SerializationJson", libs.dev.serializationJson)
+
+    // Coroutines
+    buildConfigStringField("CoroutinesBom", libs.dev.coroutinesBom)
+
+    // Decompose
+    buildConfigStringField("Decompose", libs.dev.decompose)
+    buildConfigStringField("DecomposeCompose", libs.dev.decomposeCompose)
+
+    // MVI Kotlin
+    buildConfigStringField("MviKotlin", libs.dev.mvikotlin)
+    buildConfigStringField("MviKotlinMain", libs.dev.mvikotlinMain)
+    buildConfigStringField("MviKotlinCoroutines", libs.dev.mvikotlinCoroutines)
+    buildConfigStringField("MviKotlinLogging", libs.dev.mvikotlinLogging)
+
+    // Logging
+    buildConfigStringField("KmLogging", libs.dev.kmlogging)
+    buildConfigStringField("Logback", libs.dev.logback)
+
+    // Koin
+    buildConfigStringField("KoinBom", libs.dev.koinBom)
+
+    // Kotlin Wrapper
+    buildConfigStringField("KotlinWrapper", libs.dev.kotlinWrapper)
+
+    // AndroidX
+    buildConfigStringField("AndroidXCoreKtx", libs.dev.androidx.coreKtx)
+    buildConfigStringField("AndroidXLifecycleKtx", libs.dev.androidx.lifecycleKtx)
+    buildConfigStringField("AndroidXAppCompat", libs.dev.androidx.appcompat)
+    buildConfigStringField("AndroidXActivityCompose", libs.dev.androidx.activityCompose)
   }
+}
+
+fun BuildConfigClassSpec.buildConfigStringField(name: String, version: Provider<*>) {
+  buildConfigField(String::class.java, name, version.map { "$it" })
 }

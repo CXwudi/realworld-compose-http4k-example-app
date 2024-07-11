@@ -29,6 +29,7 @@ exposed = "0.52.0"
 # dev dep
 # multiplatform
 dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0"
+dev-kmlogging = "org.lighthousegames:logging:1.5.0"
 dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.1"
 dev-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 dev-decomposeCompose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }

@@ -33,6 +33,8 @@ kotlin {
       implementation(libs.dev.mvikotlinCoroutines)
       implementation(libs.dev.mvikotlinLogging)
 
+      implementation(libs.dev.kmlogging)
+
       implementation(project.dependencies.platform(libs.dev.koinBom))
       implementation("io.insert-koin:koin-core")
       implementation("io.insert-koin:koin-android")
