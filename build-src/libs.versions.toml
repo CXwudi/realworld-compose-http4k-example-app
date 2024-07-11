@@ -43,6 +43,7 @@ dev-sqldelightDriver-android = { module = "app.cash.sqldelight:android-driver", 
 dev-sqldelightDriver-ios = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 dev-sqldelightDriver-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 dev-sqldelightDriver-webWorker = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqldelight" }
+dev-sqldelightCoroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 
 # android
 dev-androidx-coreKtx = "androidx.core:core-ktx:1.13.1"

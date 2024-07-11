@@ -12,6 +12,7 @@ kotlin {
     commonMain.dependencies {
       // add dependencies that are specific for this decompose logic module
       // dependencies used in both this module and compose ui module are extracted into the precompiled script plugin
+      implementation(libs.dev.sqldelightCoroutines)
     }
 
     // and platform specific dependencies only used in this module
@@ -41,8 +42,9 @@ sqldelight {
     create("AppDb") {
       packageName = "mikufan.cx.conduit.frontend.logic.repo.db"
       generateAsync = true
-      deriveSchemaFromMigrations = true
       schemaOutputDirectory = file("src/commonMain/sqldelight/databases")
+      migrationOutputDirectory = file("src/commonMain/sqldelight/migrations")
+      deriveSchemaFromMigrations = true
       verifyMigrations = true
     }
   }

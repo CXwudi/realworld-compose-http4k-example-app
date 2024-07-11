@@ -18,4 +18,5 @@ val dbModule = module {
   singleOf(::getAppDb)
 
   single { get<AppDb>().userConfigQueries }
+
 }
