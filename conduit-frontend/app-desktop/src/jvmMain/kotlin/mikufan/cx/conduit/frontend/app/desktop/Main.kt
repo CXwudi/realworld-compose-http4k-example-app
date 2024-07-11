@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
   }
   val koin = initKoin().koin
   val rootComponent = runOnUiThread {
-    DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent())
+    DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())
   }
 
   application {
