@@ -38,7 +38,7 @@ kotlin {
 
 sqldelight {
   databases {
-    create("Database") {
+    create("AppDb") {
       packageName = "mikufan.cx.conduit.frontend.logic.repo.db"
       generateAsync = true
       deriveSchemaFromMigrations = true

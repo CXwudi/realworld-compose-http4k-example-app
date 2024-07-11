@@ -4,5 +4,5 @@ import kotlinx.coroutines.runBlocking
 import org.koin.dsl.module
 
 internal actual val dbDriverProvider = module {
-  single { runBlocking { provideDbDriver(Database.Schema) } }
+  single { runBlocking { provideDbDriver(AppDb.Schema) } }
 }
