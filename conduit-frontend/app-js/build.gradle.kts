@@ -25,6 +25,9 @@ kotlin {
       implementation(libs.dev.mvikotlinLogging)
 
       implementation(libs.dev.kmlogging)
+      // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700
+      // dear to manage it in version catalog
+      implementation("co.touchlab:stately-common:2.0.7")
 
       implementation(project.dependencies.platform(libs.dev.koinBom))
       implementation("io.insert-koin:koin-core")
