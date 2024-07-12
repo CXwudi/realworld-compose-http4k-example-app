@@ -45,7 +45,7 @@ private fun <S> AnimatedContentTransition(
         animationSpec = tween(),
       ).togetherWith(
         slideOutOfContainer(
-          towards = SlideDirection.Right,
+          towards = SlideDirection.Left,
           animationSpec = tween()
         )
       )
