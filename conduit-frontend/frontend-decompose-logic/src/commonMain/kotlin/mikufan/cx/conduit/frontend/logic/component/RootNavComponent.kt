@@ -7,6 +7,8 @@ import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.landing.DefaultLandingPageComponent
@@ -26,6 +28,7 @@ sealed interface RootComponentChild {
   data class LandingPage(
     val component: LandingPageComponent
   ) : RootComponentChild
+
   data class MainPage(val a: Int) : RootComponentChild
 
 }
@@ -49,21 +52,26 @@ class DefaultRootNavComponent(
   init {
     val lifecycleScope = coroutineScope()
     lifecycleScope.launch {
-      userConfigService.userConfigStateFlow.collect {
-        val config = when (it) {
-          is UserConfigState.Loading -> Config.Loading
-          is UserConfigState.Loaded -> {
-            if (it.url.isNullOrBlank()) {
-              Config.LandingPage
-            } else {
-              Config.MainPage
+      userConfigService.userConfigStateFlow
+        .map {
+          when (it) {
+            is UserConfigState.Loading -> Config.Loading
+            is UserConfigState.Loaded -> {
+              if (it.url.isNullOrBlank()) {
+                Config.LandingPage
+              } else {
+                Config.MainPage
+              }
             }
           }
         }
-        slotNavigation.activate(config)
-      }
+        .distinctUntilChanged()
+        .collect {
+          slotNavigation.activate(it)
+        }
     }
   }
+
   private fun childFactory(
     config: Config,
     componentContext: ComponentContext
