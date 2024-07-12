@@ -18,6 +18,9 @@ buildConfig {
     // Coroutines
     buildConfigStringField("CoroutinesBom", libs.dev.coroutinesBom)
 
+    // Essenty
+    buildConfigStringField("EssentyLifecycleCoroutines", libs.dev.essentyLifecycleCoroutines)
+
     // Decompose
     buildConfigStringField("Decompose", libs.dev.decompose)
     buildConfigStringField("DecomposeCompose", libs.dev.decomposeCompose)

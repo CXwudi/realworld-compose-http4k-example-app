@@ -6,8 +6,7 @@ import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.landing.DefaultLandingPageComponent
@@ -48,7 +47,8 @@ class DefaultRootNavComponent(
     )
 
   init {
-    CoroutineScope(Dispatchers.Main).launch {
+    val lifecycleScope = coroutineScope()
+    lifecycleScope.launch {
       userConfigService.userConfigStateFlow.collect {
         val config = when (it) {
           is UserConfigState.Loading -> Config.Loading
