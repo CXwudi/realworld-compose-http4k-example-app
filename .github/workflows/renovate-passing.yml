@@ -1,0 +1,13 @@
+name: Let Renovate Bot Pass
+
+on:
+  push:
+    branches: ["renovate/**"]
+
+jobs:
+  renovate-passing:
+    runs-on: ubuntu-latest  
+
+    steps:
+      - name: Renovate Passing
+        run: echo "renovate please go ahead"
