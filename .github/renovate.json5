@@ -10,20 +10,16 @@
   packageRules: [
     {
       matchPackagePrefixes: [
+        // kotlin disabled to avoid issue with compose
         "org.jetbrains.kotlin"
       ],
-      enabled: false
-    },
-    {
       matchPackageNames: [
-        "io.insert-koin:koin-bom"
-      ],
-      enabled: false
-    },
-    {
-      matchPackageNames: [
-        "com.android.tools.build:gradle",
-        "com.android.tools.build:gradle-api"
+        // koin disabled until 3.6.0 is out
+        "io.insert-koin:koin-bom", 
+        // AGP
+        "com.android.tools.build:gradle", 
+        "com.android.application",
+        "com.android.library"
       ],
       enabled: false
     }
