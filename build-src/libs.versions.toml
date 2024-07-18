@@ -22,7 +22,7 @@ koin = "3.6.0-Beta4" # must use at least 3.6.x to make it work with Compose 1.6.
 # see https://kotlinlang.slack.com/archives/C67HDJZ2N/p1714069454044969
 sqldelight = "2.0.2"
 
-junit = "5.10.2"
+junit = "5.10.3"
 http4k = "5.25.0.0"
 exposed = "0.52.0"
 
