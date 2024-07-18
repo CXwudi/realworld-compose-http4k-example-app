@@ -13,7 +13,7 @@
         // kotlin disabled to avoid issue with compose
         "org.jetbrains.kotlin"
       ],
-      matchPackageNames: [
+      matchDepNames: [
         // koin disabled until 3.6.0 is out
         "io.insert-koin:koin-bom", 
         // AGP
