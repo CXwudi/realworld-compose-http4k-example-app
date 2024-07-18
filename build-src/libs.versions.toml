@@ -60,7 +60,7 @@ dev-exposedBom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "
 dev-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 dev-kotestBom = "io.kotest:kotest-bom:5.9.1"
 dev-kotestKoin = "io.kotest.extensions:kotest-extensions-koin:1.3.0"
-dev-mockk = "io.mockk:mockk:1.13.11"
+dev-mockk = "io.mockk:mockk:1.13.12"
 dev-sqlite = "org.xerial:sqlite-jdbc:3.46.0.0"
 dev-hikari = "com.zaxxer:HikariCP:5.1.0"
 dev-flyway = "org.flywaydb:flyway-core:10.15.2"
