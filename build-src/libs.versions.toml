@@ -89,4 +89,4 @@ kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kot
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 # a plugin used by gradle files for precompiled script plugin
-buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.3.5" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.4.0" }
