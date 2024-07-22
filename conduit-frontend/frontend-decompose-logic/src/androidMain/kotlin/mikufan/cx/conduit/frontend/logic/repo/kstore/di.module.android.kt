@@ -7,5 +7,5 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 actual val kstoreModule: Module = module {
-  single(named("kstore")) { setupPersistedConfigKStore(get<Context>() as Application) }
+  single(named(KStoreKey.PERSISTED_CONFIG)) { setupPersistedConfigKStore(get<Context>() as Application) }
 }
