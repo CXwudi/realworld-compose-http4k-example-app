@@ -21,7 +21,7 @@ koin = "3.6.0-Beta4" # must use at least 3.6.x to make it work with Compose 1.6.
 # otherwise will get "Function 'KoinContext' can not be called: No function found for symbol" error
 # see https://kotlinlang.slack.com/archives/C67HDJZ2N/p1714069454044969
 sqldelight = "2.0.2"
-kstore = "0.8.1"
+kstore = "0.8.0"
 
 junit = "5.10.3"
 http4k = "5.26.0.0"
