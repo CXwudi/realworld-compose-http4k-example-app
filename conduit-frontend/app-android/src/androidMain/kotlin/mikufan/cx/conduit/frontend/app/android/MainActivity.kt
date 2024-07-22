@@ -19,13 +19,13 @@ class MainActivity : AppCompatActivity() {
     val defaultComponentContext = defaultComponentContext()
 
     val mainApplication = application as MainApplication
-    val koin = mainApplication.koin
+    val koin = mainApplication.koinApplication.koin
 
     val rootComponent =
       DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())
     enableEdgeToEdge()
     setContent {
-      MainUI(mainApplication.koin, rootComponent)
+      MainUI(koin, rootComponent)
     }
   }
 
