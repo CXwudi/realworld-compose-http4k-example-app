@@ -10,8 +10,6 @@ import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.allModules
 import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
 import mikufan.cx.conduit.frontend.logic.component.util.toLocalKoinComponent
-import mikufan.cx.conduit.frontend.logic.repo.db.AppDb
-import mikufan.cx.conduit.frontend.logic.repo.db.provideDbDriver
 import mikufan.cx.conduit.frontend.ui.MainUI
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.core.KoinApplication
@@ -26,7 +24,8 @@ suspend fun initKoin(): KoinApplication {
   val application = koinApplication {
     modules(allModules)
   }
-  application.koin.declare(provideDbDriver(AppDb.Schema))
+  // uncommon to call suspend function to add new instance to koin
+  //application.koin.declare()
   return application
 }
 
@@ -40,7 +39,7 @@ fun main(args: Array<String>) {
   )
 
   lifecycle.attachToDocument()
-  GlobalScope.launch { // initialize within a global coroutine, workaround to initialize SqlDriver from koin
+  GlobalScope.launch { // initialize within a global coroutine, workaround to calling suspend function from koin module
     // from https://github.com/InsertKoinIO/koin/issues/388#issuecomment-1195262422
     val koin = initKoin().koin
     val rootComponent = DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())

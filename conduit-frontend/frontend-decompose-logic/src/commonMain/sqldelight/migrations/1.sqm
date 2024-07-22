@@ -1,8 +1,0 @@
-CREATE TABLE IF NOT EXISTS userConfig (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    url TEXT,
-    username TEXT,
-    token TEXT
-);
-
-INSERT INTO userConfig (url, username, token) VALUES (NULL, NULL, NULL);
