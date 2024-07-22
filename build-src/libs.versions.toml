@@ -11,7 +11,7 @@
 [versions]
 kotlin = "2.0.0"
 java = "17"
-agp = "8.2.2" # ! current stuck in 8.2.x due to https://youtrack.jetbrains.com/issue/IDEA-348937
+agp = "8.5.1" # ! current stuck in 8.2.x due to https://youtrack.jetbrains.com/issue/IDEA-348937
 # also we can't just simply make backend or desktop app to use Java 21 as it breaks the whole project
 compose = "1.6.11"
 essenty = "2.1.0"
