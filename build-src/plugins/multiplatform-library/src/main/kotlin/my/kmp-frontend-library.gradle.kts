@@ -1,5 +1,6 @@
 package my
 
+import dev.mokkery.MockMode
 import my.util.Libs
 
 /**
@@ -8,6 +9,7 @@ import my.util.Libs
  */
 plugins {
   id("my.kmp-library")
+  id("dev.mokkery")
 }
 
 kotlin {
@@ -43,4 +45,8 @@ kotlin {
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing")
     }
   }
+}
+
+mokkery {
+  defaultMockMode = MockMode.autoUnit
 }
