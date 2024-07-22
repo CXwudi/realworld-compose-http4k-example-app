@@ -33,7 +33,7 @@ buildConfig {
 
     // Logging
     buildConfigStringField("KmLogging", libs.dev.kmlogging)
-    buildConfigStringField("Logback", libs.dev.logback)
+    buildConfigStringField("Logback", libs.dev.backend.logback)
 
     // Koin
     buildConfigStringField("KoinBom", libs.dev.koinBom)
