@@ -21,7 +21,7 @@ kotlin {
         implementation(libs.dev.mvikotlinLogging)
 
         implementation(libs.dev.kmlogging)
-        implementation(libs.dev.logback)
+        implementation(libs.dev.backend.logback)
 
         implementation(project.dependencies.platform(libs.dev.koinBom))
         implementation("io.insert-koin:koin-core")
