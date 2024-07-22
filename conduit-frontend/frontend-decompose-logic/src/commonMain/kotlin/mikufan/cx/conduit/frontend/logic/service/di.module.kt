@@ -10,6 +10,5 @@ import org.koin.dsl.module
  * Require [kstoreModule]
  */
 val serviceModule = module {
-//  single<UserConfigService> { UserConfigServiceSqlDelightImpl(get()) }
   single<UserConfigService> { UserConfigServiceImpl(get(named(KStoreKey.PERSISTED_CONFIG))) }
 }
