@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-07-04T02:13:12.442Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0" etag="rj1oIJpy6q7oUYt1ir8j" version="24.6.4" type="device" pages="5">
+<mxfile host="app.diagrams.net" modified="2024-07-23T17:50:55.825Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0" etag="xwljsi0A6DDnGyWrMdHL" version="24.7.1" type="device" pages="5">
   <diagram name="DB Schema" id="AQbZLJ3pGi2FZzNB1pF5">
     <mxGraphModel dx="1509" dy="891" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -351,7 +351,7 @@
         <mxCell id="DqSYTHLvF3KZ_UL9UQMP-48" value="Feeds" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.leftButton;rSize=10;fontSize=17;fontColor=#ffffff;fontStyle=1;fillColor=#008cff;strokeColor=#008cff;resizeHeight=1;whiteSpace=wrap;" parent="DqSYTHLvF3KZ_UL9UQMP-44" vertex="1">
           <mxGeometry width="110" height="30" relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-49" value="If not login, Compose tab is gone and clicking &quot;Me&quot; will goes to Login/Signup page" style="text;strokeColor=none;fillColor=none;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-49" value="If not login, Favourite tab is gone and &quot;Me&quot; tab becomes Login/Signup tab" style="text;strokeColor=none;fillColor=none;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="530" y="1034" width="160" height="110" as="geometry" />
         </mxCell>
         <mxCell id="DqSYTHLvF3KZ_UL9UQMP-57" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.033;entryY=0.749;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=12;startSize=8;endSize=8;" parent="1" source="9WhV11Czirk2lFW855Cm-24" target="9WhV11Czirk2lFW855Cm-27" edge="1">
@@ -366,28 +366,6 @@
         </mxCell>
         <mxCell id="DqSYTHLvF3KZ_UL9UQMP-60" value="Login/Sign-up Page.&lt;div&gt;Can be implemented as one screen&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="740" y="450" width="280" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-61" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shadow=0;dashed=0;strokeWidth=1;shape=mxgraph.android.phone2;strokeColor=#c0c0c0;rounded=0;align=center;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;" parent="1" vertex="1">
-          <mxGeometry x="780" y="540" width="350" height="630" as="geometry" />
-        </mxCell>
-        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-62" value="Me Page (After login)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="880" y="1194" width="170" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-63" value="" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.rrect;rSize=10;fillColor=#ffffff;strokeColor=#666666;" parent="1" vertex="1">
-          <mxGeometry x="800" y="1080" width="320" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-64" value="Favourite" style="strokeColor=inherit;fillColor=inherit;gradientColor=inherit;strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.rrect;rSize=0;fontSize=17;fontColor=#666666;fontStyle=1;resizeHeight=1;whiteSpace=wrap;" parent="DqSYTHLvF3KZ_UL9UQMP-63" vertex="1">
-          <mxGeometry width="100" height="30" relative="1" as="geometry">
-            <mxPoint x="110" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-65" value="Me" style="strokeColor=#006EAF;fillColor=#008CFF;strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.rightButton;rSize=10;fontSize=17;fontColor=#ffffff;fontStyle=1;resizeHeight=1;whiteSpace=wrap;" parent="DqSYTHLvF3KZ_UL9UQMP-63" vertex="1">
-          <mxGeometry x="1" width="110" height="30" relative="1" as="geometry">
-            <mxPoint x="-111" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="DqSYTHLvF3KZ_UL9UQMP-66" value="Feeds" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.leftButton;rSize=10;fontSize=17;fontColor=#666666;fontStyle=1;fillColor=none;strokeColor=none;resizeHeight=1;whiteSpace=wrap;" parent="DqSYTHLvF3KZ_UL9UQMP-63" vertex="1">
-          <mxGeometry width="110" height="30" relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
