@@ -1,8 +1,8 @@
 pluginManagement {
   repositories {
-    gradlePluginPortal()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
+    gradlePluginPortal()
   }
   includeBuild("../build-src/settings")
   includeBuild("../build-src/plugins")
@@ -13,6 +13,7 @@ dependencyResolutionManagement {
     google()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    gradlePluginPortal()
   }
   versionCatalogs {
     create("libs") {

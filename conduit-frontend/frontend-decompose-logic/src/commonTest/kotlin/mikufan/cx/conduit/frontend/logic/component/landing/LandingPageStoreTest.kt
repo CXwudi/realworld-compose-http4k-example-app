@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
+import dev.mokkery.verify.VerifyMode.Companion.exactly
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
@@ -41,7 +42,7 @@ class LandingPageStoreTest {
     assertEquals("a change", landingPageStore.state.url)
 
     landingPageStore.accept(LandingPageIntent.ToNextPage)
-    verifySuspend {
+    verifySuspend(exactly(1)) {
       userConfigService.setUrl("a change")
     }
 
@@ -54,7 +55,7 @@ class LandingPageStoreTest {
   fun testErrorFlow1() = runTest {
     everySuspend { userConfigService.setUrl("") } throws IllegalArgumentException("some error")
     landingPageStore.accept(LandingPageIntent.ToNextPage)
-    verifySuspend {
+    verifySuspend(exactly(1)) {
       userConfigService.setUrl("")
     }
     landingPageStore.states(observer {

@@ -1,5 +1,6 @@
 package my
 
+import com.goncalossilva.useanybrowser.useAnyBrowser
 import my.util.Libs
 import my.util.Versions
 
@@ -10,13 +11,20 @@ plugins {
   kotlin("multiplatform")
   id("com.android.library")
   kotlin("plugin.serialization")
+  id("com.goncalossilva.useanybrowser")
 }
 
 kotlin {
   androidTarget()
   jvm()
   js(IR) {
-    browser()
+    browser {
+      testTask {
+        useKarma {
+          useAnyBrowser()
+        }
+      }
+    }
   }
 
   listOf(

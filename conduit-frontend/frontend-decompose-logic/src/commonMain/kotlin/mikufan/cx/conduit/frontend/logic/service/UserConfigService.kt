@@ -39,6 +39,7 @@ class UserConfigServiceImpl(
       )
 
   override suspend fun setUrl(url: String?) = kStore.update {
+    if (url == "") throw IllegalArgumentException("url cannot be empty")
     it?.copy(url = url)
   }
 
