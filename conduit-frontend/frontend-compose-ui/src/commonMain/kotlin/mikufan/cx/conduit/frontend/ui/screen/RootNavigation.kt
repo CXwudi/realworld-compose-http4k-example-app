@@ -24,7 +24,7 @@ fun RootNavigation(rootComponent: DefaultRootNavComponent, modifier: Modifier = 
     when (it) {
       is RootComponentChild.Loading -> LoadingScreen()
       is RootComponentChild.LandingPage -> LandingPage(it.component)
-      is RootComponentChild.MainPage -> MainPage()
+      is RootComponentChild.MainPage -> MainPage(it.component)
       null -> error("Unexpected null child in childSlot")
     }
   }

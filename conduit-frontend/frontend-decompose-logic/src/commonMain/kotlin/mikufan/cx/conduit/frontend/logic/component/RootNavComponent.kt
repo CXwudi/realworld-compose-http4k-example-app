@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.landing.DefaultLandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
+import mikufan.cx.conduit.frontend.logic.component.main.DefaultMainNavComponent
+import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
@@ -29,7 +31,9 @@ sealed interface RootComponentChild {
     val component: LandingPageComponent
   ) : RootComponentChild
 
-  data class MainPage(val a: Int) : RootComponentChild
+  data class MainPage(
+    val component: MainNavComponent
+  ) : RootComponentChild
 
 }
 
@@ -81,7 +85,9 @@ class DefaultRootNavComponent(
       Config.LandingPage -> RootComponentChild.LandingPage(
         component = koin.createLandingPageComponent(componentContext)
       )
-      Config.MainPage -> RootComponentChild.MainPage(0)
+      Config.MainPage -> RootComponentChild.MainPage(
+        component = koin.createMainNavComponent(componentContext)
+      )
     }
     return child
   }
@@ -92,6 +98,14 @@ class DefaultRootNavComponent(
     componentContext = componentContext,
     koinComponent = this,
     storeFactory = get(),
+  )
+
+  private fun LocalKoinComponent.createMainNavComponent(
+    componentContext: ComponentContext
+  ) = DefaultMainNavComponent(
+    componentContext = componentContext,
+    koin = this,
+    userConfigService = get(),
   )
 
 
