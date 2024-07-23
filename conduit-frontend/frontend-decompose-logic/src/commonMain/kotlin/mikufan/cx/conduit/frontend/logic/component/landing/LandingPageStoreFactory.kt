@@ -16,7 +16,7 @@ sealed interface LandingPageIntent {
   data object ToNextPage : LandingPageIntent
 }
 
-data object ToNextPageLabel
+data object LandingPageToNextPageLabel
 
 @Serializable
 data class LandingPageState(
@@ -35,7 +35,7 @@ class LandingPageStoreFactory(
   }
 
   private val executor =
-    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, ToNextPageLabel> {
+    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel> {
       onIntent<LandingPageIntent.TextChanged> {
         dispatch(Msg.TextChanged(it.text))
         if (state().errorMsg.isNotBlank()) {
@@ -48,7 +48,7 @@ class LandingPageStoreFactory(
             withContext(Dispatchers.Default) {
               userConfigService.setUrl(state().url)
             }
-            publish(ToNextPageLabel)
+            publish(LandingPageToNextPageLabel)
           } catch (e: IllegalArgumentException) {
             dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
           }
