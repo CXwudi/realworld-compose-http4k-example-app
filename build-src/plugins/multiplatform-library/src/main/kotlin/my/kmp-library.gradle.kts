@@ -1,8 +1,8 @@
 package my
 
-import com.goncalossilva.useanybrowser.useAnyBrowser
 import my.util.Libs
 import my.util.Versions
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 
 /**
  * Common Kotlin Multiplatform setup for both common and frontend modules.
@@ -11,7 +11,6 @@ plugins {
   kotlin("multiplatform")
   id("com.android.library")
   kotlin("plugin.serialization")
-  id("com.goncalossilva.useanybrowser")
 }
 
 kotlin {
@@ -21,7 +20,10 @@ kotlin {
     browser {
       testTask {
         useKarma {
-          useAnyBrowser()
+          useChromium()
+          useChrome()
+          useChromiumHeadless()
+          useChromeHeadless()
         }
       }
     }
@@ -71,4 +73,11 @@ android {
     minSdk = 26
   }
   // jvm version is covered by java toolchain above
+}
+
+// convenient way to automatically update yarn.lock if dep changes
+plugins.withType<YarnPlugin> {
+  the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().apply {
+    yarnLockAutoReplace = true
+  }
 }
