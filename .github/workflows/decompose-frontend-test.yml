@@ -1,4 +1,4 @@
-name: Frontend Decompose Module Unit Tests
+name: Frontend Decompose Module Tests
 
 on:
   push:
@@ -36,5 +36,5 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results
+        name: frontend-test-results
         path: conduit-frontend/build/reports/
