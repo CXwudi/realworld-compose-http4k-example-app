@@ -3,6 +3,9 @@ package mikufan.cx.conduit.frontend.ui.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,7 +28,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 
   Box(
     contentAlignment = Alignment.Center,
-    modifier = modifier
+    modifier = modifier.windowInsetsPadding(WindowInsets.ime)
   ) {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
