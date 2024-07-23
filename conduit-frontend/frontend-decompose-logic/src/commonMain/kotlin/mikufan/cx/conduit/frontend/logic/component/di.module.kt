@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageStoreFactory
 import mikufan.cx.conduit.frontend.logic.service.serviceModule
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
@@ -13,5 +12,5 @@ import org.koin.dsl.module
  */
 val storeModule = module {
   single<StoreFactory> { LoggingStoreFactory(DefaultStoreFactory()) }
-  singleOf(::LandingPageStoreFactory)
+  single { LandingPageStoreFactory(get(), get()) }
 }

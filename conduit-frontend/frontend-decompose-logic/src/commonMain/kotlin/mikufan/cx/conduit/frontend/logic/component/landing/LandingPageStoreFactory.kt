@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.logic.component.landing
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,6 +28,7 @@ data class LandingPageState(
 class LandingPageStoreFactory(
   private val storeFactory: StoreFactory,
   private val userConfigService: UserConfigService,
+  dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) {
 
   internal sealed interface Msg {
@@ -35,7 +37,7 @@ class LandingPageStoreFactory(
   }
 
   private val executor =
-    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel> {
+    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel>(dispatcher) {
       onIntent<LandingPageIntent.TextChanged> {
         dispatch(Msg.TextChanged(it.text))
         if (state().errorMsg.isNotBlank()) {
