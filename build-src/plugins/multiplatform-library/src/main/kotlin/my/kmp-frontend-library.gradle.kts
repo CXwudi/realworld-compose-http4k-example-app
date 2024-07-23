@@ -31,6 +31,7 @@ kotlin {
 
     commonTest.dependencies {
       implementation("io.insert-koin:koin-test")
+      implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     }
 
     androidMain.dependencies {
