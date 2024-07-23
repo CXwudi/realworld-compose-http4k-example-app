@@ -1,0 +1,40 @@
+name: Frontend Decompose Module Unit Tests
+
+on:
+  push:
+    paths:
+      - 'conduit-frontend/frontend-decompose-logic/**'
+      - 'build-src/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Set up Chromenium
+      uses: browser-actions/setup-chrome@v1
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Run Kotlin Multiplatform Tests on conduit-frontend
+      working-directory: conduit-frontend
+      run: |
+        ./gradlew :frontend-decompose-logic:cleanAllTests :frontend-decompose-logic:check
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: conduit-frontend/build/reports/
