@@ -9,14 +9,18 @@ import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.exactly
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import org.lighthousegames.logging.logging
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class LandingPageStoreTest {
 
   lateinit var userConfigService: UserConfigService
@@ -29,10 +33,12 @@ class LandingPageStoreTest {
       DefaultStoreFactory(),
       userConfigService
     ).createStore()
+    Dispatchers.setMain(Dispatchers.Unconfined)
   }
 
-  init {
-    Dispatchers.setMain(Dispatchers.Unconfined)
+  @AfterTest
+  fun reset() {
+    Dispatchers.resetMain()
   }
 
   @Test
