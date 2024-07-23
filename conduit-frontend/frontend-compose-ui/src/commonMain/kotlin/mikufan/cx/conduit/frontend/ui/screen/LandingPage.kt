@@ -3,10 +3,17 @@ package mikufan.cx.conduit.frontend.ui.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +32,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 
   val state by component.state.subscribeAsState()
   val urlText by remember { derivedStateOf { state.url } }
+  val errMsg by remember { derivedStateOf { state.errorMsg } }
 
   Box(
     contentAlignment = Alignment.Center,
@@ -39,6 +47,9 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
         label = { Text("URL") },
         onValueChange = { component.send(LandingPageIntent.TextChanged(it)) }
       )
+      if (errMsg.isNotBlank()) {
+        ErrorMessage(errMsg)
+      }
       Button(onClick = { component.send(LandingPageIntent.ToNextPage) }) {
         Text("Connect")
       }
@@ -46,4 +57,23 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 
   }
 
+}
+
+@Composable
+fun ColumnScope.ErrorMessage(message: String, modifier: Modifier = Modifier) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = Modifier.align(Alignment.Start)
+  ) {
+    Icon(
+      imageVector = Icons.Filled.Warning,
+      contentDescription = "Error",
+      tint = androidx.compose.ui.graphics.Color.Red
+    )
+    Spacer(modifier = Modifier.width(LocalSpace.current.horizontal.spacing))
+    Text(
+      text = message,
+      color = androidx.compose.ui.graphics.Color.Red
+    )
+  }
 }
