@@ -20,10 +20,8 @@ kotlin {
     browser {
       testTask {
         useKarma {
-          useChromium()
-          useChrome()
+          // for developers, please use your own browsers in convenience
           useChromiumHeadless()
-          useChromeHeadless()
         }
       }
     }
