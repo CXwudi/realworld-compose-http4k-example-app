@@ -70,6 +70,12 @@ android {
   defaultConfig {
     minSdk = 26
   }
+  testOptions {
+    targetSdk = 34
+  }
+  lint {
+    targetSdk = 34
+  }
   // jvm version is covered by java toolchain above
 }
 

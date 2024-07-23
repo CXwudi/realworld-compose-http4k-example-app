@@ -55,6 +55,7 @@ android {
   defaultConfig {
     applicationId = "mikufan.cx.conduit.frontend.app.android"
     minSdk = 26
+    targetSdk = 34
     versionCode = 1
     versionName = "1.0"
   }
