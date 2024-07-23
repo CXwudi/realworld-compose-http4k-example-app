@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -28,7 +28,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 
   Box(
     contentAlignment = Alignment.Center,
-    modifier = modifier.windowInsetsPadding(WindowInsets.ime)
+    modifier = modifier.windowInsetsPadding(WindowInsets.safeDrawing)
   ) {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
