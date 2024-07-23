@@ -37,4 +37,4 @@ jobs:
       if: always()
       with:
         name: frontend-test-results
-        path: conduit-frontend/build/reports/
+        path: conduit-frontend/build/reports/tests/
