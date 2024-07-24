@@ -3,15 +3,13 @@ package mikufan.cx.conduit.frontend.logic.service
 import io.github.xxfast.kstore.KStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import mikufan.cx.conduit.frontend.logic.repo.kstore.PersistedConfig
 
 
 interface UserConfigService {
-  val userConfigStateFlow: StateFlow<UserConfigState>
+  val userConfigFlow: Flow<UserConfigState>
 
   suspend fun setUrl(url: String? = null)
   suspend fun setToken(token: String? = null)
@@ -26,17 +24,13 @@ sealed interface UserConfigState {
 }
 
 class UserConfigServiceImpl(
-  private val kStore: KStore<PersistedConfig>
+  private val kStore: KStore<PersistedConfig>,
+  private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
 ) : UserConfigService {
-  override val userConfigStateFlow: StateFlow<UserConfigState> =
+  override val userConfigFlow: Flow<UserConfigState> =
     kStore.updates.map {
       it?.let { UserConfigState.Loaded(it.url, it.token) } ?: UserConfigState.Loading
     }
-      .stateIn(
-        CoroutineScope(Dispatchers.Default),
-        SharingStarted.Lazily,
-        UserConfigState.Loading
-      )
 
   override suspend fun setUrl(url: String?) = kStore.update {
     if (url == "") throw IllegalArgumentException("url cannot be empty")

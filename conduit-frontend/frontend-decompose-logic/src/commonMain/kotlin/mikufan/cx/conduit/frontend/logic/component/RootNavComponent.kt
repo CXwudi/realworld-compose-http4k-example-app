@@ -56,7 +56,7 @@ class DefaultRootNavComponent(
   init {
     val lifecycleScope = coroutineScope()
     lifecycleScope.launch {
-      userConfigService.userConfigStateFlow
+      userConfigService.userConfigFlow
         .map {
           when (it) {
             is UserConfigState.Loading -> Config.Loading
@@ -85,6 +85,7 @@ class DefaultRootNavComponent(
       Config.LandingPage -> RootComponentChild.LandingPage(
         component = koin.createLandingPageComponent(componentContext)
       )
+
       Config.MainPage -> RootComponentChild.MainPage(
         component = koin.createMainNavComponent(componentContext)
       )

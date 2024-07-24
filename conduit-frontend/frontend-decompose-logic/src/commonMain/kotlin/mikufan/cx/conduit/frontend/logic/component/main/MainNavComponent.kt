@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.instancekeeper.getOrCreateSimple
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -48,7 +49,10 @@ class DefaultMainNavComponent(
 ) : MainNavComponent, ComponentContext by componentContext {
 
 
-  private val _state = MutableValue(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
+  private val _state = instanceKeeper.getOrCreateSimple {
+    MutableValue(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
+  }
+
   override val state: Value<MainNavState> = _state
 
   private val slotNavigation = SlotNavigation<Config>()
@@ -56,7 +60,7 @@ class DefaultMainNavComponent(
   override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> =
     childSlot(
       source = slotNavigation,
-      initialConfiguration = { Config.MainFeed },
+      initialConfiguration = { enumToConfig(state.value.currentMenuItem) },
       serializer = Config.serializer(),
       childFactory = ::childFactory
     )
@@ -79,7 +83,7 @@ class DefaultMainNavComponent(
   }
 
   private suspend fun setupLoginStatusChange() {
-    userConfigService.userConfigStateFlow.map { userConfigState ->
+    userConfigService.userConfigFlow.map { userConfigState ->
       when (userConfigState) {
         is UserConfigState.Loaded -> {
           if (userConfigState.token.isNullOrBlank()) {
@@ -114,7 +118,7 @@ class DefaultMainNavComponent(
   }
 
   private fun handleModeSwitchingIntent(intent: ModeSwitchingIntent) {
-    val newMode = when(intent) {
+    val newMode = when (intent) {
       is MainNavIntent.ToSignInMode -> MainNavState(MainNavMode.LOGGED_IN, 0)
       is MainNavIntent.ToLogoutMode -> MainNavState(MainNavMode.NOT_LOGGED_IN, 0)
     }
