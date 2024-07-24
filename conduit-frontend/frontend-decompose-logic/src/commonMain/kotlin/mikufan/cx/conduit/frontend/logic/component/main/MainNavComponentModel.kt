@@ -19,6 +19,10 @@ data class MainNavState(
   fun indexOfMenuItem(menuItem: MainNavMenuItem): Int? = mode.indexMap[menuItem]
 }
 
+/**
+ * This class can probably be inlined,
+ * but it is better to keep it as it serves as an indicator telling if the user is logged in
+ */
 enum class MainNavMode(
   val menuItems: List<MainNavMenuItem>,
 ) {
