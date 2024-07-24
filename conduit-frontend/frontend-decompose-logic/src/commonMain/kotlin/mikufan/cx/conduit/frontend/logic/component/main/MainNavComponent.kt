@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.logic.component.main
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -12,14 +13,22 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
+import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
 
-interface MainNavComponent {
+/**
+ * The component for the main page, it unfortunately breaks the MVI pattern where it has two state values.
+ *
+ * One from the Decompose navigation ([childSlot]) and another we create ourselves ([MainNavState]).
+ *
+ * The [send] method is divided into two different methods, one for navigation and one for state update.
+ *
+ * The [MainNavIntent] is also divided into two groups ([ModeSwitchingIntent] and [PageSwitchingIntent]), to
+ * distinguish between intent for the navigation and the state update.
+ */
+interface MainNavComponent : MviComponent<MainNavIntent, MainNavState> {
   val childSlot: Value<ChildSlot<*, MainNavComponentChild>>
-  val state: Value<MainNavState>
-
-  fun send(intent: MainNavIntent)
 }
 
 sealed interface MainNavComponentChild {
@@ -32,53 +41,15 @@ sealed interface MainNavComponentChild {
 
 }
 
-data class MainNavState(
-  val mode: MainNavMode
-)
-
-enum class MainNavMode(
-  val menuItems: List<MainNavMenuItem>,
-) {
-  NOT_LOGGED_IN(
-    listOf(
-      MainNavMenuItem.Feed,
-      MainNavMenuItem.SignInUp
-    )
-  ),
-  LOGGED_IN(
-    listOf(
-      MainNavMenuItem.Feed,
-      MainNavMenuItem.Favourite,
-      MainNavMenuItem.Me
-    )
-  ),
-}
-
-sealed interface MainNavIntent {
-
-  data object ToSignInMode: MainNavIntent
-  data object ToLogoutMode: MainNavIntent
-
-  data object ToFeedPage: MainNavIntent
-  data object ToFavouritePage: MainNavIntent
-  data object ToMePage: MainNavIntent
-  data object ToSignInUpPage: MainNavIntent
-}
-
-enum class MainNavMenuItem(
-  val menuName: String,
-) {
-  Feed("Feeds"),
-  Favourite("Favourites"),
-  Me("Me"),
-  SignInUp("Sign in/up"),
-}
-
 class DefaultMainNavComponent(
   componentContext: ComponentContext,
   private val koin: LocalKoinComponent,
   private val userConfigService: UserConfigService,
 ) : MainNavComponent, ComponentContext by componentContext {
+
+
+  private val _state = MutableValue(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
+  override val state: Value<MainNavState> = _state
 
   private val slotNavigation = SlotNavigation<Config>()
 
@@ -100,14 +71,14 @@ class DefaultMainNavComponent(
     Config.SignInUp -> MainNavComponentChild.SignInUp
   }
 
-  private val _state = MutableValue(MainNavState(MainNavMode.NOT_LOGGED_IN))
-  override val state: Value<MainNavState> get() = _state
-
   init {
-    setupLoginStatusChange()
+    coroutineScope().apply {
+      launch { setupLoginStatusChange() }
+      launch { setupStateValueToNavigationMapping() }
+    }
   }
 
-  private fun setupLoginStatusChange() = coroutineScope().launch {
+  private suspend fun setupLoginStatusChange() {
     userConfigService.userConfigStateFlow.map { userConfigState ->
       when (userConfigState) {
         is UserConfigState.Loaded -> {
@@ -129,12 +100,43 @@ class DefaultMainNavComponent(
       }
   }
 
-  override fun send(intent: MainNavIntent) {
-    when(intent) {
-      is MainNavIntent.ToSignInMode -> _state.value = MainNavState(MainNavMode.LOGGED_IN)
-      is MainNavIntent.ToLogoutMode -> _state.value = MainNavState(MainNavMode.NOT_LOGGED_IN)
-      else -> TODO()
+  private fun setupStateValueToNavigationMapping() {
+    state.subscribe {
+      slotNavigation.activate(enumToConfig(it.currentMenuItem))
     }
+  }
+
+  override fun send(intent: MainNavIntent) {
+    when (intent) {
+      is ModeSwitchingIntent -> handleModeSwitchingIntent(intent)
+      is PageSwitchingIntent -> handlePageSwitchingIntent(intent)
+    }
+  }
+
+  private fun handleModeSwitchingIntent(intent: ModeSwitchingIntent) {
+    val newMode = when(intent) {
+      is MainNavIntent.ToSignInMode -> MainNavState(MainNavMode.LOGGED_IN, 0)
+      is MainNavIntent.ToLogoutMode -> MainNavState(MainNavMode.NOT_LOGGED_IN, 0)
+    }
+    _state.value = newMode
+  }
+
+  private fun handlePageSwitchingIntent(intent: PageSwitchingIntent) {
+    val newMenuItem = PageSwitchingIntent.pageSwitchingIntent2MenuItem(intent)
+    val currentState = state.value
+    val newIdx: Int = requireNotNull(currentState.indexOfMenuItem(newMenuItem)) {
+      "$newMenuItem not found in $currentState, this should not happen"
+    }
+    if (currentState.pageIndex != newIdx) {
+      _state.value = currentState.copy(pageIndex = newIdx)
+    }
+  }
+
+  private fun enumToConfig(enum: MainNavMenuItem): Config = when (enum) {
+    MainNavMenuItem.Feed -> Config.MainFeed
+    MainNavMenuItem.Favourite -> Config.Favourite
+    MainNavMenuItem.Me -> Config.Me
+    MainNavMenuItem.SignInUp -> Config.SignInUp
   }
 
   @Serializable
@@ -152,4 +154,6 @@ class DefaultMainNavComponent(
     @Serializable
     data object SignInUp : Config
   }
+
+
 }
