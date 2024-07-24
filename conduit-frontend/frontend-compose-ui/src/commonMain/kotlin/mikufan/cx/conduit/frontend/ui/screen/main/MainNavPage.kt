@@ -21,7 +21,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
-import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
+import mikufan.cx.conduit.frontend.logic.component.main.MainNavMenuItem
 
 @Composable
 fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
@@ -31,6 +31,8 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
 
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
+
+  val menuItemMap = remember(mainStateMode) { createMap(mainStateMode.menuItems, component::send) }
 
   Column {
     AnimatedContentTransition(
@@ -46,16 +48,8 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
     }
     // Navigation bar based on models defined in MainNavComponentModel.kt
     NavigationBar {
-      val items = when (mainStateMode) {
-        MainNavMode.LOGGED_IN -> listOf(
-          NavigationItem("Feed", Icons.Filled.Home, 0) { component.send(MainNavIntent.ToFeedPage) },
-          NavigationItem("Favourite", Icons.Filled.Favorite, 1) { component.send(MainNavIntent.ToFavouritePage) },
-          NavigationItem("Me", Icons.Filled.Person, 2) { component.send(MainNavIntent.ToMePage) }
-        )
-        MainNavMode.NOT_LOGGED_IN -> listOf(
-          NavigationItem("Feed", Icons.Filled.Home, 0) { component.send(MainNavIntent.ToFeedPage) },
-          NavigationItem("Sign in/up", Icons.Filled.Person, 1) { component.send(MainNavIntent.ToSignInUpPage) }
-        )
+      val items = mainStateMode.menuItems.map {
+        menuItemMap[it] ?: error("Unexpected menu item: $it")
       }
       items.forEach { item ->
         NavigationBarItem(
@@ -90,3 +84,35 @@ data class NavigationItem(
   val index: Int,
   val onClick: () -> Unit
 )
+
+private fun createMap(
+  items: List<MainNavMenuItem>,
+  onSend: (MainNavIntent) -> Unit
+): Map<MainNavMenuItem, NavigationItem> = items.withIndex().associate { (index, value) ->
+  val navigationItem = when (value) {
+    MainNavMenuItem.Feed -> NavigationItem(
+      value.menuName,
+      Icons.Filled.Home,
+      index
+    ) { onSend(MainNavIntent.ToFeedPage) }
+
+    MainNavMenuItem.Favourite -> NavigationItem(
+      value.menuName,
+      Icons.Filled.Favorite,
+      index
+    ) { onSend(MainNavIntent.ToFavouritePage) }
+
+    MainNavMenuItem.Me -> NavigationItem(
+      value.menuName,
+      Icons.Filled.Person,
+      index
+    ) { onSend(MainNavIntent.ToMePage) }
+
+    MainNavMenuItem.SignInUp -> NavigationItem(
+      value.menuName,
+      Icons.Filled.Person,
+      index
+    ) { onSend(MainNavIntent.ToSignInUpPage) }
+  }
+  value to navigationItem
+}
