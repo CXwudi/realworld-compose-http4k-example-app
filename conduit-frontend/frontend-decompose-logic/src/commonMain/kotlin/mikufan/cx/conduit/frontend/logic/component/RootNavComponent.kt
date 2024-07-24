@@ -105,7 +105,7 @@ class DefaultRootNavComponent(
   ) = DefaultMainNavComponent(
     componentContext = componentContext,
     koin = this,
-    userConfigService = get(),
+    storeFactory = get(),
   )
 
 
