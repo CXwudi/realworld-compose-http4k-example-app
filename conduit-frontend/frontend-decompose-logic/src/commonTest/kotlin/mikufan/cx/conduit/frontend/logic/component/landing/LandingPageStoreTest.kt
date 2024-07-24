@@ -2,7 +2,6 @@ package mikufan.cx.conduit.frontend.logic.component.landing
 
 import com.arkivanov.mvikotlin.core.rx.observer
 import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
@@ -26,7 +25,7 @@ class LandingPageStoreTest {
   fun setUp() {
     userConfigService = mock()
     landingPageStore = LandingPageStoreFactory(
-      LoggingStoreFactory(DefaultStoreFactory()),
+      DefaultStoreFactory(),
       userConfigService,
       Dispatchers.Default
     ).createStore()
