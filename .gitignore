@@ -66,3 +66,4 @@ out/
 ### My Own ###
 *.sqlite
 conduit-frontend/app-desktop/kstore/*
+conduit-frontend/report/*
