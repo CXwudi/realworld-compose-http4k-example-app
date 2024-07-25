@@ -4,16 +4,12 @@ import io.github.xxfast.kstore.KStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import mikufan.cx.conduit.frontend.logic.repo.kstore.PersistedConfig
 
 
 interface UserConfigService {
   val userConfigFlow: Flow<UserConfigState>
-  val userConfigStateFlow: StateFlow<UserConfigState>
 
   suspend fun setUrl(url: String? = null)
   suspend fun setToken(token: String? = null)
@@ -35,7 +31,6 @@ class UserConfigServiceImpl(
     kStore.updates.map {
       it?.let { UserConfigState.Loaded(it.url, it.token) } ?: UserConfigState.Loading
     }
-  override val userConfigStateFlow: StateFlow<UserConfigState> = userConfigFlow.stateIn(scope, SharingStarted.Eagerly, UserConfigState.Loading)
 
   override suspend fun setUrl(url: String?) = kStore.update {
     if (url == "") throw IllegalArgumentException("url cannot be empty")

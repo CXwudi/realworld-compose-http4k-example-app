@@ -84,7 +84,7 @@ class DefaultMainNavComponent(
   }
 
   private suspend fun setupLoginStatusChange() {
-    userConfigService.userConfigStateFlow.map { userConfigState ->
+    userConfigService.userConfigFlow.map { userConfigState ->
       when (userConfigState) {
         is UserConfigState.Loaded -> {
           if (userConfigState.token.isNullOrBlank()) {
