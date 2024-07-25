@@ -2,7 +2,6 @@ package mikufan.cx.conduit.frontend.ui.screen.main
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -10,6 +9,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -22,6 +22,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMenuItem
+import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 
 @Composable
 fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
@@ -32,7 +33,11 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
 
-  Column {
+  Scaffold(
+    bottomBar = {
+      BottomNavigationBar(mainStateMode, component::send, selectedIndex)
+    }
+  ) {
     AnimatedContentTransition<MainNavComponentChild?>(
       targetState = slot.child?.instance
     ) {
@@ -44,21 +49,28 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
         null -> error("Unexpected null child in childSlot in Main Page")
       }
     }
-    // Navigation bar based on models defined in MainNavComponentModel.kt
-    NavigationBar {
-      val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
-        mapMenuItemEnum2NavItem(value, index, component::send)
-      }
-      items.forEach { item ->
-        NavigationBarItem(
-          icon = { Icon(item.icon, contentDescription = item.label) },
-          label = { Text(item.label) },
-          selected = selectedIndex == item.index,
-          onClick = {
-            item.onClick()
-          }
-        )
-      }
+  }
+}
+
+@Composable
+private fun BottomNavigationBar(
+  mainStateMode: MainNavMode,
+  onSend: (MainNavIntent) -> Unit,
+  selectedIndex: Int,
+) {
+  NavigationBar {
+    val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
+      mapMenuItemEnum2NavItem(value, index, onSend)
+    }
+    items.forEach { item ->
+      NavigationBarItem(
+        icon = { Icon(item.icon, contentDescription = item.label) },
+        label = { Text(item.label) },
+        selected = selectedIndex == item.index,
+        onClick = {
+          item.onClick()
+        }
+      )
     }
   }
 }
