@@ -35,7 +35,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val menuItemMap = remember(mainStateMode) { createMap(mainStateMode.menuItems, component::send) }
 
   Column {
-    AnimatedContentTransition(
+    AnimatedContentTransition<MainNavComponentChild?>(
       targetState = slot.child?.instance
     ) {
       when (it) {
