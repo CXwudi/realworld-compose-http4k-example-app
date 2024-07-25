@@ -33,6 +33,8 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
 
+  // TODO: switch between bottom bar and vertical bar based on device size
+
   Scaffold(
     bottomBar = {
       BottomNavigationBar(mainStateMode, component::send, selectedIndex)
