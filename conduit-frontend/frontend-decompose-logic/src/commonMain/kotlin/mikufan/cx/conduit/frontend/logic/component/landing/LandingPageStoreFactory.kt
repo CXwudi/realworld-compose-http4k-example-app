@@ -49,13 +49,15 @@ class LandingPageStoreFactory(
           try {
             withContext(Dispatchers.Default) {
               userConfigService.setUrl(state().url)
+//              log.d { "Set url = ${state().url}" }
             }
+            // this label is in fact unused, because every other component is subscribing the userConfigService directly
             publish(LandingPageToNextPageLabel)
+//            log.d { "Pushed the label" }
           } catch (e: IllegalArgumentException) {
             dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
           }
         }
-
       }
     }
 
