@@ -9,13 +9,13 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.instancekeeper.getOrCreateSimple
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
+import mikufan.cx.conduit.frontend.logic.component.util.asStateFlow
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
 
@@ -84,7 +84,7 @@ class DefaultMainNavComponent(
   }
 
   private suspend fun setupLoginStatusChange() {
-    userConfigService.userConfigFlow.map { userConfigState ->
+    userConfigService.userConfigStateFlow.map { userConfigState ->
       when (userConfigState) {
         is UserConfigState.Loaded -> {
           if (userConfigState.token.isNullOrBlank()) {
@@ -105,14 +105,11 @@ class DefaultMainNavComponent(
       }
   }
 
-  private fun setupStateValueToNavigationMapping() {
-    val cancellation = state.subscribe {
-      slotNavigation.activate(enumToConfig(it.currentMenuItem))
-    }
-
-    lifecycle.doOnDestroy {
-      cancellation.cancel()
-    }
+  private suspend fun setupStateValueToNavigationMapping() {
+    state.asStateFlow()
+      .collect {
+        slotNavigation.activate(enumToConfig(it.currentMenuItem))
+      }
   }
 
   override fun send(intent: MainNavIntent) {
