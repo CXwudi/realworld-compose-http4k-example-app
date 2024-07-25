@@ -32,8 +32,6 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
 
-  val menuItemMap = remember(mainStateMode) { createMap(mainStateMode.menuItems, component::send) }
-
   Column {
     AnimatedContentTransition<MainNavComponentChild?>(
       targetState = slot.child?.instance
@@ -48,8 +46,8 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
     }
     // Navigation bar based on models defined in MainNavComponentModel.kt
     NavigationBar {
-      val items = mainStateMode.menuItems.map {
-        menuItemMap[it] ?: error("Unexpected menu item: $it")
+      val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
+        mapMenuItemEnum2NavItem(value, index, component::send)
       }
       items.forEach { item ->
         NavigationBarItem(
@@ -85,34 +83,32 @@ data class NavigationItem(
   val onClick: () -> Unit
 )
 
-private fun createMap(
-  items: List<MainNavMenuItem>,
+private fun mapMenuItemEnum2NavItem(
+  value: MainNavMenuItem,
+  index: Int,
   onSend: (MainNavIntent) -> Unit
-): Map<MainNavMenuItem, NavigationItem> = items.withIndex().associate { (index, value) ->
-  val navigationItem = when (value) {
-    MainNavMenuItem.Feed -> NavigationItem(
-      value.menuName,
-      Icons.Filled.Home,
-      index
-    ) { onSend(MainNavIntent.ToFeedPage) }
+) = when (value) {
+  MainNavMenuItem.Feed -> NavigationItem(
+    value.menuName,
+    Icons.Filled.Home,
+    index
+  ) { onSend(MainNavIntent.ToFeedPage) }
 
-    MainNavMenuItem.Favourite -> NavigationItem(
-      value.menuName,
-      Icons.Filled.Favorite,
-      index
-    ) { onSend(MainNavIntent.ToFavouritePage) }
+  MainNavMenuItem.Favourite -> NavigationItem(
+    value.menuName,
+    Icons.Filled.Favorite,
+    index
+  ) { onSend(MainNavIntent.ToFavouritePage) }
 
-    MainNavMenuItem.Me -> NavigationItem(
-      value.menuName,
-      Icons.Filled.Person,
-      index
-    ) { onSend(MainNavIntent.ToMePage) }
+  MainNavMenuItem.Me -> NavigationItem(
+    value.menuName,
+    Icons.Filled.Person,
+    index
+  ) { onSend(MainNavIntent.ToMePage) }
 
-    MainNavMenuItem.SignInUp -> NavigationItem(
-      value.menuName,
-      Icons.Filled.Person,
-      index
-    ) { onSend(MainNavIntent.ToSignInUpPage) }
-  }
-  value to navigationItem
+  MainNavMenuItem.SignInUp -> NavigationItem(
+    value.menuName,
+    Icons.Filled.Person,
+    index
+  ) { onSend(MainNavIntent.ToSignInUpPage) }
 }
