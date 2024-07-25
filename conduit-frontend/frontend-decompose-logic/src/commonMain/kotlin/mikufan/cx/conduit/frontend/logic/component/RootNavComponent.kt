@@ -56,7 +56,7 @@ class DefaultRootNavComponent(
   init {
     val lifecycleScope = coroutineScope()
     lifecycleScope.launch {
-      userConfigService.userConfigFlow
+      userConfigService.userConfigStateFlow
         .map {
           when (it) {
             is UserConfigState.Loading -> Config.Loading
