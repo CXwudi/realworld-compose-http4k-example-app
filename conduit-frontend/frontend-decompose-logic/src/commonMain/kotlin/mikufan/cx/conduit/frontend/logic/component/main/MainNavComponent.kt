@@ -9,6 +9,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.instancekeeper.getOrCreateSimple
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ class DefaultMainNavComponent(
   override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> =
     childSlot(
       source = slotNavigation,
-      initialConfiguration = { enumToConfig(state.value.currentMenuItem) },
+      initialConfiguration = { Config.MainFeed },
       serializer = Config.serializer(),
       childFactory = ::childFactory
     )
@@ -105,8 +106,12 @@ class DefaultMainNavComponent(
   }
 
   private fun setupStateValueToNavigationMapping() {
-    state.subscribe {
+    val cancellation = state.subscribe {
       slotNavigation.activate(enumToConfig(it.currentMenuItem))
+    }
+
+    lifecycle.doOnDestroy {
+      cancellation.cancel()
     }
   }
 
@@ -119,10 +124,12 @@ class DefaultMainNavComponent(
 
   private fun handleModeSwitchingIntent(intent: ModeSwitchingIntent) {
     val newMode = when (intent) {
-      is MainNavIntent.ToSignInMode -> MainNavState(MainNavMode.LOGGED_IN, 0)
-      is MainNavIntent.ToLogoutMode -> MainNavState(MainNavMode.NOT_LOGGED_IN, 0)
+      is MainNavIntent.ToSignInMode -> MainNavMode.LOGGED_IN
+      is MainNavIntent.ToLogoutMode -> MainNavMode.NOT_LOGGED_IN
     }
-    _state.value = newMode
+    if (newMode != state.value.mode) {
+      _state.value = MainNavState(newMode, 0)
+    }
   }
 
   private fun handlePageSwitchingIntent(intent: PageSwitchingIntent) {
