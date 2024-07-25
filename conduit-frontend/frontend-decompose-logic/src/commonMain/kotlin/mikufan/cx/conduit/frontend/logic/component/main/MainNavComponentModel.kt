@@ -51,8 +51,21 @@ enum class MainNavMenuItem(
   SignInUp("Sign in/up"),
 }
 
-sealed interface ModeSwitchingIntent
-sealed interface PageSwitchingIntent {
+
+sealed interface MainNavIntent {
+
+  data object ToSignInMode: ModeSwitchingIntent
+  data object ToLogoutMode: ModeSwitchingIntent
+
+  data object ToFeedPage: PageSwitchingIntent
+  data object ToFavouritePage: PageSwitchingIntent
+  data object ToMePage: PageSwitchingIntent
+  data object ToSignInUpPage: PageSwitchingIntent
+
+}
+
+sealed interface ModeSwitchingIntent : MainNavIntent
+sealed interface PageSwitchingIntent : MainNavIntent {
 
   companion object {
     fun pageSwitchingIntent2MenuItem(intent: PageSwitchingIntent): MainNavMenuItem = when (intent) {
@@ -62,15 +75,4 @@ sealed interface PageSwitchingIntent {
       is ToSignInUpPage -> MainNavMenuItem.SignInUp
     }
   }
-}
-sealed interface MainNavIntent {
-
-  data object ToSignInMode: MainNavIntent, ModeSwitchingIntent
-  data object ToLogoutMode: MainNavIntent, ModeSwitchingIntent
-
-  data object ToFeedPage: MainNavIntent, PageSwitchingIntent
-  data object ToFavouritePage: MainNavIntent, PageSwitchingIntent
-  data object ToMePage: MainNavIntent, PageSwitchingIntent
-  data object ToSignInUpPage: MainNavIntent, PageSwitchingIntent
-
 }
