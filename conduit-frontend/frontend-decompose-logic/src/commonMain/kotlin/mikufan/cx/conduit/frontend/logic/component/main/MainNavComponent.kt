@@ -5,19 +5,17 @@ import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.instancekeeper.getOrCreateSimple
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
-import mikufan.cx.conduit.frontend.logic.component.util.asStateFlow
-import mikufan.cx.conduit.frontend.logic.service.UserConfigService
-import mikufan.cx.conduit.frontend.logic.service.UserConfigState
+import mikufan.cx.conduit.frontend.logic.component.util.stateValue
+import org.lighthousegames.logging.logging
 
 /**
  * The component for the main page, it unfortunately breaks the MVI pattern where it has two state values.
@@ -46,15 +44,13 @@ sealed interface MainNavComponentChild {
 class DefaultMainNavComponent(
   componentContext: ComponentContext,
   private val koin: LocalKoinComponent,
-  private val userConfigService: UserConfigService,
+  private val mainNavStoreFactory: MainNavStoreFactory
 ) : MainNavComponent, ComponentContext by componentContext {
 
 
-  private val _state = instanceKeeper.getOrCreateSimple {
-    MutableValue(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
-  }
+  private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
 
-  override val state: Value<MainNavState> = _state
+  override val state: Value<MainNavState> = store.stateValue
 
   private val slotNavigation = SlotNavigation<Config>()
 
@@ -77,68 +73,21 @@ class DefaultMainNavComponent(
   }
 
   init {
-    coroutineScope().apply {
-      launch { setupLoginStatusChange() }
-      launch { setupStateValueToNavigationMapping() }
+    coroutineScope().launch {
+      setupStateValueToNavigationMapping()
     }
   }
 
-  private suspend fun setupLoginStatusChange() {
-    userConfigService.userConfigFlow.map { userConfigState ->
-      when (userConfigState) {
-        is UserConfigState.Loaded -> {
-          if (userConfigState.token.isNullOrBlank()) {
-            MainNavIntent.ToLogoutMode
-          } else {
-            MainNavIntent.ToSignInMode
-          }
-        }
-
-        is UserConfigState.Loading -> {
-          error("Should not happen since the main page appears only after the user config is loaded")
-        }
-      }
-    }
-      .distinctUntilChanged()
-      .collect {
-        send(it)
-      }
-  }
-
+  @OptIn(ExperimentalCoroutinesApi::class)
   private suspend fun setupStateValueToNavigationMapping() {
-    state.asStateFlow()
+    store.stateFlow
       .collect {
+        log.d { "Current state is $it" }
         slotNavigation.activate(enumToConfig(it.currentMenuItem))
       }
   }
 
-  override fun send(intent: MainNavIntent) {
-    when (intent) {
-      is ModeSwitchingIntent -> handleModeSwitchingIntent(intent)
-      is PageSwitchingIntent -> handlePageSwitchingIntent(intent)
-    }
-  }
-
-  private fun handleModeSwitchingIntent(intent: ModeSwitchingIntent) {
-    val newMode = when (intent) {
-      is MainNavIntent.ToSignInMode -> MainNavMode.LOGGED_IN
-      is MainNavIntent.ToLogoutMode -> MainNavMode.NOT_LOGGED_IN
-    }
-    if (newMode != state.value.mode) {
-      _state.value = MainNavState(newMode, 0)
-    }
-  }
-
-  private fun handlePageSwitchingIntent(intent: PageSwitchingIntent) {
-    val newMenuItem = PageSwitchingIntent.pageSwitchingIntent2MenuItem(intent)
-    val currentState = state.value
-    val newIdx: Int = requireNotNull(currentState.indexOfMenuItem(newMenuItem)) {
-      "$newMenuItem not found in $currentState, this should not happen"
-    }
-    if (currentState.pageIndex != newIdx) {
-      _state.value = currentState.copy(pageIndex = newIdx)
-    }
-  }
+  override fun send(intent: MainNavIntent) = store.accept(intent)
 
   private fun enumToConfig(enum: MainNavMenuItem): Config = when (enum) {
     MainNavMenuItem.Feed -> Config.MainFeed
@@ -162,6 +111,6 @@ class DefaultMainNavComponent(
     @Serializable
     data object SignInUp : Config
   }
-
-
 }
+
+private val log = logging()
