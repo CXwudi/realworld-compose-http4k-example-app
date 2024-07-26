@@ -70,6 +70,7 @@ android {
   defaultConfig {
     minSdk = 26
   }
+  // setting targetSdk on per with compileSdk has great benefits, such as layout inspector
   testOptions {
     targetSdk = 34
   }
