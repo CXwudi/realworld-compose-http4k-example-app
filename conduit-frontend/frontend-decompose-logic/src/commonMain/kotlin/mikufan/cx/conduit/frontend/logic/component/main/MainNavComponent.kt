@@ -55,6 +55,8 @@ class DefaultMainNavComponent(
 
   override val state: StateFlow<MainNavState> = store.stateFlow(coroutineScope())
 
+  override fun send(intent: MainNavIntent) = store.accept(intent)
+
   private val slotNavigation = SlotNavigation<Config>()
 
   override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> =
@@ -75,6 +77,13 @@ class DefaultMainNavComponent(
     Config.SignInUp -> MainNavComponentChild.SignInUp(koin.createAuthPageComponent(componentContext))
   }
 
+  private fun LocalKoinComponent.createAuthPageComponent(componentContext: ComponentContext): AuthPageComponent =
+    DefaultAuthPageComponent(
+      componentContext = componentContext,
+      koin = this,
+      authPageStoreFactory = get()
+    )
+
   init {
     coroutineScope().launch {
       setupStateValueToNavigationMapping()
@@ -89,8 +98,6 @@ class DefaultMainNavComponent(
         slotNavigation.activate(enumToConfig(it.currentMenuItem))
       }
   }
-
-  override fun send(intent: MainNavIntent) = store.accept(intent)
 
   private fun enumToConfig(enum: MainNavMenuItem): Config = when (enum) {
     MainNavMenuItem.Feed -> Config.MainFeed
@@ -114,13 +121,6 @@ class DefaultMainNavComponent(
     @Serializable
     data object SignInUp : Config
   }
-
-  private fun LocalKoinComponent.createAuthPageComponent(componentContext: ComponentContext): AuthPageComponent = DefaultAuthPageComponent(
-    componentContext = componentContext,
-    koin = this,
-    authPageStoreFactory = get()
-  )
 }
-
 
 private val log = logging()
