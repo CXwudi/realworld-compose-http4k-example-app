@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import mikufan.cx.conduit.frontend.logic.component.util.createWithoutMsg
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
 import org.lighthousegames.logging.logging
@@ -53,12 +54,11 @@ class MainNavStoreFactory(
     }
   }
 
-  fun createStore() = storeFactory.create(
+  fun createStore() = storeFactory.createWithoutMsg(
     name = "MainNavStore",
     initialState = MainNavState(MainNavMode.NOT_LOGGED_IN, 0),
     bootstrapper = bootstrapper,
     executorFactory = executor,
-    reducer = { it }
   )
 
   private class Action(
