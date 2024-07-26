@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
+import com.arkivanov.mvikotlin.core.store.Bootstrapper
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
@@ -14,13 +15,17 @@ import org.lighthousegames.logging.logging
 class MainNavStoreFactory(
   private val storeFactory: StoreFactory,
   private val userConfigService: UserConfigService,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main
+  private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) {
 
   private val executor =
     coroutineExecutorFactory<MainNavIntent, Action, MainNavState, MainNavState, Nothing>(dispatcher) {
       onAction<Action> {
-        dispatch(it.toMainNavState())
+        val newState = it.toMainNavState()
+        if (newState.mode != state().mode) {
+          log.i { "Switching main page mode to ${newState.mode}" }
+          dispatch(newState)
+        }
       }
       onIntent<ModeSwitchingIntent> { intent ->
         val newMode = when (intent) {
@@ -46,18 +51,19 @@ class MainNavStoreFactory(
       }
     }
 
-  private val bootstrapper = coroutineBootstrapper<Action>(dispatcher) {
-    launch {
-      userConfigService.userConfigFlow.collect {
-        dispatch(Action(it))
+  private fun createBootstrapper(): Bootstrapper<Action> =
+    coroutineBootstrapper(dispatcher) {
+      launch {
+        userConfigService.userConfigFlow.collect {
+          dispatch(Action(it))
+        }
       }
     }
-  }
 
   fun createStore() = storeFactory.createWithoutMsg(
     name = "MainNavStore",
     initialState = MainNavState(MainNavMode.NOT_LOGGED_IN, 0),
-    bootstrapper = bootstrapper,
+    bootstrapper = createBootstrapper(),
     executorFactory = executor,
   )
 
@@ -72,6 +78,7 @@ class MainNavStoreFactory(
           MainNavState(MainNavMode.LOGGED_IN, 0)
         }
       }
+
       is UserConfigState.Loading -> {
         error("Should not happen since the main page appears only after the user config is loaded")
       }
