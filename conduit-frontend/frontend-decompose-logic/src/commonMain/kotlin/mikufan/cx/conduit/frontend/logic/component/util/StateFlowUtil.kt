@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.logic.component.util
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +35,7 @@ private class StateFlowValue<out T : Any>(
   }
 }
 
+@ExperimentalCoroutinesApi
 fun <T : Any> Value<T>.asStateFlow(): StateFlow<T> =
   if (this is StateFlowValue) {
     this.source
