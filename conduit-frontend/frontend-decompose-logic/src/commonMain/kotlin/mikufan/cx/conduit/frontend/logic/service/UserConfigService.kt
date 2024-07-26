@@ -13,6 +13,9 @@ interface UserConfigService {
 
   suspend fun setUrl(url: String? = null)
   suspend fun setToken(token: String? = null)
+
+  suspend fun set(newConfig: PersistedConfig)
+  suspend fun reset()
 }
 
 sealed interface UserConfigState {
@@ -27,6 +30,9 @@ class UserConfigServiceImpl(
   private val kStore: KStore<PersistedConfig>,
   private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
 ) : UserConfigService {
+  /**
+   * Note: under the hood, this is a state flow
+   */
   override val userConfigFlow: Flow<UserConfigState> =
     kStore.updates.map {
       it?.let { UserConfigState.Loaded(it.url, it.token) } ?: UserConfigState.Loading
@@ -40,5 +46,9 @@ class UserConfigServiceImpl(
   override suspend fun setToken(token: String?) = kStore.update {
     it?.copy(token = token)
   }
+
+  override suspend fun set(newConfig: PersistedConfig) = kStore.set(newConfig)
+
+  override suspend fun reset() = set(PersistedConfig())
 
 }
