@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -33,6 +36,9 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
   val state by component.state.collectAsState()
   val mode by remember { derivedStateOf { state.mode } }
 
+  val username by remember { derivedStateOf { state.username } }
+  val password by remember { derivedStateOf { state.password } }
+
   val paddingLarge = LocalSpace.current.vertical.paddingLarge
   Column(
     modifier = modifier.fillMaxSize().padding(paddingLarge * 4).verticalScroll(rememberScrollState()),
@@ -40,18 +46,18 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
     verticalArrangement = Arrangement.Center,
   ) {
     UsernameTextField(
-      usernameProvider = { state.username },
+      usernameProvider = { username },
       onUsernameChanged = { component.send(AuthPageIntent.UsernameChanged(it)) }
     )
 
-    Spacer(modifier = Modifier.height(paddingLarge * 4))
+    Spacer(modifier = Modifier.height(paddingLarge * 4).imePadding())
 
     PasswordTextField(
-      passwordProvider = { state.password },
+      passwordProvider = { password },
       onPasswordChanged = { component.send(AuthPageIntent.PasswordChanged(it)) }
     )
 
-    Spacer(modifier = Modifier.height(paddingLarge * 6))
+    Spacer(modifier = Modifier.height(paddingLarge * 6).imePadding())
 
     Button(
       onClick = { component.send(AuthPageIntent.AuthAction) },
@@ -73,6 +79,8 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
         Text(if (mode == AuthPageMode.SIGN_IN) "To Register" else "To Login")
       }
     }
+
+    Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
   }
 }
 
@@ -86,7 +94,7 @@ private fun UsernameTextField(
     value = usernameProvider(),
     onValueChange = onUsernameChanged,
     label = { Text("Username") },
-    modifier = modifier.fillMaxWidth().imePadding()
+    modifier = modifier.fillMaxWidth()
   )
 }
 
@@ -101,6 +109,6 @@ private fun PasswordTextField(
     onValueChange = onPasswordChanged,
     label = { Text("Password") },
     visualTransformation = PasswordVisualTransformation(),
-    modifier = modifier.fillMaxWidth().imePadding()
+    modifier = modifier.fillMaxWidth()
   )
 }
