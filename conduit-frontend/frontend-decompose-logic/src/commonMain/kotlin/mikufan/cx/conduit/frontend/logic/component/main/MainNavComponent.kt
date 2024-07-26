@@ -10,13 +10,13 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.DefaultAuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
-import mikufan.cx.conduit.frontend.logic.component.util.StoreBasedMviComponent
 import org.koin.core.component.get
 import org.lighthousegames.logging.logging
 
@@ -48,9 +48,12 @@ class DefaultMainNavComponent(
   componentContext: ComponentContext,
   private val koin: LocalKoinComponent,
   private val mainNavStoreFactory: MainNavStoreFactory
-) : MainNavComponent, StoreBasedMviComponent<MainNavIntent, MainNavState, Nothing>(componentContext) {
+) : MainNavComponent, ComponentContext by componentContext {
 
-  override val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
+
+  private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
+
+  override val state: StateFlow<MainNavState> = store.stateFlow(coroutineScope())
 
   private val slotNavigation = SlotNavigation<Config>()
 
@@ -86,6 +89,8 @@ class DefaultMainNavComponent(
         slotNavigation.activate(enumToConfig(it.currentMenuItem))
       }
   }
+
+  override fun send(intent: MainNavIntent) = store.accept(intent)
 
   private fun enumToConfig(enum: MainNavMenuItem): Config = when (enum) {
     MainNavMenuItem.Feed -> Config.MainFeed
