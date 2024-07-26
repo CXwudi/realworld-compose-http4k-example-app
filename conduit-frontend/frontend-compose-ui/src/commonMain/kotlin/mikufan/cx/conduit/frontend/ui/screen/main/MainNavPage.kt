@@ -12,6 +12,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,7 +28,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 @Composable
 fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
 
-  val mainNavState by component.state.subscribeAsState()
+  val mainNavState by component.state.collectAsState()
   val slot by component.childSlot.subscribeAsState()
 
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }

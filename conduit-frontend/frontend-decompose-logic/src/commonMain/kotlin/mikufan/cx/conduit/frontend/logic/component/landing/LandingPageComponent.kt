@@ -1,11 +1,12 @@
 package mikufan.cx.conduit.frontend.logic.component.landing
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
-import mikufan.cx.conduit.frontend.logic.component.util.stateValue
 
 interface LandingPageComponent : MviComponent<LandingPageIntent, LandingPageState> {
 }
@@ -20,7 +21,7 @@ class DefaultLandingPageComponent(
     storeFactory.createStore()
   }
 
-  override val state: Value<LandingPageState> = store.stateValue
+  override val state: StateFlow<LandingPageState> = store.stateFlow(coroutineScope())
 
   override fun send(intent: LandingPageIntent) = store.accept(intent)
 }

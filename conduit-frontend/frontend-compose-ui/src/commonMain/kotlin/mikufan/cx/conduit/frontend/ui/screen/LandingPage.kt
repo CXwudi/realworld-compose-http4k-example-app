@@ -17,12 +17,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageIntent
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
@@ -30,7 +30,7 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 @Composable
 fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) {
 
-  val state by component.state.subscribeAsState()
+  val state by component.state.collectAsState()
   val urlText by remember { derivedStateOf { state.url } }
   val errMsg by remember { derivedStateOf { state.errorMsg } }
 

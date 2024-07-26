@@ -10,11 +10,11 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
-import mikufan.cx.conduit.frontend.logic.component.util.stateValue
 import org.lighthousegames.logging.logging
 
 /**
@@ -50,7 +50,7 @@ class DefaultMainNavComponent(
 
   private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
 
-  override val state: Value<MainNavState> = store.stateValue
+  override val state: StateFlow<MainNavState> = store.stateFlow(coroutineScope())
 
   private val slotNavigation = SlotNavigation<Config>()
 

@@ -2,8 +2,8 @@ package mikufan.cx.conduit.frontend.app.android.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageIntent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageState
@@ -16,7 +16,7 @@ fun LandingPagePreview() {
 
   SetupUI {
     val mockComponent = object : LandingPageComponent {
-      override val state: Value<LandingPageState> = MutableValue(LandingPageState("bla bla URL", "bla error"))
+      override val state: StateFlow<LandingPageState> = MutableStateFlow(LandingPageState("bla bla URL", "bla error"))
 
       override fun send(intent: LandingPageIntent) {
       }
