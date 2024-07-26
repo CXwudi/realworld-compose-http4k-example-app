@@ -16,7 +16,7 @@ class AuthPageStoreFactory(
 ) {
 
   private val executorFactory =
-    coroutineExecutorFactory<AuthPageIntent, Nothing, AuthPageState, AuthPageState, Nothing>(dispatcher) {
+    coroutineExecutorFactory<AuthPageIntent, Nothing, AuthPageState, AuthPageState, Unit>(dispatcher) {
       onIntent<AuthPageIntent.UsernameChanged> {
         dispatch(state().copy(username = it.username))
       }
@@ -36,6 +36,7 @@ class AuthPageStoreFactory(
           withContext(Dispatchers.Default) {
             userConfigService.reset()
           }
+          publish(Unit) // purely for test purpose
         }
       }
     }

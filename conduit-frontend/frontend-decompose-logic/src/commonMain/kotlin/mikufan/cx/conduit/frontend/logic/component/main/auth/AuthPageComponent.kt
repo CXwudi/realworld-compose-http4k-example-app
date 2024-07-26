@@ -12,7 +12,7 @@ class DefaultAuthPageComponent(
   componentContext: ComponentContext,
   private val koin: LocalKoinComponent,
   authPageStoreFactory: AuthPageStoreFactory,
-) : AuthPageComponent, StoreBasedMviComponent<AuthPageIntent, AuthPageState, Nothing>(componentContext) {
+) : AuthPageComponent, StoreBasedMviComponent<AuthPageIntent, AuthPageState, Unit>(componentContext) {
 
   override val store = instanceKeeper.getStore { authPageStoreFactory.createStore() }
 }
