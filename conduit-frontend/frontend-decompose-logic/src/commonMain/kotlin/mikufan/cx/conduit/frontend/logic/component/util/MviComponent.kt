@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
  * @param Intent
  * @param State
  */
-interface MviComponent<Intent : Any, State : Any> {
+interface MviComponent<in Intent : Any, out State : Any> {
   /**
    * Note: originally we chose to use [com.arkivanov.decompose.value.Value] class instead of [StateFlow],
    * because we want to let the kotlin/js side happy. But now looks like [StateFlow] has more benefits
