@@ -12,9 +12,12 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
+import mikufan.cx.conduit.frontend.logic.component.main.auth.DefaultAuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 import mikufan.cx.conduit.frontend.logic.component.util.StoreBasedMviComponent
+import org.koin.core.component.get
 import org.lighthousegames.logging.logging
 
 /**
@@ -37,7 +40,7 @@ sealed interface MainNavComponentChild {
   data object MainFeed : MainNavComponentChild
   data object Favourite : MainNavComponentChild
   data object Me : MainNavComponentChild
-  data object SignInUp : MainNavComponentChild
+  data class SignInUp(val component: AuthPageComponent) : MainNavComponentChild
 
 }
 
@@ -66,7 +69,7 @@ class DefaultMainNavComponent(
     Config.MainFeed -> MainNavComponentChild.MainFeed
     Config.Favourite -> MainNavComponentChild.Favourite
     Config.Me -> MainNavComponentChild.Me
-    Config.SignInUp -> MainNavComponentChild.SignInUp
+    Config.SignInUp -> MainNavComponentChild.SignInUp(koin.createAuthPageComponent(componentContext))
   }
 
   init {
@@ -106,6 +109,13 @@ class DefaultMainNavComponent(
     @Serializable
     data object SignInUp : Config
   }
+
+  private fun LocalKoinComponent.createAuthPageComponent(componentContext: ComponentContext): AuthPageComponent = DefaultAuthPageComponent(
+    componentContext = componentContext,
+    koin = this,
+    authPageStoreFactory = get()
+  )
 }
+
 
 private val log = logging()
