@@ -1,6 +1,9 @@
 package mikufan.cx.conduit.frontend.logic.component.util
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -25,4 +28,12 @@ interface MviComponent<in Intent : Any, out State : Any> {
    */
   val state: StateFlow<State>
   fun send(intent: Intent)
+}
+
+abstract class StoreBasedMviComponent<in Intent : Any, out State : Any, out Label : Any>(
+  componentContext: ComponentContext,
+) : MviComponent<Intent, State>, ComponentContext by componentContext {
+  protected abstract val store: Store<Intent, State, Label>
+  override val state: StateFlow<State> = store.stateFlow(coroutineScope())
+  override fun send(intent: Intent) = store.accept(intent)
 }
