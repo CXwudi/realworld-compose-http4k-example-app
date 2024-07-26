@@ -32,13 +32,13 @@ val <T : Any> Store<*, T, *>.stateValue: Value<T>
  *
  * So the executor will be in charge to modify the state directly by calling `dispatch(newState)`.
  */
-inline fun <Intent : Any, Action : Any, State : Any, Label : Any> StoreFactory.createWithoutMsg(
+fun <Intent : Any, Action : Any, State : Any, Label : Any> StoreFactory.createWithoutMsg(
   name: String? = null,
   autoInit: Boolean = true,
   initialState: State,
   bootstrapper: Bootstrapper<Action>? = null,
-  noinline executorFactory: () -> Executor<Intent, Action, State, State, Label>,
-  reducer: Reducer<State, State> = StateForwardingReducer() // New default reducer
+  executorFactory: () -> Executor<Intent, Action, State, State, Label>,
+  reducer: Reducer<State, State> = Reducer { it } // New default reducer that passes message as state
 ): Store<Intent, State, Label> {
   return this.create(
     name = name,
@@ -49,8 +49,3 @@ inline fun <Intent : Any, Action : Any, State : Any, Label : Any> StoreFactory.c
     reducer = reducer
   )
 }
-
-/**
- * Create a [Reducer] when `Message` and `State` are the same type.
- */
-inline fun <T : Any> StateForwardingReducer(): Reducer<T, T> = Reducer { it }
