@@ -24,6 +24,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMenuItem
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
+import mikufan.cx.conduit.frontend.ui.screen.main.auth.AuthPage
 
 @Composable
 fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
@@ -37,6 +38,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   // TODO: switch between bottom bar and vertical bar based on device size
 
   Scaffold(
+    modifier = modifier,
     bottomBar = {
       BottomNavigationBar(mainStateMode, component::send, selectedIndex)
     }
@@ -48,7 +50,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
         is MainNavComponentChild.MainFeed -> Text("Main Feed")
         is MainNavComponentChild.Favourite -> Text("Favourite")
         is MainNavComponentChild.Me -> Text("Me")
-        is MainNavComponentChild.SignInUp -> Text("Sign in/up")
+        is MainNavComponentChild.SignInUp -> AuthPage(it.component)
         null -> error("Unexpected null child in childSlot in Main Page")
       }
     }
