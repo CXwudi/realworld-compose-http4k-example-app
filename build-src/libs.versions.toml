@@ -14,6 +14,7 @@ java = "21"
 agp = "8.5.1" # ! if using Android plugin in IDEA, need to switch to 8.2.x due to https://youtrack.jetbrains.com/issue/IDEA-348937
 # also we can't just simply make backend or desktop app to use Java 21 as it breaks the whole project
 compose = "1.6.11"
+
 essenty = "2.1.0"
 decompose = "3.1.0"
 mvikotlin = "4.1.0"
@@ -30,6 +31,9 @@ exposed = "0.52.0"
 dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0"
 dev-kmlogging = "org.lighthousegames:logging:1.5.0"
 dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.1"
+
+dev-windowSizeClassMultiplatform = "dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0"
+
 dev-essentyLifecycleCoroutines = { module = "com.arkivanov.essenty:lifecycle-coroutines", version.ref = "essenty" }
 dev-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 dev-decomposeCompose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
@@ -37,9 +41,9 @@ dev-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version.ref = "m
 dev-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
+
 dev-koinBom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 dev-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:1.0.0-pre.763"
-dev-windowSizeClassMultiplatform = "dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0"
 dev-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
