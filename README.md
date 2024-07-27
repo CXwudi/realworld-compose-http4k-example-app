@@ -1,5 +1,7 @@
 # ![RealWorld Example App](logo.png)
 
+<h3>2024.08 Update: I am pausing the implementation for now. More information at <a href="https://github.com/gothinkster/realworld/discussions/1545#discussioncomment-10165234">this discussion</a></h3>
+
 > ### Compose Multiplatform + http4k codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
 
 This codebase was created to demonstrate a fully fledged fullstack application built with **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** and **[http4k](https://www.http4k.org/)** including CRUD operations, authentication, routing, pagination, and more.
