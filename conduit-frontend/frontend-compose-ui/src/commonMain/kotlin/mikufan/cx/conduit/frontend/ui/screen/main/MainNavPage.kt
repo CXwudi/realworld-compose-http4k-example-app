@@ -2,6 +2,7 @@ package mikufan.cx.conduit.frontend.ui.screen.main
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -42,7 +43,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
     bottomBar = {
       BottomNavigationBar(mainStateMode, component::send, selectedIndex)
     }
-  ) {
+  ) { innerPadding ->
     AnimatedContentTransition<MainNavComponentChild?>(
       targetState = slot.child?.instance
     ) {
@@ -50,7 +51,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
         is MainNavComponentChild.MainFeed -> Text("Main Feed")
         is MainNavComponentChild.Favourite -> Text("Favourite")
         is MainNavComponentChild.Me -> Text("Me")
-        is MainNavComponentChild.SignInUp -> AuthPage(it.component)
+        is MainNavComponentChild.SignInUp -> AuthPage(it.component, Modifier.padding(innerPadding))
         null -> error("Unexpected null child in childSlot in Main Page")
       }
     }

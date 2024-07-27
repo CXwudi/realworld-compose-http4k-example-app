@@ -40,7 +40,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
   ) {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing)
+      verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacingLarge * 2)
     ) {
       OutlinedTextField(
         value = urlText,
