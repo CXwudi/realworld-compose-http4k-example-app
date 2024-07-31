@@ -23,7 +23,7 @@ kstore = "0.8.0"
 
 junit = "5.10.3"
 http4k = "5.26.0.0"
-exposed = "0.52.0"
+exposed = "0.53.0"
 
 [libraries]
 # dev dep
