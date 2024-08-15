@@ -64,7 +64,7 @@ dev-backend-mockk = "io.mockk:mockk:1.13.12"
 dev-backend-sqlite = "org.xerial:sqlite-jdbc:3.46.0.1"
 dev-backend-hikari = "com.zaxxer:HikariCP:5.1.0"
 dev-backend-flyway = "org.flywaydb:flyway-core:10.17.1"
-dev-backend-logback = "ch.qos.logback:logback-classic:1.5.6"
+dev-backend-logback = "ch.qos.logback:logback-classic:1.5.7"
 dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.16"
 dev-backend-inlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
 
