@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -31,8 +32,8 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) {
 
   val state by component.state.collectAsState()
-  val urlText by remember { derivedStateOf { state.url } }
-  val errMsg by remember { derivedStateOf { state.errorMsg } }
+  val urlText = remember { derivedStateOf { state.url } }
+  val errMsg = remember { derivedStateOf { state.errorMsg } }
 
   Box(
     contentAlignment = Alignment.Center,
@@ -43,11 +44,11 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacingLarge * 2)
     ) {
       OutlinedTextField(
-        value = urlText,
+        value = urlText.value,
         label = { Text("URL") },
         onValueChange = { component.send(LandingPageIntent.TextChanged(it)) }
       )
-      if (errMsg.isNotBlank()) {
+      if (errMsg.value.isNotBlank()) {
         ErrorMessage(errMsg)
       }
       Button(onClick = { component.send(LandingPageIntent.ToNextPage) }) {
@@ -60,7 +61,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 }
 
 @Composable
-fun ColumnScope.ErrorMessage(message: String, modifier: Modifier = Modifier) {
+fun ColumnScope.ErrorMessage(message: State<String>, modifier: Modifier = Modifier) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.align(Alignment.Start)
@@ -72,7 +73,7 @@ fun ColumnScope.ErrorMessage(message: String, modifier: Modifier = Modifier) {
     )
     Spacer(modifier = Modifier.width(LocalSpace.current.horizontal.spacing))
     Text(
-      text = message,
+      text = message.value,
       color = androidx.compose.ui.graphics.Color.Red
     )
   }

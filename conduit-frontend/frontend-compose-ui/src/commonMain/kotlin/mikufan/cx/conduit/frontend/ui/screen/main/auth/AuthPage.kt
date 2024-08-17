@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -47,8 +48,8 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
   val state by component.state.collectAsState()
   val mode by remember { derivedStateOf { state.mode } }
 
-  val username by remember { derivedStateOf { state.username } }
-  val password by remember { derivedStateOf { state.password } }
+  val username = remember { derivedStateOf { state.username } }
+  val password = remember { derivedStateOf { state.password } }
 
   val paddingLarge = LocalSpace.current.vertical.paddingLarge
   Column(
@@ -58,14 +59,14 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
     verticalArrangement = Arrangement.Center,
   ) {
     UsernameTextField(
-      usernameProvider = { username },
+      usernameProvider = username,
       onUsernameChanged = { component.send(AuthPageIntent.UsernameChanged(it)) }
     )
 
     Spacer(modifier = Modifier.height(paddingLarge * 4).imePadding())
 
     PasswordTextField(
-      passwordProvider = { password },
+      passwordProvider = password,
       onPasswordChanged = { component.send(AuthPageIntent.PasswordChanged(it)) }
     )
 
@@ -98,12 +99,12 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
 
 @Composable
 private fun UsernameTextField(
-  usernameProvider: () -> String,
+  usernameProvider: State<String>,
   onUsernameChanged: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   OutlinedTextField(
-    value = usernameProvider(),
+    value = usernameProvider.value,
     onValueChange = onUsernameChanged,
     label = { Text("Username") },
     modifier = modifier.fillMaxWidth()
@@ -112,14 +113,14 @@ private fun UsernameTextField(
 
 @Composable
 private fun PasswordTextField(
-  passwordProvider: () -> String,
+  passwordProvider: State<String>,
   onPasswordChanged: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   var passwordVisibility by remember { mutableStateOf(true) }
 
   OutlinedTextField(
-    value = passwordProvider(),
+    value = passwordProvider.value,
     onValueChange = onPasswordChanged,
     label = {
       Text("Password")
