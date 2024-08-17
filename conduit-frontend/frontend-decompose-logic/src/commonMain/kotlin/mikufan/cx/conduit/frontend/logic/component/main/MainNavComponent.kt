@@ -50,7 +50,6 @@ class DefaultMainNavComponent(
   private val mainNavStoreFactory: MainNavStoreFactory
 ) : MainNavComponent, ComponentContext by componentContext {
 
-
   private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
 
   override val state: StateFlow<MainNavState> = store.stateFlow(coroutineScope())
@@ -66,6 +65,21 @@ class DefaultMainNavComponent(
       serializer = Config.serializer(),
       childFactory = ::childFactory
     )
+
+  init {
+    coroutineScope().launch {
+      setupUserConfigStateToNavigationMapping()
+    }
+  }
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private suspend fun setupUserConfigStateToNavigationMapping() {
+    store.stateFlow
+      .collect {
+        log.d { "Current state is $it" }
+        slotNavigation.activate(enumToConfig(it.currentMenuItem))
+      }
+  }
 
   private fun childFactory(
     config: Config,
@@ -83,21 +97,6 @@ class DefaultMainNavComponent(
       koin = this,
       authPageStoreFactory = get()
     )
-
-  init {
-    coroutineScope().launch {
-      setupStateValueToNavigationMapping()
-    }
-  }
-
-  @OptIn(ExperimentalCoroutinesApi::class)
-  private suspend fun setupStateValueToNavigationMapping() {
-    store.stateFlow
-      .collect {
-        log.d { "Current state is $it" }
-        slotNavigation.activate(enumToConfig(it.currentMenuItem))
-      }
-  }
 
   private fun enumToConfig(enum: MainNavMenuItem): Config = when (enum) {
     MainNavMenuItem.Feed -> Config.MainFeed

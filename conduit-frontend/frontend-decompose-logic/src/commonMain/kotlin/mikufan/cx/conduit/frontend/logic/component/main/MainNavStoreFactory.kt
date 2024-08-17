@@ -67,7 +67,7 @@ class MainNavStoreFactory(
     executorFactory = executor,
   )
 
-  private class Action(
+  private data class Action(
     val userConfigState: UserConfigState
   ) {
     fun toMainNavState() = when (userConfigState) {

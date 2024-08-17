@@ -54,26 +54,29 @@ class DefaultRootNavComponent(
     )
 
   init {
-    val lifecycleScope = coroutineScope()
-    lifecycleScope.launch {
-      userConfigService.userConfigFlow
-        .map {
-          when (it) {
-            is UserConfigState.Loading -> Config.Loading
-            is UserConfigState.Loaded -> {
-              if (it.url.isNullOrBlank()) {
-                Config.LandingPage
-              } else {
-                Config.MainPage
-              }
+    coroutineScope().launch {
+      setupUserConfigStateToNavigation()
+    }
+  }
+
+  private suspend fun setupUserConfigStateToNavigation() {
+    userConfigService.userConfigFlow
+      .map {
+        when (it) {
+          is UserConfigState.Loading -> Config.Loading
+          is UserConfigState.Loaded -> {
+            if (it.url.isNullOrBlank()) {
+              Config.LandingPage
+            } else {
+              Config.MainPage
             }
           }
         }
-        .distinctUntilChanged()
-        .collect {
-          slotNavigation.activate(it)
-        }
-    }
+      }
+      .distinctUntilChanged()
+      .collect {
+        slotNavigation.activate(it)
+      }
   }
 
   private fun childFactory(
