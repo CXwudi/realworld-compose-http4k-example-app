@@ -61,7 +61,7 @@ dev-backend-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 dev-backend-kotestBom = "io.kotest:kotest-bom:5.9.1"
 dev-backend-kotestKoin = "io.kotest.extensions:kotest-extensions-koin:1.3.0"
 dev-backend-mockk = "io.mockk:mockk:1.13.12"
-dev-backend-sqlite = "org.xerial:sqlite-jdbc:3.46.0.1"
+dev-backend-sqlite = "org.xerial:sqlite-jdbc:3.46.1.0"
 dev-backend-hikari = "com.zaxxer:HikariCP:5.1.0"
 dev-backend-flyway = "org.flywaydb:flyway-core:10.17.1"
 dev-backend-logback = "ch.qos.logback:logback-classic:1.5.7"
