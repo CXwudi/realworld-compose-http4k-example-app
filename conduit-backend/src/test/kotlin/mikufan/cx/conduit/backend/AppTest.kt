@@ -9,7 +9,9 @@ import io.kotest.matchers.shouldBe
 import org.koin.test.KoinTest
 import org.koin.test.inject
 
-
+/**
+ * This is just a test to make sure the koin modules setup correctly
+ */
 class AppTest : ShouldSpec(), KoinTest {
 
   override fun extensions(): List<Extension> = listOf(KoinExtension(allModules, mode = KoinLifecycleMode.Root))
