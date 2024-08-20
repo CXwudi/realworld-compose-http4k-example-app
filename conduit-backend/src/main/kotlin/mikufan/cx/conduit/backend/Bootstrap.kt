@@ -15,7 +15,21 @@ class Bootstrap(
 
   private fun dbMigration() {
     log.info { "Performing DB migrations if any" }
-    flyway.migrate()
+    val migrateResult = flyway.migrate()
+    if (migrateResult.migrationsExecuted > 0) {
+      if (migrateResult.success) {
+        log.info { "Database migration successful. Migrations applied: ${migrateResult.migrationsExecuted}" }
+      } else {
+        val failureString = migrateResult.failedMigrations.joinToString(separator = "\n  ", prefix = "[\n", postfix = "\n") {
+          "${it.type} ${it.version} @ ${it.filepath} - ${it.description}"
+        }
+        val errorMessage = "Database migration failed: \n$failureString"
+        log.error { errorMessage }
+        throw IllegalStateException(errorMessage)
+      }
+    } else { // no migration applied
+      log.info { "No migration applied" }
+    }
   }
 
   private fun startServer() {
