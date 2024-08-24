@@ -42,7 +42,7 @@ compose.resources {
 }
 
 composeCompiler {
-  enableStrongSkippingMode = true // not sure if it could break anything, for ref: https://developer.android.com/develop/ui/compose/performance/stability/strongskipping
+  // string skipping mode is now enabled by default since Kotlin 2.0.20
   stabilityConfigurationFile = projectDir.resolve("compose-stability.txt")
   reportsDestination = layout.buildDirectory.dir("compose-reports")
   metricsDestination = layout.buildDirectory.dir("compose-reports")
