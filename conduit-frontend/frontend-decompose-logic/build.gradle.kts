@@ -14,7 +14,7 @@ kotlin {
       implementation(libs.dev.kstore)
       // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700
       // dear to manage it in version catalog
-      implementation("co.touchlab:stately-common:2.0.7")
+      implementation("co.touchlab:stately-common:2.1.0")
     }
 
     // and platform specific dependencies only used in this module
