@@ -18,7 +18,7 @@ compose = "1.6.11"
 essenty = "2.1.0"
 decompose = "3.1.0"
 mvikotlin = "4.2.0"
-koin = "4.0.0-RC1" # must use at least 3.6.x to make it work with Compose 1.6.x for JS platform
+koin = "4.0.0-RC2" # must use at least 3.6.x to make it work with Compose 1.6.x for JS platform
 kstore = "0.8.0"
 
 junit = "5.11.0"
