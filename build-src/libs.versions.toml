@@ -52,7 +52,7 @@ dev-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref =
 dev-androidx-coreKtx = "androidx.core:core-ktx:1.13.1"
 dev-androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
 dev-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.4"
-dev-androidx-activityCompose = "androidx.activity:activity-compose:1.9.1"
+dev-androidx-activityCompose = "androidx.activity:activity-compose:1.9.2"
 
 # backend
 dev-backend-http4kBom = { module = "org.http4k:http4k-bom", version.ref = "http4k" }
