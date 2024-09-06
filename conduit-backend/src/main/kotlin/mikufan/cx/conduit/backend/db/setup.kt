@@ -14,7 +14,11 @@ fun creatDataSource(dbConfig: DbConfig): DataSource {
     password = dbConfig.password
     driverClassName = dbConfig.driver
   }
-  return HikariDataSource(config)
+  val hikariDataSource = HikariDataSource(config)
+  Runtime.getRuntime().addShutdownHook(Thread {
+    hikariDataSource.close()
+  })
+  return hikariDataSource
 }
 
 fun createFlyway(dataSource: DataSource): Flyway = Flyway
