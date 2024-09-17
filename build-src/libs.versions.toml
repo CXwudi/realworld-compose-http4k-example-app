@@ -89,4 +89,4 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 # a plugin used by gradle files for precompiled script plugin
-buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.4.0" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.5.0" }
