@@ -1,0 +1,11 @@
+port: 8080  # Example value
+db:
+  url: "jdbc:sqlite::memory:"  # Example value
+#  user:  # Optional
+#  password:  # Optional
+  driver: "org.sqlite.JDBC"  # Example value
+cors:
+#  allowedOrigins:
+#  allowedMethods:
+#  allowedHeaders:
+#  allowCredentials:

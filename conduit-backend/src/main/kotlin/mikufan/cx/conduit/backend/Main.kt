@@ -23,8 +23,9 @@ val allModules = listOf(
   bootstrapModule // bootstrap layer
 )
 
-fun initKoin(): KoinApplication {
+fun initKoin(args: Array<String>): KoinApplication {
   val koin = koinApplication {
+    koin.declare(args) // passing the command line arguments to Koin
     modules(allModules)
     slf4jLogger(Level.DEBUG)
     createEagerInstances()
@@ -33,7 +34,7 @@ fun initKoin(): KoinApplication {
 }
 
 fun main(args: Array<String>) {
-  val koinApp = initKoin()
+  val koinApp = initKoin(args)
   koinApp.koin.get<Bootstrap>().run()
   koinApp.close()
 }

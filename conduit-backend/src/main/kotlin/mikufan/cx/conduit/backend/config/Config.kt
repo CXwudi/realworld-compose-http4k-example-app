@@ -21,13 +21,3 @@ data class CorsConfig(
   val allowedHeaders: List<String> = listOf("*"),
   val allowCredentials: Boolean = true
 )
-
-/**
- * So far trade this as the only true source of config,
- * we will be able to replace it with dedicated config library
- */
-val LOCAL_CONFIG = Config(
-  port = 8080,
-  db = DbConfig(url = "jdbc:sqlite::memory:", driver = "org.sqlite.JDBC"),
-  cors = CorsConfig()
-)
