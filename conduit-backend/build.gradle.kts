@@ -24,6 +24,7 @@ dependencies {
   implementation(platform(libs.dev.koinBom))
   implementation("io.insert-koin:koin-core")
   implementation("io.insert-koin:koin-logger-slf4j")
+  implementation(libs.dev.backend.hoplite.yaml)
 
 
   // https://toolbox.http4k.org/stack/dD1BQU1BWlFETEFTOEItQU1sQTRZRDZBUHBCTEFGRmcmYz1NYWluJnA9bWlrdWZhbi5jeC5jb25kdWl0LmJhY2tlbmQ
