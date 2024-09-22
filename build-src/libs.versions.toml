@@ -43,7 +43,7 @@ dev-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensio
 dev-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
 
 dev-koinBom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
-dev-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:1.0.0-pre.810"
+dev-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:1.0.0-pre.811"
 dev-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
