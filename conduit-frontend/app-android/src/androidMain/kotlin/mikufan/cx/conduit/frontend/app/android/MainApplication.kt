@@ -2,14 +2,15 @@ package mikufan.cx.conduit.frontend.app.android
 
 import mikufan.cx.conduit.frontend.logic.allModules
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.KoinApplication
-import org.koin.dsl.koinApplication
+import org.koin.androix.startup.KoinStartup
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.lighthousegames.logging.logging
 
+@KoinExperimentalAPI
 class MainApplication : android.app.Application() {
 
-  val koinApplication: KoinApplication by lazy {
-    koinApplication {
+  init {
+    KoinStartup.onKoinStartup {
       androidContext(this@MainApplication)
       modules(allModules)
     }
