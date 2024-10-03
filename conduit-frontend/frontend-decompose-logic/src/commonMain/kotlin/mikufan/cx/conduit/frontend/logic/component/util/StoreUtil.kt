@@ -32,6 +32,7 @@ val <T : Any> Store<*, T, *>.stateValue: Value<T>
  *
  * So the executor will be in charge to modify the state directly by calling `dispatch(newState)`.
  */
+@Deprecated("It is not a good idea to let messahe type same as state type, since executor can execute on any thread but reducer is only running on main thread")
 fun <Intent : Any, Action : Any, State : Any, Label : Any> StoreFactory.createWithoutMsg(
   name: String? = null,
   autoInit: Boolean = true,
