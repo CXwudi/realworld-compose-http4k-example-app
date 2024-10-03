@@ -14,10 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
-import mikufan.cx.conduit.frontend.logic.component.main.auth.DefaultAuthPageComponent
-import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
+import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
-import org.koin.core.component.get
 import org.lighthousegames.logging.logging
 
 /**
@@ -46,8 +44,8 @@ sealed interface MainNavComponentChild {
 
 class DefaultMainNavComponent(
   componentContext: ComponentContext,
-  private val koin: LocalKoinComponent,
-  private val mainNavStoreFactory: MainNavStoreFactory
+  private val mainNavStoreFactory: MainNavStoreFactory,
+  private val authPageComponentFactory: AuthPageComponentFactory,
 ) : MainNavComponent, ComponentContext by componentContext {
 
   private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
@@ -88,15 +86,10 @@ class DefaultMainNavComponent(
     Config.MainFeed -> MainNavComponentChild.MainFeed
     Config.Favourite -> MainNavComponentChild.Favourite
     Config.Me -> MainNavComponentChild.Me
-    Config.SignInUp -> MainNavComponentChild.SignInUp(koin.createAuthPageComponent(componentContext))
-  }
-
-  private fun LocalKoinComponent.createAuthPageComponent(componentContext: ComponentContext): AuthPageComponent =
-    DefaultAuthPageComponent(
-      componentContext = componentContext,
-      koin = this,
-      authPageStoreFactory = get()
+    Config.SignInUp -> MainNavComponentChild.SignInUp(
+      authPageComponentFactory.create(componentContext)
     )
+  }
 
   private fun enumToConfig(enum: MainNavMenuItem): Config = when (enum) {
     MainNavMenuItem.Feed -> Config.MainFeed
@@ -120,6 +113,17 @@ class DefaultMainNavComponent(
     @Serializable
     data object SignInUp : Config
   }
+}
+
+class MainNavComponentFactory(
+  private val storeFactory: MainNavStoreFactory,
+  private val authPageComponentFactory: AuthPageComponentFactory,
+) {
+  fun create(componentContext: ComponentContext) = DefaultMainNavComponent(
+    componentContext = componentContext,
+    mainNavStoreFactory = storeFactory,
+    authPageComponentFactory = authPageComponentFactory,
+  )
 }
 
 private val log = logging()

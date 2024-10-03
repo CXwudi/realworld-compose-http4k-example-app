@@ -6,8 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.startup.AppInitializer
 import com.arkivanov.decompose.defaultComponentContext
-import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
-import mikufan.cx.conduit.frontend.logic.component.util.toLocalKoinComponent
+import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.MainUI
 import org.koin.androix.startup.KoinInitializer
 import org.lighthousegames.logging.logging
@@ -25,8 +24,8 @@ class MainActivity : AppCompatActivity() {
     val koin = AppInitializer.getInstance(application)
       .initializeComponent(KoinInitializer::class.java)
 
-    val rootComponent =
-      DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())
+    val rootComponent = koin.get<RootNavComponentFactory>().create(defaultComponentContext)
+
     enableEdgeToEdge()
     setContent {
       MainUI(koin, rootComponent)

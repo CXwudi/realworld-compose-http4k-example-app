@@ -8,8 +8,7 @@ import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import mikufan.cx.conduit.frontend.app.desktop.util.runOnUiThread
 import mikufan.cx.conduit.frontend.logic.allModules
-import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
-import mikufan.cx.conduit.frontend.logic.component.util.toLocalKoinComponent
+import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.MainUI
 import org.koin.dsl.koinApplication
 import org.lighthousegames.logging.logging
@@ -25,7 +24,7 @@ fun main(args: Array<String>) {
   }
   val koin = initKoin().koin
   val rootComponent = runOnUiThread {
-    DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())
+    koin.get<RootNavComponentFactory>().create(defaultComponentContext)
   }
 
   log.i { "Starting" }
@@ -33,8 +32,8 @@ fun main(args: Array<String>) {
   application {
 
     val windowState = rememberWindowState()
-
     LifecycleController(lifecycle, windowState)
+
     Window(
       onCloseRequest = {
         koin.close()

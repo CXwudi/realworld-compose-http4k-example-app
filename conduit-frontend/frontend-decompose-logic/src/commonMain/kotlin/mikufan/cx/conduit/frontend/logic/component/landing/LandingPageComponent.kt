@@ -5,7 +5,6 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.flow.StateFlow
-import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 
 interface LandingPageComponent : MviComponent<LandingPageIntent, LandingPageState> {
@@ -13,7 +12,6 @@ interface LandingPageComponent : MviComponent<LandingPageIntent, LandingPageStat
 
 class DefaultLandingPageComponent(
   componentContext: ComponentContext,
-  private val koinComponent: LocalKoinComponent,
   storeFactory: LandingPageStoreFactory,
 ) : LandingPageComponent, ComponentContext by componentContext {
 
@@ -24,4 +22,14 @@ class DefaultLandingPageComponent(
   override val state: StateFlow<LandingPageState> = store.stateFlow(coroutineScope())
 
   override fun send(intent: LandingPageIntent) = store.accept(intent)
+}
+
+
+class LandingPageComponentFactory(
+  private val storeFactory: LandingPageStoreFactory,
+) {
+  fun create(componentContext: ComponentContext) = DefaultLandingPageComponent(
+    componentContext = componentContext,
+    storeFactory = storeFactory,
+  )
 }

@@ -11,14 +11,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import mikufan.cx.conduit.frontend.logic.component.landing.DefaultLandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
-import mikufan.cx.conduit.frontend.logic.component.main.DefaultMainNavComponent
+import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
-import mikufan.cx.conduit.frontend.logic.component.util.LocalKoinComponent
+import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
-import org.koin.core.component.get
 
 interface RootNavComponent {
   val childSlot: Value<ChildSlot<*, RootComponentChild>>
@@ -39,8 +37,9 @@ sealed interface RootComponentChild {
 
 class DefaultRootNavComponent(
   componentContext: ComponentContext,
-  private val koin: LocalKoinComponent,
   private val userConfigService: UserConfigService,
+  private val landingPageComponentFactory: LandingPageComponentFactory,
+  private val mainNavComponentFactory: MainNavComponentFactory,
 ) : RootNavComponent, ComponentContext by componentContext {
 
   private val slotNavigation = SlotNavigation<Config>()
@@ -86,32 +85,15 @@ class DefaultRootNavComponent(
     val child = when (config) {
       Config.Loading -> RootComponentChild.Loading
       Config.LandingPage -> RootComponentChild.LandingPage(
-        component = koin.createLandingPageComponent(componentContext)
+        component = landingPageComponentFactory.create(componentContext)
       )
 
       Config.MainPage -> RootComponentChild.MainPage(
-        component = koin.createMainNavComponent(componentContext)
+        component = mainNavComponentFactory.create(componentContext)
       )
     }
     return child
   }
-
-  private fun LocalKoinComponent.createLandingPageComponent(
-    componentContext: ComponentContext
-  ) = DefaultLandingPageComponent(
-    componentContext = componentContext,
-    koinComponent = this,
-    storeFactory = get(),
-  )
-
-  private fun LocalKoinComponent.createMainNavComponent(
-    componentContext: ComponentContext
-  ) = DefaultMainNavComponent(
-    componentContext = componentContext,
-    koin = this,
-    mainNavStoreFactory = get(),
-  )
-
 
   /**
    * This config doesn't need to contain any data,
@@ -131,4 +113,17 @@ class DefaultRootNavComponent(
     @Serializable
     data object MainPage : Config
   }
+}
+
+class RootNavComponentFactory(
+  private val userConfigService: UserConfigService,
+  private val landingPageComponentFactory: LandingPageComponentFactory,
+  private val mainNavComponentFactory: MainNavComponentFactory,
+) {
+  fun create(componentContext: ComponentContext) = DefaultRootNavComponent(
+    componentContext = componentContext,
+    userConfigService = userConfigService,
+    landingPageComponentFactory = landingPageComponentFactory,
+    mainNavComponentFactory = mainNavComponentFactory,
+  )
 }

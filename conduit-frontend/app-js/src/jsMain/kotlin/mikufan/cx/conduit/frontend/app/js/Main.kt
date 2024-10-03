@@ -8,8 +8,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.allModules
-import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
-import mikufan.cx.conduit.frontend.logic.component.util.toLocalKoinComponent
+import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.MainUI
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.core.KoinApplication
@@ -42,7 +41,7 @@ fun main(args: Array<String>) {
   GlobalScope.launch { // initialize within a global coroutine, workaround to calling suspend function from koin module
     // from https://github.com/InsertKoinIO/koin/issues/388#issuecomment-1195262422
     val koin = initKoin().koin
-    val rootComponent = DefaultRootNavComponent(defaultComponentContext, koin.toLocalKoinComponent(), koin.get())
+    val rootComponent = koin.get<RootNavComponentFactory>().create(defaultComponentContext)
 
     log.i { "Starting" }
 
