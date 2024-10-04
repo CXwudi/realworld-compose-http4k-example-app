@@ -21,7 +21,7 @@ mvikotlin = "4.2.0"
 koin = "4.0.0" # must use at least 3.6.x to make it work with Compose 1.6.x for JS platform
 kstore = "0.8.0"
 
-junit = "5.11.1"
+junit = "5.11.2"
 http4k = "5.32.2.0"
 exposed = "0.55.0"
 
