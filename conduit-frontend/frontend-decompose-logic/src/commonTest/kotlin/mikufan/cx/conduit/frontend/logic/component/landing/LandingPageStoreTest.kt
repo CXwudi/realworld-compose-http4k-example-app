@@ -12,6 +12,7 @@ import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.exactly
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -51,12 +52,15 @@ class LandingPageStoreTest {
     // Can't make Store.labels Flow way working in single-threaded env like JS or single-threaded Dispatcher
     val channel = Channel<LandingPageToNextPageLabel>()
 
-    landingPageStore.labels(observer {
-      this.launch {
-        channel.send(it)
-        log.d { "Received $it" }
+    landingPageStore.labels(observer(
+      onComplete = { channel.close() },
+      onNext = {
+        this.launch {
+          channel.send(it)
+          log.d { "Received $it" }
+        }
       }
-    })
+    ))
 
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
@@ -67,14 +71,13 @@ class LandingPageStoreTest {
     verifySuspend(exactly(1)) {
       userConfigService.setUrl("a change")
     }
-
-    channel.close()
   }
 
   @OptIn(ExperimentalMviKotlinApi::class)
   @Test
   fun testNormalFlowWithAnotherWay() = runTest(testDispatcher) {
-    val separateScope = TestScope(testDispatcher) // separate scope for label channel
+    // the labelsChannel internally will create a coroutine and just wait for cancellation
+    val separateScope = TestScope(testDispatcher) // hence using separate scope for label channel to unblock the runTest
     val labelsChannel = landingPageStore.labelsChannel(separateScope)
 
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
@@ -88,13 +91,14 @@ class LandingPageStoreTest {
       userConfigService.setUrl("a change")
     }
     log.d { "After verify" }
+    separateScope.cancel()
   }
 
   @Test
   fun testNormalFlowWithFlow() = runTest(testDispatcher) {
-    // the labels Flow way will be stuck if running in single-threaded env like JS or single-threaded Dispatcher
-    // However, from debugging, the label is actually dispatched, but for some reason, we can't receive it
-    // highly suspected that
+    // the labels Flow works and the label is actually dispatched.
+    // however, the launched coroutine is stuck on the collect call, so the test will never finish
+    // if the store.dispose() is not called before runTest finishes
     launch {
       landingPageStore.labels.collect {
         log.d { "Received $it" }
