@@ -28,8 +28,9 @@ data class LandingPageState(
 class LandingPageStoreFactory(
   private val storeFactory: StoreFactory,
   private val userConfigService: UserConfigService,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main
-) {
+  mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+  defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
+  ) {
 
   internal sealed interface Msg {
     data class TextChanged(val text: String) : Msg
@@ -37,7 +38,7 @@ class LandingPageStoreFactory(
   }
 
   private val executor =
-    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel>(dispatcher) {
+    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel>(mainDispatcher) {
       onIntent<LandingPageIntent.TextChanged> {
         dispatch(Msg.TextChanged(it.text))
         if (state().errorMsg.isNotBlank()) {
@@ -47,7 +48,7 @@ class LandingPageStoreFactory(
       onIntent<LandingPageIntent.ToNextPage> {
         launch {
           try {
-            withContext(Dispatchers.Default) {
+            withContext(defaultDispatcher) {
               userConfigService.setUrl(state().url)
 //              log.d { "Set url = ${state().url}" }
             }
