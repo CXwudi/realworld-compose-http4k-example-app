@@ -22,7 +22,7 @@ koin = "4.0.0" # must use at least 3.6.x to make it work with Compose 1.6.x for 
 kstore = "0.8.0"
 
 junit = "5.11.2"
-http4k = "5.32.2.0"
+http4k = "5.32.3.0"
 exposed = "0.55.0"
 
 [libraries]
