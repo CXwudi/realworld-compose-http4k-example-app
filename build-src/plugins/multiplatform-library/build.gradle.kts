@@ -8,6 +8,6 @@ dependencies {
   implementation(libs.pluginDep.android)
   implementation(libs.pluginDep.serialization)
   implementation(libs.pluginDep.mockkery)
-//  implementation(libs.pluginDep.compose)
-//  implementation(libs.pluginDep.kotlinCompose)
+  implementation(libs.pluginDep.compose)
+  implementation(libs.pluginDep.kotlinCompose)
 }

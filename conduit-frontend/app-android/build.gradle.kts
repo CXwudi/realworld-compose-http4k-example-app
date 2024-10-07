@@ -1,8 +1,6 @@
 plugins {
-  alias(libs.plugins.kotlinMultiplatform)
+  id("my.cmp-app")
   alias(libs.plugins.androidApplication)
-  alias(libs.plugins.compose)
-  alias(libs.plugins.kotlinCompose)
 }
 
 kotlin {
@@ -26,17 +24,6 @@ kotlin {
       implementation(libs.dev.androidx.coreKtx)
       implementation(libs.dev.androidx.activityCompose)
 
-      implementation(libs.dev.decompose)
-      implementation(libs.dev.decomposeCompose)
-      implementation(libs.dev.mvikotlin)
-      implementation(libs.dev.mvikotlinMain)
-      implementation(libs.dev.mvikotlinCoroutines)
-      implementation(libs.dev.mvikotlinLogging)
-
-      implementation(libs.dev.kmlogging)
-
-      implementation(project.dependencies.platform(libs.dev.koinBom))
-      implementation("io.insert-koin:koin-core")
       implementation("io.insert-koin:koin-android")
       implementation("io.insert-koin:koin-androidx-startup")
 
