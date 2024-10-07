@@ -17,7 +17,6 @@ kotlin {
 
       implementation(project.dependencies.platform(libs.dev.kotlinWrapper))
       implementation("org.jetbrains.kotlin-wrappers:kotlin-browser")
-      implementation("co.touchlab:stately-common:2.1.0")
     }
   }
 }

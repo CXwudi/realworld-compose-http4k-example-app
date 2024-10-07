@@ -12,8 +12,9 @@ kotlin {
       // add dependencies that are specific for this decompose logic module
       // dependencies used in both this module and compose ui module are extracted into the precompiled script plugin
       implementation(libs.dev.kstore)
-      // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700, but it is no longer used
-      // implementation("co.touchlab:stately-common:2.1.0")
+      // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700,
+      // but for some reason I still need it even I removed sqldelight
+      implementation("co.touchlab:stately-common:2.1.0")
     }
 
     // and platform specific dependencies only used in this module
