@@ -60,7 +60,7 @@ dev-backend-exposedBom = { module = "org.jetbrains.exposed:exposed-bom", version
 dev-backend-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 dev-backend-kotestBom = "io.kotest:kotest-bom:5.9.1"
 dev-backend-kotestKoin = "io.kotest.extensions:kotest-extensions-koin:1.3.0"
-dev-backend-mockk = "io.mockk:mockk:1.13.12"
+dev-backend-mockk = "io.mockk:mockk:1.13.13"
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.8.2"
 dev-backend-sqlite = "org.xerial:sqlite-jdbc:3.46.1.3"
 dev-backend-hikari = "com.zaxxer:HikariCP:6.0.0"
