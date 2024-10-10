@@ -24,7 +24,7 @@ jobs:
     - name: Set up Chromenium
       uses: browser-actions/setup-chrome@v1
       with:
-        install-chromedriver: true
+        chrome-version: stable
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
