@@ -20,10 +20,12 @@ kotlin {
     browser {
       testTask {
         useKarma {
-          // for developers, please use your own browsers in convenience
-          useChromiumHeadless()
-          // next one is used by CI
-          useChromeHeadlessNoSandbox()
+          if (System.getenv("CI") == "true") {
+            useChromeHeadlessNoSandbox()
+          } else {
+            // for developers, please use your own browsers in convenience
+            useChromiumHeadless()
+          }
         }
       }
     }
