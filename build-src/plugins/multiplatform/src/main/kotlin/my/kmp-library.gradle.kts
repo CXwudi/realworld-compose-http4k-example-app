@@ -22,7 +22,8 @@ kotlin {
         useKarma {
           // for developers, please use your own browsers in convenience
           useChromiumHeadless()
-          useChromeHeadless()
+          // next one is used by CI
+          useChromeHeadlessNoSandbox()
         }
       }
     }
