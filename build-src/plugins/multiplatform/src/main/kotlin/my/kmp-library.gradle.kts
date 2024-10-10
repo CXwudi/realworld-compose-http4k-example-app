@@ -22,6 +22,7 @@ kotlin {
         useKarma {
           // for developers, please use your own browsers in convenience
           useChromiumHeadless()
+          useChromeHeadless()
         }
       }
     }
