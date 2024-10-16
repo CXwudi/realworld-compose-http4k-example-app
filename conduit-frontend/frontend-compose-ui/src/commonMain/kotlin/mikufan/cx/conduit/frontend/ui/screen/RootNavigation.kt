@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.ui.screen
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
@@ -17,10 +18,7 @@ import mikufan.cx.conduit.frontend.ui.screen.main.MainNavPage
 fun RootNavigation(rootComponent: DefaultRootNavComponent, modifier: Modifier = Modifier) {
   val childSlot by rootComponent.childSlot.subscribeAsState()
 
-  AnimatedContentTransition(
-    targetState = childSlot.child?.instance,
-    modifier = modifier
-  ) {
+  Crossfade(childSlot.child?.instance) {
     when (it) {
       is RootComponentChild.Loading -> LoadingScreen()
       is RootComponentChild.LandingPage -> LandingPage(it.component)
