@@ -1,4 +1,4 @@
-package mikufan.cx.conduit.frontend.app.android.preview
+package mikufan.cx.conduit.frontend.ui.screen.main
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
