@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.frontend.ui.theme
 
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.compositionLocalOf
@@ -76,7 +77,7 @@ val medianVerticalSpace = VerticalSpace(
   paddingLarge = 6.dp
 )
 
-val mediumVerticalSpace = VerticalSpace(
+val expandedVerticalSpace = VerticalSpace(
   spacing = 6.dp,
   spacingSmall = 4.dp,
   spacingLarge = 8.dp,
@@ -89,14 +90,16 @@ fun WindowSizeClass.calculateSpace(): Space {
   val horizontalSpace = when (widthSizeClass) {
     WindowWidthSizeClass.Compact -> compactHorizontalSpace
     WindowWidthSizeClass.Expanded -> expandedHorizontalSpace
-    else -> mediumHorizontalSpace
+    WindowWidthSizeClass.Medium -> mediumHorizontalSpace
+    else -> error("What is this window width size class: $widthSizeClass")
   }
 
   // so far we just let the vertical space be the same with the horizontal space
-  val verticalSpace = when (widthSizeClass) {
-    WindowWidthSizeClass.Compact -> compactVerticalSpace
-    WindowWidthSizeClass.Expanded -> mediumVerticalSpace
-    else -> medianVerticalSpace
+  val verticalSpace = when (heightSizeClass) {
+    WindowHeightSizeClass.Compact -> compactVerticalSpace
+    WindowHeightSizeClass.Expanded -> expandedVerticalSpace
+    WindowHeightSizeClass.Medium -> medianVerticalSpace
+    else -> error("What is this window height size class: $heightSizeClass")
   }
 
   return Space(horizontal = horizontalSpace, vertical = verticalSpace)

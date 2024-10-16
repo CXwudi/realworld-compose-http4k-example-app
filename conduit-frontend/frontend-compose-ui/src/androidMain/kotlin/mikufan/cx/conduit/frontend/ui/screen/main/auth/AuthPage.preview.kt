@@ -8,12 +8,12 @@ import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageMode
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageState
-import mikufan.cx.conduit.frontend.ui.util.SetupUI
+import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 @Preview
 @Composable
 fun MainPageLoginPreview() {
-  SetupUI {
+  SetupPreviewUI {
     val fakeComponent = object : AuthPageComponent {
       override val state: StateFlow<AuthPageState> =
         MutableStateFlow(AuthPageState("my username", "my password", AuthPageMode.SIGN_IN))
@@ -27,7 +27,7 @@ fun MainPageLoginPreview() {
 @Preview
 @Composable
 fun MainPageRegisterPreview() {
-  SetupUI {
+  SetupPreviewUI {
     val fakeComponent = object : AuthPageComponent {
       override val state: StateFlow<AuthPageState> =
         MutableStateFlow(AuthPageState("my username", "my password", AuthPageMode.REGISTER))

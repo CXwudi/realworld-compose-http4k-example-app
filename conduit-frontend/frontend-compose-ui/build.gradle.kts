@@ -1,3 +1,5 @@
+import org.jetbrains.compose.compose
+
 plugins {
   id("my.kmp-frontend-library")
   alias(libs.plugins.kotlinCompose)
@@ -17,9 +19,11 @@ kotlin {
       implementation(compose.ui)
       implementation(compose.foundation)
       implementation(compose.material3)
+      implementation(compose.material3AdaptiveNavigationSuite)
+      implementation(compose("org.jetbrains.compose.material3:material3-window-size-class"))
       implementation(compose.components.resources)
+
       implementation(compose.components.uiToolingPreview)
-      implementation(libs.dev.windowSizeClassMultiplatform)
 
       implementation("io.insert-koin:koin-compose")
     }

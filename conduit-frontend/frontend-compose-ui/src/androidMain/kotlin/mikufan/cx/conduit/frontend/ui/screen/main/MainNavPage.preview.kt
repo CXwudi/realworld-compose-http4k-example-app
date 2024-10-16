@@ -13,12 +13,12 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavState
-import mikufan.cx.conduit.frontend.ui.util.SetupUI
+import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 @Composable
 @Preview
 fun MainPagePreview() {
-  SetupUI {
+  SetupPreviewUI {
     val fakeComponent = object : MainNavComponent {
       override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> = MutableValue(ChildSlot(Child.Created(Unit, MainNavComponentChild.MainFeed)))
       override val state: StateFlow<MainNavState> = MutableStateFlow(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
@@ -31,7 +31,7 @@ fun MainPagePreview() {
 @Composable
 @Preview
 fun MainPagePreviewForLoginUser() {
-  SetupUI {
+  SetupPreviewUI {
     val fakeComponent = object : MainNavComponent {
       override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> = MutableValue(ChildSlot(Child.Created(Unit, MainNavComponentChild.MainFeed)))
       override val state: StateFlow<MainNavState> = MutableStateFlow(MainNavState(MainNavMode.LOGGED_IN, 0))

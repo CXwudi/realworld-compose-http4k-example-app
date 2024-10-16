@@ -8,13 +8,13 @@ import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageIntent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageState
 import mikufan.cx.conduit.frontend.ui.screen.LandingPage
-import mikufan.cx.conduit.frontend.ui.util.SetupUI
+import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 @Composable
 @Preview
 fun LandingPagePreview() {
 
-  SetupUI {
+  SetupPreviewUI {
     val mockComponent = object : LandingPageComponent {
       override val state: StateFlow<LandingPageState> = MutableStateFlow(LandingPageState("bla bla URL", "bla error"))
 
