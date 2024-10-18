@@ -19,17 +19,17 @@ buildConfig {
     buildConfigStringField("CoroutinesBom", libs.dev.coroutinesBom)
 
     // Essenty
-    buildConfigStringField("EssentyLifecycleCoroutines", libs.dev.essentyLifecycleCoroutines)
+    buildConfigStringField("EssentyLifecycleCoroutines", libs.dev.frontend.essentyLifecycleCoroutines)
 
     // Decompose
-    buildConfigStringField("Decompose", libs.dev.decompose)
-    buildConfigStringField("DecomposeCompose", libs.dev.decomposeCompose)
+    buildConfigStringField("Decompose", libs.dev.frontend.decompose)
+    buildConfigStringField("DecomposeCompose", libs.dev.frontend.decomposeCompose)
 
     // MVI Kotlin
-    buildConfigStringField("MviKotlin", libs.dev.mvikotlin)
-    buildConfigStringField("MviKotlinMain", libs.dev.mvikotlinMain)
-    buildConfigStringField("MviKotlinCoroutines", libs.dev.mvikotlinCoroutines)
-    buildConfigStringField("MviKotlinLogging", libs.dev.mvikotlinLogging)
+    buildConfigStringField("MviKotlin", libs.dev.frontend.mvikotlin)
+    buildConfigStringField("MviKotlinMain", libs.dev.frontend.mvikotlinMain)
+    buildConfigStringField("MviKotlinCoroutines", libs.dev.frontend.mvikotlinCoroutines)
+    buildConfigStringField("MviKotlinLogging", libs.dev.frontend.mvikotlinLogging)
 
     // Logging
     buildConfigStringField("KmLogging", libs.dev.kmlogging)
@@ -39,13 +39,13 @@ buildConfig {
     buildConfigStringField("KoinBom", libs.dev.koinBom)
 
     // Kotlin Wrapper
-    buildConfigStringField("KotlinWrapper", libs.dev.kotlinWrapper)
+    buildConfigStringField("KotlinWrapper", libs.dev.frontend.kotlinWrapper)
 
     // AndroidX
-    buildConfigStringField("AndroidXCoreKtx", libs.dev.androidx.coreKtx)
-    buildConfigStringField("AndroidXLifecycleKtx", libs.dev.androidx.lifecycleKtx)
-    buildConfigStringField("AndroidXAppCompat", libs.dev.androidx.appcompat)
-    buildConfigStringField("AndroidXActivityCompose", libs.dev.androidx.activityCompose)
+    buildConfigStringField("AndroidXCoreKtx", libs.dev.frontend.androidx.coreKtx)
+    buildConfigStringField("AndroidXLifecycleKtx", libs.dev.frontend.androidx.lifecycleKtx)
+    buildConfigStringField("AndroidXAppCompat", libs.dev.frontend.androidx.appcompat)
+    buildConfigStringField("AndroidXActivityCompose", libs.dev.frontend.androidx.activityCompose)
   }
 }
 

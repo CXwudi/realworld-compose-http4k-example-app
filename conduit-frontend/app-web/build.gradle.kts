@@ -15,7 +15,7 @@ kotlin {
 
       implementation(libs.dev.kmlogging)
 
-      implementation(project.dependencies.platform(libs.dev.kotlinWrapper))
+      implementation(project.dependencies.platform(libs.dev.frontend.kotlinWrapper))
       implementation("org.jetbrains.kotlin-wrappers:kotlin-browser")
     }
   }

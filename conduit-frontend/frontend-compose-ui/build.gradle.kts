@@ -24,6 +24,7 @@ kotlin {
       implementation(compose.components.resources)
 
       implementation(compose.components.uiToolingPreview)
+      implementation(libs.dev.frontend.rebugger)
 
       implementation("io.insert-koin:koin-compose")
     }
@@ -35,7 +36,7 @@ kotlin {
       implementation(compose.desktop.common)
     }
     androidMain.dependencies {
-      implementation(libs.dev.androidx.activityCompose)
+      implementation(libs.dev.frontend.androidx.activityCompose)
       implementation("io.insert-koin:koin-androidx-compose")
     }
   }

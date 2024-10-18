@@ -20,9 +20,9 @@ kotlin {
       implementation(compose.uiTooling)
       implementation(compose.preview)
 
-      implementation(libs.dev.androidx.appcompat)
-      implementation(libs.dev.androidx.coreKtx)
-      implementation(libs.dev.androidx.activityCompose)
+      implementation(libs.dev.frontend.androidx.appcompat)
+      implementation(libs.dev.frontend.androidx.coreKtx)
+      implementation(libs.dev.frontend.androidx.activityCompose)
 
       implementation("io.insert-koin:koin-android")
       implementation("io.insert-koin:koin-androidx-startup")
