@@ -1,12 +1,12 @@
 package mikufan.cx.conduit.frontend.logic.component.main.auth
 
+import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import mikufan.cx.conduit.frontend.logic.component.util.createWithoutMsg
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 
 class AuthPageStoreFactory(
@@ -16,16 +16,16 @@ class AuthPageStoreFactory(
 ) {
 
   private val executorFactory =
-    coroutineExecutorFactory<AuthPageIntent, Nothing, AuthPageState, AuthPageState, Unit>(dispatcher) {
+    coroutineExecutorFactory<AuthPageIntent, Nothing, AuthPageState, Msg, Unit>(dispatcher) {
       onIntent<AuthPageIntent.UsernameChanged> {
-        dispatch(state().copy(username = it.username))
+        dispatch(Msg.UsernameChanged(it.username))
       }
       onIntent<AuthPageIntent.PasswordChanged> {
-        dispatch(state().copy(password = it.password))
+        dispatch(Msg.PasswordChanged(it.password))
       }
       onIntent<AuthPageIntent.SwitchMode> {
         val state = state()
-        dispatch(state.copy(mode = state.mode.opposite))
+        dispatch(Msg.SwitchMode(state.mode.opposite))
       }
       onIntent<AuthPageIntent.AuthAction> {
         // TODO: do either register or login, both will return token in success case
@@ -41,10 +41,25 @@ class AuthPageStoreFactory(
       }
     }
 
-  fun createStore() = storeFactory.createWithoutMsg(
+  private val reducer = Reducer<AuthPageState, Msg> { msg ->
+    when (msg) {
+      is Msg.UsernameChanged -> this.copy(username = msg.username)
+      is Msg.PasswordChanged -> this.copy(password = msg.password)
+      is Msg.SwitchMode -> this.copy(mode = msg.mode)
+    }
+  }
+
+  fun createStore() = storeFactory.create(
     name = "AuthPageStore",
     initialState = AuthPageState("", "", AuthPageMode.SIGN_IN),
     executorFactory = executorFactory,
+    reducer = reducer
   )
+
+  private sealed interface Msg {
+    data class UsernameChanged(val username: String) : Msg
+    data class PasswordChanged(val password: String) : Msg
+    data class SwitchMode(val mode: AuthPageMode) : Msg
+  }
 
 }
