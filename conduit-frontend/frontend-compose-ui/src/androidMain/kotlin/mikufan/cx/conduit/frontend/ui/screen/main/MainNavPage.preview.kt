@@ -3,7 +3,7 @@ package mikufan.cx.conduit.frontend.ui.screen.main
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 fun MainPagePreview() {
   SetupPreviewUI {
     val fakeComponent = object : MainNavComponent {
-      override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> = MutableValue(ChildSlot(Child.Created(Unit, MainNavComponentChild.MainFeed)))
+      override val childStack: Value<ChildStack<*, MainNavComponentChild>> = MutableValue(ChildStack(Child.Created(Unit, MainNavComponentChild.MainFeed)))
       override val state: StateFlow<MainNavState> = MutableStateFlow(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
       override fun send(intent: MainNavIntent) = Unit
     }
@@ -33,7 +33,7 @@ fun MainPagePreview() {
 fun MainPagePreviewForLoginUser() {
   SetupPreviewUI {
     val fakeComponent = object : MainNavComponent {
-      override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> = MutableValue(ChildSlot(Child.Created(Unit, MainNavComponentChild.MainFeed)))
+      override val childStack: Value<ChildStack<*, MainNavComponentChild>> = MutableValue(ChildStack(Child.Created(Unit, MainNavComponentChild.MainFeed)))
       override val state: StateFlow<MainNavState> = MutableStateFlow(MainNavState(MainNavMode.LOGGED_IN, 0))
       override fun send(intent: MainNavIntent) = Unit
     }

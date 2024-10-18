@@ -1,10 +1,5 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
-import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent.ToFavouritePage
-import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent.ToFeedPage
-import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent.ToMePage
-import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent.ToSignInUpPage
-
 data class MainNavState(
   val mode: MainNavMode,
   /**
@@ -51,28 +46,10 @@ enum class MainNavMenuItem(
   SignInUp("Sign in/up"),
 }
 
-
+/**
+ * Intents for navigation in the main page
+ */
 sealed interface MainNavIntent {
-
-  data object ToSignInMode: ModeSwitchingIntent
-  data object ToLogoutMode: ModeSwitchingIntent
-
-  data object ToFeedPage: PageSwitchingIntent
-  data object ToFavouritePage: PageSwitchingIntent
-  data object ToMePage: PageSwitchingIntent
-  data object ToSignInUpPage: PageSwitchingIntent
-
-}
-
-sealed interface ModeSwitchingIntent : MainNavIntent
-sealed interface PageSwitchingIntent : MainNavIntent {
-
-  companion object {
-    fun pageSwitchingIntent2MenuItem(intent: PageSwitchingIntent): MainNavMenuItem = when (intent) {
-      is ToFeedPage -> MainNavMenuItem.Feed
-      is ToFavouritePage -> MainNavMenuItem.Favourite
-      is ToMePage -> MainNavMenuItem.Me
-      is ToSignInUpPage -> MainNavMenuItem.SignInUp
-    }
-  }
+  data class ModeSwitching(val targetMode: MainNavMode): MainNavIntent
+  data class MenuItemSwitching(val targetMenuItem: MainNavMenuItem): MainNavIntent
 }

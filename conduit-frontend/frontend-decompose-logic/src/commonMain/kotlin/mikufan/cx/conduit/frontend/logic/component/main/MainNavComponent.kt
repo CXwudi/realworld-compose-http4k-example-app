@@ -1,10 +1,11 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.slot.ChildSlot
-import com.arkivanov.decompose.router.slot.SlotNavigation
-import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -29,7 +30,7 @@ import org.lighthousegames.logging.logging
  * distinguish between intent for the navigation and the state update.
  */
 interface MainNavComponent : MviComponent<MainNavIntent, MainNavState> {
-  val childSlot: Value<ChildSlot<*, MainNavComponentChild>>
+  val childStack: Value<ChildStack<*, MainNavComponentChild>>
 }
 
 sealed interface MainNavComponentChild {
@@ -54,12 +55,12 @@ class DefaultMainNavComponent(
 
   override fun send(intent: MainNavIntent) = store.accept(intent)
 
-  private val slotNavigation = SlotNavigation<Config>()
+  private val stackNavigation = StackNavigation<Config>()
 
-  override val childSlot: Value<ChildSlot<*, MainNavComponentChild>> =
-    childSlot(
-      source = slotNavigation,
-      initialConfiguration = { Config.MainFeed },
+  override val childStack: Value<ChildStack<*, MainNavComponentChild>> =
+    childStack(
+      source = stackNavigation,
+      initialConfiguration = Config.MainFeed,
       serializer = Config.serializer(),
       childFactory = ::childFactory
     )
@@ -75,7 +76,7 @@ class DefaultMainNavComponent(
     store.stateFlow
       .collect {
         log.d { "Current state is $it" }
-        slotNavigation.activate(enumToConfig(it.currentMenuItem))
+        stackNavigation.replaceCurrent(enumToConfig(it.currentMenuItem))
       }
   }
 

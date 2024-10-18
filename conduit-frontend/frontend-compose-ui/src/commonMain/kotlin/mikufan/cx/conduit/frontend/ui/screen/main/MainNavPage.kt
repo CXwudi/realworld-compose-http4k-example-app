@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.theapache64.rebugger.Rebugger
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
@@ -31,7 +32,7 @@ import mikufan.cx.conduit.frontend.ui.screen.main.auth.AuthPage
 fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
 
   val mainNavState by component.state.collectAsState()
-  val slot by component.childSlot.subscribeAsState()
+  val stack by component.childStack.subscribeAsState()
 
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
@@ -44,15 +45,14 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
       BottomNavigationBar(mainStateMode, component::send, selectedIndex)
     }
   ) { innerPadding ->
-    AnimatedContentTransition<MainNavComponentChild?>(
-      targetState = slot.child?.instance
+    AnimatedContentTransition<MainNavComponentChild>(
+      targetState = stack.active.instance
     ) {
       when (it) {
         is MainNavComponentChild.MainFeed -> Text("Main Feed")
         is MainNavComponentChild.Favourite -> Text("Favourite")
         is MainNavComponentChild.Me -> Text("Me")
         is MainNavComponentChild.SignInUp -> AuthPage(it.component, Modifier.padding(innerPadding))
-        null -> error("Unexpected null child in childSlot in Main Page")
       }
     }
   }
@@ -64,6 +64,11 @@ private fun BottomNavigationBar(
   onSend: (MainNavIntent) -> Unit,
   selectedIndex: Int,
 ) {
+  Rebugger(trackMap = mapOf(
+    "mainStateMode" to mainStateMode,
+    "selectedIndex" to selectedIndex,
+    "onSend" to onSend,
+  ))
   NavigationBar {
     val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
       mapMenuItemEnum2NavItem(value, index, onSend)
@@ -73,9 +78,7 @@ private fun BottomNavigationBar(
         icon = { Icon(item.icon, contentDescription = item.label) },
         label = { Text(item.label) },
         selected = selectedIndex == item.index,
-        onClick = {
-          item.onClick()
-        }
+        onClick = item.onClick
       )
     }
   }
@@ -105,28 +108,17 @@ private fun mapMenuItemEnum2NavItem(
   value: MainNavMenuItem,
   index: Int,
   onSend: (MainNavIntent) -> Unit
-) = when (value) {
-  MainNavMenuItem.Feed -> NavigationItem(
-    value.menuName,
-    Icons.Filled.Home,
-    index
-  ) { onSend(MainNavIntent.ToFeedPage) }
+): NavigationItem {
+  val icon = when (value) {
+    MainNavMenuItem.Feed -> Icons.Filled.Home
+    MainNavMenuItem.Favourite -> Icons.Filled.Favorite
+    MainNavMenuItem.Me -> Icons.Filled.Person
+    MainNavMenuItem.SignInUp -> Icons.Filled.Person
+  }
 
-  MainNavMenuItem.Favourite -> NavigationItem(
-    value.menuName,
-    Icons.Filled.Favorite,
-    index
-  ) { onSend(MainNavIntent.ToFavouritePage) }
+  val item = NavigationItem(value.menuName, icon, index) {
+    onSend(MainNavIntent.MenuItemSwitching(value))
+  }
 
-  MainNavMenuItem.Me -> NavigationItem(
-    value.menuName,
-    Icons.Filled.Person,
-    index
-  ) { onSend(MainNavIntent.ToMePage) }
-
-  MainNavMenuItem.SignInUp -> NavigationItem(
-    value.menuName,
-    Icons.Filled.Person,
-    index
-  ) { onSend(MainNavIntent.ToSignInUpPage) }
+  return item
 }

@@ -1,13 +1,13 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
 import com.arkivanov.mvikotlin.core.store.Bootstrapper
+import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import mikufan.cx.conduit.frontend.logic.component.util.createWithoutMsg
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
 import org.lighthousegames.logging.logging
@@ -19,37 +19,41 @@ class MainNavStoreFactory(
 ) {
 
   private val executor =
-    coroutineExecutorFactory<MainNavIntent, Action, MainNavState, MainNavState, Nothing>(dispatcher) {
+    coroutineExecutorFactory<MainNavIntent, Action, MainNavState, Msg, Nothing>(dispatcher) {
       onAction<Action> {
-        val newState = it.toMainNavState()
-        if (newState.mode != state().mode) {
-          log.i { "Switching main page mode to ${newState.mode}" }
-          dispatch(newState)
+        val newMsg = it.toMsg()
+        if (newMsg.targetMode != state().mode) {
+          log.i { "Switching main page mode to ${newMsg.targetMode}" }
+          dispatch(newMsg)
         }
       }
-      onIntent<ModeSwitchingIntent> { intent ->
-        val newMode = when (intent) {
-          is MainNavIntent.ToSignInMode -> MainNavMode.LOGGED_IN
-          is MainNavIntent.ToLogoutMode -> MainNavMode.NOT_LOGGED_IN
-        }
+      onIntent<MainNavIntent.ModeSwitching> { intent ->
+        val newMode = intent.targetMode
         if (newMode != state().mode) {
           log.i { "Switching main page mode to $newMode" }
-          dispatch(MainNavState(newMode, 0))
+          dispatch(Msg.ModeSwitching(newMode))
         }
       }
 
-      onIntent<PageSwitchingIntent> { intent ->
-        val newMenuItem = PageSwitchingIntent.pageSwitchingIntent2MenuItem(intent)
+      onIntent<MainNavIntent.MenuItemSwitching> { intent ->
+        val newMenuItem = intent.targetMenuItem
         val currentState = state()
         val newIdx: Int = requireNotNull(currentState.indexOfMenuItem(newMenuItem)) {
           "$newMenuItem not found in $currentState, this should not happen"
         }
         if (currentState.pageIndex != newIdx) {
           log.i { "Switching to page at index $newIdx" }
-          dispatch(currentState.copy(pageIndex = newIdx))
+          dispatch(Msg.MenuIndexSwitching(newIdx))
         }
       }
     }
+
+  private val reducer = Reducer<MainNavState, Msg> { msg ->
+    when (msg) {
+      is Msg.ModeSwitching -> copy(mode = msg.targetMode, pageIndex = 0)
+      is Msg.MenuIndexSwitching -> copy(pageIndex = msg.targetIndex)
+    }
+  }
 
   private fun createBootstrapper(): Bootstrapper<Action> =
     coroutineBootstrapper(dispatcher) {
@@ -60,22 +64,23 @@ class MainNavStoreFactory(
       }
     }
 
-  fun createStore() = storeFactory.createWithoutMsg(
+  fun createStore() = storeFactory.create(
     name = "MainNavStore",
     initialState = MainNavState(MainNavMode.NOT_LOGGED_IN, 0),
     bootstrapper = createBootstrapper(),
     executorFactory = executor,
+    reducer = reducer,
   )
 
   private data class Action(
     val userConfigState: UserConfigState
   ) {
-    fun toMainNavState() = when (userConfigState) {
+    fun toMsg() = when (userConfigState) {
       is UserConfigState.Loaded -> {
         if (userConfigState.token.isNullOrBlank()) {
-          MainNavState(MainNavMode.NOT_LOGGED_IN, 0)
+          Msg.ModeSwitching(MainNavMode.NOT_LOGGED_IN)
         } else {
-          MainNavState(MainNavMode.LOGGED_IN, 0)
+          Msg.ModeSwitching(MainNavMode.LOGGED_IN)
         }
       }
 
@@ -83,6 +88,11 @@ class MainNavStoreFactory(
         error("Should not happen since the main page appears only after the user config is loaded")
       }
     }
+  }
+
+  private sealed interface Msg {
+    data class ModeSwitching(val targetMode: MainNavMode): Msg
+    data class MenuIndexSwitching(val targetIndex: Int): Msg
   }
 
 }
