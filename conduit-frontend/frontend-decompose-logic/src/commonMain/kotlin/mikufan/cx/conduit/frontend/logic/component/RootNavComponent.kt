@@ -1,10 +1,10 @@
 package mikufan.cx.conduit.frontend.logic.component
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.slot.ChildSlot
-import com.arkivanov.decompose.router.slot.SlotNavigation
-import com.arkivanov.decompose.router.slot.activate
-import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -19,7 +19,7 @@ import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
 
 interface RootNavComponent {
-  val childSlot: Value<ChildSlot<*, RootComponentChild>>
+  val childStack: Value<ChildStack<*, RootComponentChild>>
 }
 
 sealed interface RootComponentChild {
@@ -42,12 +42,12 @@ class DefaultRootNavComponent(
   private val mainNavComponentFactory: MainNavComponentFactory,
 ) : RootNavComponent, ComponentContext by componentContext {
 
-  private val slotNavigation = SlotNavigation<Config>()
+  private val stackNavigation = StackNavigation<Config>()
 
-  override val childSlot: Value<ChildSlot<*, RootComponentChild>> =
-    childSlot(
-      source = slotNavigation,
-      initialConfiguration = { Config.Loading },
+  override val childStack: Value<ChildStack<*, RootComponentChild>> =
+    childStack(
+      source = stackNavigation,
+      initialConfiguration = Config.Loading,
       serializer = Config.serializer(),
       childFactory = ::childFactory
     )
@@ -74,7 +74,7 @@ class DefaultRootNavComponent(
       }
       .distinctUntilChanged()
       .collect {
-        slotNavigation.activate(it)
+        stackNavigation.replaceCurrent(it)
       }
   }
 
