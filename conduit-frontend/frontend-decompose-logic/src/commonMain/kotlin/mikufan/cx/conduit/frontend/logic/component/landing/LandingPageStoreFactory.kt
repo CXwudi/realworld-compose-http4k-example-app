@@ -3,13 +3,13 @@ package mikufan.cx.conduit.frontend.logic.component.landing
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
-import org.lighthousegames.logging.logging
 
 
 sealed interface LandingPageIntent {
@@ -50,11 +50,11 @@ class LandingPageStoreFactory(
           try {
             withContext(defaultDispatcher) {
               userConfigService.setUrl(state().url)
-//              log.d { "Set url = ${state().url}" }
+//              log.debug { "Set url = ${state().url}" }
             }
             // this label is in fact unused, because every other component is subscribing the userConfigService directly
             publish(LandingPageToNextPageLabel)
-//            log.d { "Pushed the label" }
+//            log.debug { "Pushed the label" }
           } catch (e: IllegalArgumentException) {
             dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
           }
@@ -77,5 +77,5 @@ class LandingPageStoreFactory(
     )
 }
 
-private val log = logging()
+private val log = KotlinLogging.logger { }
 

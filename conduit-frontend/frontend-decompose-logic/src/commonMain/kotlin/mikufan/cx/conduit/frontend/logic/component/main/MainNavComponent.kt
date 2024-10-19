@@ -10,6 +10,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,7 +18,6 @@ import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
-import org.lighthousegames.logging.logging
 
 /**
  * The component for the main page, it unfortunately breaks the MVI pattern where it has two state values.
@@ -75,7 +75,7 @@ class DefaultMainNavComponent(
   private suspend fun setupUserConfigStateToNavigationMapping() {
     store.stateFlow
       .collect {
-        log.d { "Current state is $it" }
+        log.debug { "Current state is $it" }
         stackNavigation.replaceCurrent(enumToConfig(it.currentMenuItem))
       }
   }
@@ -127,4 +127,4 @@ class MainNavComponentFactory(
   )
 }
 
-private val log = logging()
+private val log = KotlinLogging.logger { }

@@ -12,6 +12,7 @@ import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.exactly
 import dev.mokkery.verifySuspend
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -19,7 +20,6 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
-import org.lighthousegames.logging.logging
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -57,7 +57,7 @@ class LandingPageStoreTest {
       onNext = {
         this.launch {
           channel.send(it)
-          log.d { "Received $it" }
+          log.debug { "Received $it" }
         }
       }
     ))
@@ -85,12 +85,12 @@ class LandingPageStoreTest {
     landingPageStore.accept(LandingPageIntent.ToNextPage)
 
     val label = labelsChannel.receive()
-    log.d { "Received label" }
+    log.debug { "Received label" }
     assertEquals(label, LandingPageToNextPageLabel)
     verifySuspend(exactly(1)) {
       userConfigService.setUrl("a change")
     }
-    log.d { "After verify" }
+    log.debug { "After verify" }
     separateScope.cancel()
   }
 
@@ -101,12 +101,12 @@ class LandingPageStoreTest {
     // if the store.dispose() is not called before runTest finishes
     launch {
       landingPageStore.labels.collect {
-        log.d { "Received $it" }
+        log.debug { "Received $it" }
         assertEquals(LandingPageToNextPageLabel, it)
         verifySuspend(exactly(1)) {
           userConfigService.setUrl("a change")
         }
-        log.d { "Test finished successfully" }
+        log.debug { "Test finished successfully" }
       }
     }
 
@@ -124,7 +124,7 @@ class LandingPageStoreTest {
     landingPageStore.states(observer {
       this.launch {
         channel.send(it)
-        log.d { "Received $it" }
+        log.debug { "Received $it" }
       }
     })
 
@@ -141,4 +141,4 @@ class LandingPageStoreTest {
   }
 }
 
-private val log = logging()
+private val log = KotlinLogging.logger { }

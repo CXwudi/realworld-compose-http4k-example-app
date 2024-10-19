@@ -6,16 +6,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.startup.AppInitializer
 import com.arkivanov.decompose.defaultComponentContext
+import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.MainUI
 import org.koin.androix.startup.KoinInitializer
-import org.lighthousegames.logging.logging
 
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    log.i { "onCreate" }
+    log.info { "onCreate" }
 
     val defaultComponentContext = defaultComponentContext()
 
@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
 
   override fun onDestroy() {
     super.onDestroy()
-    log.i { "onDestroy" }
+    log.info { "onDestroy" }
   }
 }
 
-private val log = logging()
+private val log = KotlinLogging.logger { }

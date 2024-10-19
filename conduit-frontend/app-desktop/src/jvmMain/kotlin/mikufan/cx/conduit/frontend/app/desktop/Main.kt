@@ -6,12 +6,12 @@ import androidx.compose.ui.window.rememberWindowState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.frontend.app.desktop.util.runOnUiThread
 import mikufan.cx.conduit.frontend.logic.allModules
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.MainUI
 import org.koin.dsl.koinApplication
-import org.lighthousegames.logging.logging
 
 fun initKoin() = koinApplication {
   modules(allModules)
@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
     koin.get<RootNavComponentFactory>().create(defaultComponentContext)
   }
 
-  log.i { "Starting" }
+  log.info { "Starting" }
 
   application {
 
@@ -46,4 +46,4 @@ fun main(args: Array<String>) {
   }
 }
 
-private val log = logging()
+private val log = KotlinLogging.logger { }

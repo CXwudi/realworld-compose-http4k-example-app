@@ -4,6 +4,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,7 +14,6 @@ import mikufan.cx.conduit.frontend.ui.MainUI
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.core.KoinApplication
 import org.koin.dsl.koinApplication
-import org.lighthousegames.logging.logging
 import web.dom.DocumentVisibilityState
 import web.dom.document
 import web.events.EventType
@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
     val koin = initKoin().koin
     val rootComponent = koin.get<RootNavComponentFactory>().create(defaultComponentContext)
 
-    log.i { "Starting" }
+    log.info { "Starting" }
 
     onWasmReady {
       BrowserViewportWindow(title = "Conduit Web", canvasElementId = "ConduitCanvas") {
@@ -68,4 +68,4 @@ private fun LifecycleRegistry.attachToDocument() {
   document.addEventListener(type = EventType("visibilitychange"), handler = { onVisibilityChanged() })
 }
 
-private val log = logging()
+private val log = KotlinLogging.logger { }

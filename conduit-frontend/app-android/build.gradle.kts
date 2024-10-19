@@ -27,6 +27,8 @@ kotlin {
       implementation("io.insert-koin:koin-android")
       implementation("io.insert-koin:koin-androidx-startup")
 
+      implementation(libs.dev.frontend.slf4jAndroid)
+
     }
   }
 }

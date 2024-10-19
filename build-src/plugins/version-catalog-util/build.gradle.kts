@@ -32,7 +32,8 @@ buildConfig {
     buildConfigStringField("MviKotlinLogging", libs.dev.frontend.mvikotlinLogging)
 
     // Logging
-    buildConfigStringField("KmLogging", libs.dev.kmlogging)
+    buildConfigStringField("KotlinLogging", libs.dev.kotlinLogging)
+    buildConfigStringField("Slf4jAndroid", libs.dev.frontend.slf4jAndroid)
     buildConfigStringField("Logback", libs.dev.backend.logback)
 
     // Koin

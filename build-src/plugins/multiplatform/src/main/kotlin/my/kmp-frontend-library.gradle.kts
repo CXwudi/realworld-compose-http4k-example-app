@@ -24,7 +24,7 @@ kotlin {
       implementation(Libs.MviKotlinMain)
       implementation(Libs.MviKotlinCoroutines)
       implementation(Libs.MviKotlinLogging)
-      implementation(Libs.KmLogging)
+      implementation(Libs.KotlinLogging)
       implementation(project.dependencies.platform(Libs.KoinBom))
       implementation("io.insert-koin:koin-core")
     }
@@ -39,6 +39,7 @@ kotlin {
       implementation(Libs.AndroidXCoreKtx)
       implementation(Libs.AndroidXLifecycleKtx)
       implementation(Libs.AndroidXAppCompat)
+      implementation(Libs.Slf4jAndroid)
     }
 
     jvmMain.dependencies {

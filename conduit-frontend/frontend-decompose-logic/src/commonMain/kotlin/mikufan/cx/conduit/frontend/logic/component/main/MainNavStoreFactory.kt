@@ -5,12 +5,12 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.service.UserConfigService
 import mikufan.cx.conduit.frontend.logic.service.UserConfigState
-import org.lighthousegames.logging.logging
 
 class MainNavStoreFactory(
   private val storeFactory: StoreFactory,
@@ -23,14 +23,14 @@ class MainNavStoreFactory(
       onAction<Action> {
         val newMsg = it.toMsg()
         if (newMsg.targetMode != state().mode) {
-          log.i { "Switching main page mode to ${newMsg.targetMode}" }
+          log.info { "Switching main page mode to ${newMsg.targetMode}" }
           dispatch(newMsg)
         }
       }
       onIntent<MainNavIntent.ModeSwitching> { intent ->
         val newMode = intent.targetMode
         if (newMode != state().mode) {
-          log.i { "Switching main page mode to $newMode" }
+          log.info { "Switching main page mode to $newMode" }
           dispatch(Msg.ModeSwitching(newMode))
         }
       }
@@ -42,7 +42,7 @@ class MainNavStoreFactory(
           "$newMenuItem not found in $currentState, this should not happen"
         }
         if (currentState.pageIndex != newIdx) {
-          log.i { "Switching to page at index $newIdx" }
+          log.info { "Switching to page at index $newIdx" }
           dispatch(Msg.MenuIndexSwitching(newIdx))
         }
       }
@@ -97,4 +97,4 @@ class MainNavStoreFactory(
 
 }
 
-private val log = logging()
+private val log = KotlinLogging.logger { }
