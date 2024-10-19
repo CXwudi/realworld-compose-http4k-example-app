@@ -42,7 +42,7 @@ dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-lo
 dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:1.0.0-pre.819"
 
 dev-frontend-rebugger = "io.github.theapache64:rebugger:1.0.0-rc03"
-dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.7-0"
+dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.16-0"
 
 dev-frontend-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-frontend-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
