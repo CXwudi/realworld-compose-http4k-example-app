@@ -1,5 +1,10 @@
 import org.jetbrains.compose.compose
 
+/**
+ * The pure UI module in Compose Multiplatform.
+ *
+ * All navigation, state, routing, etc. should go to the [frontend-decompose-logic] module.
+ */
 plugins {
   id("my.kmp-frontend-library")
   alias(libs.plugins.kotlinCompose)
@@ -22,9 +27,9 @@ kotlin {
       implementation(compose.material3AdaptiveNavigationSuite)
       implementation(compose("org.jetbrains.compose.material3:material3-window-size-class"))
       implementation(compose.components.resources)
-
       implementation(compose.components.uiToolingPreview)
 
+      implementation(libs.dev.frontend.decomposeCompose)
       implementation("io.insert-koin:koin-compose")
     }
     commonJvmMain.dependencies {

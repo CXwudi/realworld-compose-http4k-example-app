@@ -1,3 +1,13 @@
+/**
+ * The core frontend business logic and navigation module with multiplatform support,
+ * powered by Decompose and MviKotlin.
+ *
+ * Must not contain any Compose Multiplatform related dependencies.
+ * Failing to do so will break the WASM target unit tests.
+ *
+ * Thanks to Decompose, you can plug in any UI framework you want,
+ * by simply importing this gradle module.
+ */
 plugins {
   id("my.kmp-frontend-library")
 }
@@ -7,6 +17,7 @@ android {
 }
 
 kotlin {
+
   sourceSets {
     commonMain.dependencies {
       // add dependencies that are specific for this decompose logic module
@@ -33,8 +44,13 @@ kotlin {
       implementation(libs.dev.frontend.kstore.storage)
     }
 
+    wasmJsMain.dependencies {
+      implementation(libs.dev.frontend.kstore.storage)
+    }
+
     iosMain.dependencies {
       implementation(libs.dev.frontend.kstore.file)
     }
   }
 }
+

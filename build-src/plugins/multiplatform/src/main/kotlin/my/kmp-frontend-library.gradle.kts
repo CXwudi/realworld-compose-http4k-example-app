@@ -6,6 +6,9 @@ import my.util.Libs
 /**
  * Common Kotlin Multiplatform setup for frontend modules,
  * built on top of [my.kmp-library] with frontend specific common dependencies.
+ *
+ * Must not contain any Compose Multiplatform related dependencies.
+ * Failing to do so will break the WASM target unit tests for non-compose gradle modules.
  */
 plugins {
   id("my.kmp-library")
@@ -19,7 +22,6 @@ kotlin {
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
       implementation(Libs.EssentyLifecycleCoroutines)
       implementation(Libs.Decompose)
-      implementation(Libs.DecomposeCompose)
       implementation(Libs.MviKotlin)
       implementation(Libs.MviKotlinMain)
       implementation(Libs.MviKotlinCoroutines)

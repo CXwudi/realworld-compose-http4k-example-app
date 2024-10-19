@@ -2,6 +2,7 @@ package my
 
 import my.util.Libs
 import my.util.Versions
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 
 /**
@@ -18,6 +19,32 @@ kotlin {
   jvm()
   js(IR) {
     browser {
+      testTask {
+        useKarma {
+          if (System.getenv("CI") == "true") {
+            useChromeHeadlessNoSandbox()
+          } else {
+            // for developers, please use your own browsers in convenience
+            useChromiumHeadless()
+          }
+        }
+      }
+    }
+  }
+  @OptIn(ExperimentalWasmDsl::class)
+  wasmJs {
+    // unsupported libraries:
+    // - io.github.theapache64:rebugger:1.0.0-rc03
+    browser {
+      // copied from https://github.com/Kotlin/kotlin-wasm-browser-template/blob/main/build.gradle.kts
+      // not sure if we really need this
+//      commonWebpackConfig {
+//        devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+//          static = (static ?: mutableListOf()).apply {
+//            add(project.rootDir.path)
+//          }
+//        }
+//      }
       testTask {
         useKarma {
           if (System.getenv("CI") == "true") {

@@ -279,7 +279,6 @@ expect fun determineScheme(
 /**
  * Determine the color schema only based on [darkTheme]
  */
-@Composable
 internal fun determineSchema_common(
   darkTheme: Boolean
 ): ColorScheme = when {
