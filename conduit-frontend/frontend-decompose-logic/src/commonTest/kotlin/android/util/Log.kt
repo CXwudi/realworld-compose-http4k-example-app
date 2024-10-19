@@ -7,6 +7,12 @@ import kotlin.jvm.JvmStatic
  */
 object Log {
   @JvmStatic
+  fun v(tag: String, msg: String): Int {
+    println("VERBOSE: $tag: $msg")
+    return 0
+  }
+
+  @JvmStatic
   fun d(tag: String, msg: String): Int {
     println("DEBUG: $tag: $msg")
     return 0
@@ -34,5 +40,10 @@ object Log {
   fun e(tag: String, msg: String): Int {
     println("ERROR: $tag: $msg")
     return 0
+  }
+
+  @JvmStatic
+  fun isLoggable(tag: String, level: Int): Boolean {
+    return true
   }
 }
