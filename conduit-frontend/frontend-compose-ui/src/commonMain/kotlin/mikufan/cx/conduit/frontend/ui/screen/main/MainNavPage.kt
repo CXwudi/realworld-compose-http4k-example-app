@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.theapache64.rebugger.Rebugger
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
@@ -64,11 +63,6 @@ private fun BottomNavigationBar(
   onSend: (MainNavIntent) -> Unit,
   selectedIndex: Int,
 ) {
-  Rebugger(trackMap = mapOf(
-    "mainStateMode" to mainStateMode,
-    "selectedIndex" to selectedIndex,
-    "onSend" to onSend,
-  ))
   NavigationBar {
     val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
       mapMenuItemEnum2NavItem(value, index, onSend)

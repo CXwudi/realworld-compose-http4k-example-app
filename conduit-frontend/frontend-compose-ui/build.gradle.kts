@@ -24,7 +24,6 @@ kotlin {
       implementation(compose.components.resources)
 
       implementation(compose.components.uiToolingPreview)
-      implementation(libs.dev.frontend.rebugger)
 
       implementation("io.insert-koin:koin-compose")
     }
