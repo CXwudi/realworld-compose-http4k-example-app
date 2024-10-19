@@ -1,6 +1,6 @@
 # ![RealWorld Example App](logo.png)
 
-<h3>2024.08 Update: I am pausing the implementation for now. More information at <a href="https://github.com/gothinkster/realworld/discussions/1545#discussioncomment-10165234">this discussion</a></h3>
+<h3>2024.10 Update: I am going to implement a minimal set of features in frontend first, more info in <a href=https://github.com/gothinkster/realworld/discussions/1545#discussioncomment-10984982>this discussion</a></h3>
 
 > <h3>Compose Multiplatform + http4k codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the <a href="https://github.com/gothinkster/realworld">RealWorld</a> spec and API. </h3>
 
