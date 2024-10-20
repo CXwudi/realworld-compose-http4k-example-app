@@ -88,9 +88,14 @@ kotlin {
     val commonJvmMain by creating {
       dependsOn(commonMain.get())
     }
-
     jvmMain.get().dependsOn(commonJvmMain)
     androidMain.get().dependsOn(commonJvmMain)
+
+    val commonWebMain by creating {
+      dependsOn(commonMain.get())
+    }
+    jsMain.get().dependsOn(commonWebMain)
+    wasmJsMain.get().dependsOn(commonWebMain)
   }
 }
 

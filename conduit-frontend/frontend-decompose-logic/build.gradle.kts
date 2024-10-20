@@ -34,6 +34,10 @@ kotlin {
       implementation(libs.dev.frontend.kstore.file)
     }
 
+    commonWebMain.dependencies {
+      implementation(libs.dev.frontend.kstore.storage)
+    }
+
     androidMain.dependencies {
     }
 
@@ -41,11 +45,9 @@ kotlin {
     }
 
     jsMain.dependencies {
-      implementation(libs.dev.frontend.kstore.storage)
     }
 
     wasmJsMain.dependencies {
-      implementation(libs.dev.frontend.kstore.storage)
     }
 
     iosMain.dependencies {
