@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="desktopRun" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="webRun JS" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/app-desktop" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/app-web" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="" />
       <option name="taskDescriptions">
@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":app-desktop:run" />
+          <option value=":app-web:jsBrowserDevelopmentRun" />
         </list>
       </option>
       <option name="vmOptions" />
