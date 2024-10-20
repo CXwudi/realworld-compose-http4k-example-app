@@ -1,5 +1,7 @@
 package mikufan.cx.conduit.frontend.app.js
 
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.window.CanvasBasedWindow
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
@@ -29,7 +31,7 @@ suspend fun initKoin(): KoinApplication {
 }
 
 
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalComposeUiApi::class)
 fun main(args: Array<String>) {
 
   val lifecycle = LifecycleRegistry()
@@ -44,9 +46,11 @@ fun main(args: Array<String>) {
     val rootComponent = koin.get<RootNavComponentFactory>().create(defaultComponentContext)
 
     log.info { "Starting" }
-
+    
     onWasmReady {
-      BrowserViewportWindow(title = "Conduit Web", canvasElementId = "ConduitCanvas") {
+      val canvasElementId = "ConduitCanvas"
+      setupBrowserUI(title = "Conduit Web", canvasElementId = canvasElementId)
+      CanvasBasedWindow(canvasElementId = canvasElementId) {
         MainUI(koin, rootComponent)
       }
     }

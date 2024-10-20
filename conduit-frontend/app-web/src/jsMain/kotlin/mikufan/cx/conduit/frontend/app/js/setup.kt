@@ -1,8 +1,5 @@
 package mikufan.cx.conduit.frontend.app.js
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.HTMLCanvasElement
@@ -13,12 +10,9 @@ import org.w3c.dom.HTMLStyleElement
  *
  * Copied and modified from https://github.com/chrisbanes/material3-windowsizeclass-multiplatform/blob/main/sample/web-js-app/src/jsMain/kotlin/dev/chrisbanes/material3/windowsizeclass/sample/BrowserViewportWindow.kt
  */
-@OptIn(ExperimentalComposeUiApi::class)
-@Suppress("FunctionName")
-fun BrowserViewportWindow(
+fun setupBrowserUI(
   title: String,
   canvasElementId: String = "ComposeTarget",
-  content: @Composable () -> Unit,
 ) {
   val htmlHeadElement = document.head!!
   htmlHeadElement.appendChild(
@@ -27,16 +21,10 @@ fun BrowserViewportWindow(
       appendChild(
         document.createTextNode(
           """
-                    html, body {
-                        overflow: hidden;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                    }
-
-                    #$canvasElementId {
-                        outline: none;
-                    }
-                    """.trimIndent(),
+            #$canvasElementId {
+                outline: none;
+            }
+          """.trimIndent(),
         ),
       )
     },
@@ -55,8 +43,4 @@ fun BrowserViewportWindow(
   val titleElement = htmlHeadElement.getElementsByTagName("title").item(0)
     ?: document.createElement("title").also { htmlHeadElement.appendChild(it) }
   titleElement.textContent = title
-
-  CanvasBasedWindow(title = title, canvasElementId = canvasElementId) {
-    content()
-  }
 }
