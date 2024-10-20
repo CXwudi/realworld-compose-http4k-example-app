@@ -49,8 +49,8 @@ fun main(args: Array<String>) {
     
     onWasmReady {
       val canvasElementId = "ConduitCanvas"
-      setupBrowserUI(title = "Conduit Web", canvasElementId = canvasElementId)
-      CanvasBasedWindow(canvasElementId = canvasElementId) {
+      setupBrowserUI()
+      CanvasBasedWindow(title = "Conduit Web", canvasElementId = canvasElementId) {
         MainUI(koin, rootComponent)
       }
     }
