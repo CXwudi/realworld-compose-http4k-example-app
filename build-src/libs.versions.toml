@@ -18,6 +18,7 @@ essenty = "2.1.0"
 decompose = "3.1.0"
 mvikotlin = "4.2.0"
 koin = "4.0.0"
+ktor = "3.0.0"
 kstore = "0.8.0"
 
 junit = "5.11.2"
@@ -32,6 +33,7 @@ dev-kotlinLogging = "io.github.oshai:kotlin-logging:7.0.0"
 dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0"
 dev-koinBom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 
+# frontend
 dev-frontend-essentyLifecycleCoroutines = { module = "com.arkivanov.essenty:lifecycle-coroutines", version.ref = "essenty" }
 dev-frontend-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 dev-frontend-decomposeCompose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
@@ -44,6 +46,7 @@ dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:
 dev-frontend-rebugger = "io.github.theapache64:rebugger:1.0.0-rc03"
 dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.16-0"
 
+dev-frontend-ktorBom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
 dev-frontend-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-frontend-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }

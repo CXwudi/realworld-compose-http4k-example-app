@@ -23,6 +23,10 @@ kotlin {
       // add dependencies that are specific for this decompose logic module
       // dependencies used in both this module and compose ui module are extracted into the precompiled script plugin
       implementation(libs.dev.frontend.kstore)
+      implementation(dependencies.platform(libs.dev.frontend.ktorBom))
+      implementation("io.ktor:ktor-client-core")
+      implementation("io.ktor:ktor-client-content-negotiation")
+      implementation("io.ktor:ktor-serialization-kotlinx-json")
       // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700,
       // but for some reason I still need it even I removed sqldelight
       implementation("co.touchlab:stately-common:2.1.0")
@@ -32,10 +36,12 @@ kotlin {
 
     commonJvmMain.dependencies {
       implementation(libs.dev.frontend.kstore.file)
+      implementation("io.ktor:ktor-client-okhttp")
     }
 
     commonWebMain.dependencies {
       implementation(libs.dev.frontend.kstore.storage)
+      implementation("io.ktor:ktor-client-js")
     }
 
     androidMain.dependencies {
@@ -52,6 +58,7 @@ kotlin {
 
     iosMain.dependencies {
       implementation(libs.dev.frontend.kstore.file)
+      implementation("io.ktor:ktor-client-darwin")
     }
   }
 }
