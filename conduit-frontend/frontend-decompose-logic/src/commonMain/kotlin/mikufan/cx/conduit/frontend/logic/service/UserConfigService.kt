@@ -1,8 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.service
 
 import io.github.xxfast.kstore.KStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import mikufan.cx.conduit.frontend.logic.repo.kstore.PersistedConfig
@@ -28,7 +26,6 @@ sealed interface UserConfigState {
 
 class UserConfigServiceImpl(
   private val kStore: KStore<PersistedConfig>,
-  private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
 ) : UserConfigService {
   /**
    * Note: under the hood, this is a state flow
