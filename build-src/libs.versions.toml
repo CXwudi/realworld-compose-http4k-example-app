@@ -10,6 +10,7 @@
 # 
 [versions]
 kotlin = "2.0.21"
+ksp = "2.0.21-1.0.25"
 java = "21"
 agp = "8.7.1" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 compose = "1.7.0"
@@ -18,8 +19,9 @@ essenty = "2.1.0"
 decompose = "3.1.0"
 mvikotlin = "4.2.0"
 koin = "4.0.0"
-ktor = "3.0.0"
 kstore = "0.8.0"
+ktor = "3.0.0"
+ktorfit = "2.1.0"
 
 junit = "5.11.2"
 http4k = "5.32.4.0"
@@ -47,6 +49,7 @@ dev-frontend-rebugger = "io.github.theapache64:rebugger:1.0.0-rc03"
 dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.16-0"
 
 dev-frontend-ktorBom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
+dev-frontend-ktorfitLibLight = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light-ktor-3.0.0", version.ref = "ktorfit" }
 dev-frontend-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-frontend-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
@@ -87,10 +90,12 @@ settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.8.0"
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 # a plugin used by gradle files for precompiled script plugin
 buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.5.0" }

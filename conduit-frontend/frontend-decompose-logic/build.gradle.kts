@@ -10,6 +10,8 @@
  */
 plugins {
   id("my.kmp-frontend-library")
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.ktorfit)
 }
 
 android {
@@ -27,6 +29,7 @@ kotlin {
       implementation("io.ktor:ktor-client-core")
       implementation("io.ktor:ktor-client-content-negotiation")
       implementation("io.ktor:ktor-serialization-kotlinx-json")
+      implementation(libs.dev.frontend.ktorfitLibLight)
       // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700,
       // but for some reason I still need it even I removed sqldelight
       implementation("co.touchlab:stately-common:2.1.0")
