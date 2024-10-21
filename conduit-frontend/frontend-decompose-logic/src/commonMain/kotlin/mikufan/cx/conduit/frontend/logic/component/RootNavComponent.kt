@@ -7,7 +7,8 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import kotlinx.coroutines.flow.distinctUntilChanged
+import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -72,8 +73,8 @@ class DefaultRootNavComponent(
           }
         }
       }
-      .distinctUntilChanged()
-      .collect {
+      .collectLatest {
+        log.debug { "Switching to $it" }
         stackNavigation.replaceCurrent(it)
       }
   }
@@ -127,3 +128,5 @@ class RootNavComponentFactory(
     mainNavComponentFactory = mainNavComponentFactory,
   )
 }
+
+private val log = KotlinLogging.logger { }

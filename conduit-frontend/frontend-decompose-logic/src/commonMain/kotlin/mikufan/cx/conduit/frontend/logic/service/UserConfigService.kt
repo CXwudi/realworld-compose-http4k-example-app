@@ -7,6 +7,9 @@ import mikufan.cx.conduit.frontend.logic.repo.kstore.PersistedConfig
 
 
 interface UserConfigService {
+  /**
+   * The default implementation uses a state flow.
+   */
   val userConfigFlow: Flow<UserConfigState>
 
   suspend fun setUrl(url: String? = null)

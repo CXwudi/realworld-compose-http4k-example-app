@@ -10,9 +10,10 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import com.arkivanov.mvikotlin.extensions.coroutines.states
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
@@ -71,11 +72,10 @@ class DefaultMainNavComponent(
     }
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   private suspend fun setupUserConfigStateToNavigationMapping() {
-    store.stateFlow
-      .collect {
-        log.debug { "Current state is $it" }
+    store.states
+      .collectLatest {
+        log.debug { "Switching to $it" }
         stackNavigation.replaceCurrent(enumToConfig(it.currentMenuItem))
       }
   }
