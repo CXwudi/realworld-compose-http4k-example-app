@@ -24,6 +24,8 @@ kotlin {
     commonMain.dependencies {
       // add dependencies that are specific for this decompose logic module
       // dependencies used in both this module and compose ui module are extracted into the precompiled script plugin
+      implementation("mikufan.cx.conduit:conduit-common")
+
       implementation(libs.dev.frontend.kstore)
       implementation(dependencies.platform(libs.dev.frontend.ktorBom))
       implementation("io.ktor:ktor-client-core")
