@@ -1,12 +1,11 @@
-package mikufan.cx.conduit.frontend.logic.service
+package mikufan.cx.conduit.frontend.logic.repo.kstore
 
 import io.github.xxfast.kstore.KStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import mikufan.cx.conduit.frontend.logic.repo.kstore.PersistedConfig
 
 
-interface UserConfigService {
+interface UserConfigKStore {
   /**
    * The default implementation uses a state flow.
    */
@@ -27,9 +26,9 @@ sealed interface UserConfigState {
   ) : UserConfigState
 }
 
-class UserConfigServiceImpl(
+class UserConfigKStoreImpl(
   private val kStore: KStore<PersistedConfig>,
-) : UserConfigService {
+) : UserConfigKStore {
   /**
    * Note: under the hood, this is a state flow
    */

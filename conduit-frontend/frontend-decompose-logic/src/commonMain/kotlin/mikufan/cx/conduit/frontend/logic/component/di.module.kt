@@ -31,3 +31,5 @@ val componentFactoryModule = module {
   singleOf(::LandingPageComponentFactory)
   singleOf(::AuthPageComponentFactory)
 }
+
+val decomposeViewModelModules = listOf(storeModule, componentFactoryModule)

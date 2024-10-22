@@ -1,14 +1,11 @@
 package mikufan.cx.conduit.frontend.logic.service
 
-import mikufan.cx.conduit.frontend.logic.repo.kstore.KStoreKey
-import mikufan.cx.conduit.frontend.logic.repo.repoModule
-import org.koin.core.qualifier.named
+import mikufan.cx.conduit.frontend.logic.repo.repoModules
 import org.koin.dsl.module
 
 
 /**
- * Require [repoModule]
+ * Require [repoModules]
  */
 val serviceModule = module {
-  single<UserConfigService> { UserConfigServiceImpl(get(named(KStoreKey.PERSISTED_CONFIG))) }
 }

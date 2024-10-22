@@ -1,14 +1,27 @@
 package mikufan.cx.conduit.frontend.logic.repo
 
-import mikufan.cx.conduit.frontend.logic.repo.kstore.kstoreModule
-import mikufan.cx.conduit.frontend.logic.repo.ktor.createDefaultHttpClient
-import mikufan.cx.conduit.frontend.logic.repo.ktor.createKtorfit
+import de.jensklingenberg.ktorfit.Ktorfit
+import mikufan.cx.conduit.frontend.logic.repo.api.createAuthApi
+import mikufan.cx.conduit.frontend.logic.repo.api.createDefaultHttpClient
+import mikufan.cx.conduit.frontend.logic.repo.api.createKtorfit
+import mikufan.cx.conduit.frontend.logic.repo.kstore.KStoreKey
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStoreImpl
+import mikufan.cx.conduit.frontend.logic.repo.kstore.kstoreKmpModule
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val repoModule = module {
-  includes(kstoreModule)
 
+val kstoreModule = module {
+  includes(kstoreKmpModule)
+  single<UserConfigKStore> { UserConfigKStoreImpl(get(named(KStoreKey.PERSISTED_CONFIG))) }
+}
+
+/**
+ * Require [kstoreModule]
+ */
+val apiModule = module {
   // Originally, we were planning to use a StateFlow<HttpClient> that reflect the user config changes,
   // but we are unsure which coroutine dispatcher to use for the flow,
   // it could be the root decompose component's dispatcher, but that would require us to pass the lifecycleOwner
@@ -18,4 +31,9 @@ val repoModule = module {
   // This also makes a better performance since we don't need to create a new HttpClient for each user config change.
   singleOf(::createDefaultHttpClient)
   singleOf(::createKtorfit)
+  single { get<Ktorfit>().createAuthApi() }
 }
+
+val repoModules = listOf(kstoreModule, apiModule)
+
+
