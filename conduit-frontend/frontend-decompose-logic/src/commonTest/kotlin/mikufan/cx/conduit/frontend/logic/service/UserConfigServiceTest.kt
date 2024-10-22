@@ -10,6 +10,8 @@ import io.github.xxfast.kstore.Codec
 import io.github.xxfast.kstore.KStore
 import kotlinx.coroutines.test.runTest
 import mikufan.cx.conduit.frontend.logic.repo.kstore.PersistedConfig
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStoreImpl
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,7 +20,7 @@ import kotlin.test.assertFailsWith
 class UserConfigServiceTest {
 
   lateinit var codec: Codec<PersistedConfig>
-  lateinit var userConfigService: UserConfigService
+  lateinit var userConfigKStore: UserConfigKStore
 
   @BeforeTest
   fun setUp() {
@@ -29,12 +31,12 @@ class UserConfigServiceTest {
       PersistedConfig(),
       codec = codec
     )
-    userConfigService = UserConfigServiceImpl(kstore)
+    userConfigKStore = UserConfigKStoreImpl(kstore)
   }
 
   @Test
   fun testSetUrlNormalFlow() = runTest {
-    userConfigService.setUrl("some url")
+    userConfigKStore.setUrl("some url")
     verifySuspend(exactly(1)) {
       codec.decode()
       codec.encode(any())
@@ -44,7 +46,7 @@ class UserConfigServiceTest {
   @Test
   fun testSetUrlErrorFlow() = runTest {
     val exp = assertFailsWith<IllegalArgumentException> {
-      userConfigService.setUrl("")
+      userConfigKStore.setUrl("")
     }
     assertEquals("url cannot be empty", exp.message)
   }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import mikufan.cx.conduit.frontend.logic.service.UserConfigService
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 
 
 sealed interface LandingPageIntent {
@@ -27,7 +27,7 @@ data class LandingPageState(
 
 class LandingPageStoreFactory(
   private val storeFactory: StoreFactory,
-  private val userConfigService: UserConfigService,
+  private val userConfigKStore: UserConfigKStore,
   mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
   defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
   ) {
@@ -49,7 +49,7 @@ class LandingPageStoreFactory(
         launch {
           try {
             withContext(defaultDispatcher) {
-              userConfigService.setUrl(state().url)
+              userConfigKStore.setUrl(state().url)
 //              log.debug { "Set url = ${state().url}" }
             }
             // this label is in fact unused, because every other component is subscribing the userConfigService directly

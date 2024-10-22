@@ -9,12 +9,12 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import mikufan.cx.conduit.frontend.logic.service.UserConfigService
-import mikufan.cx.conduit.frontend.logic.service.UserConfigState
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
 
 class MainNavStoreFactory(
   private val storeFactory: StoreFactory,
-  private val userConfigService: UserConfigService,
+  private val userConfigKStore: UserConfigKStore,
   private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) {
 
@@ -58,7 +58,7 @@ class MainNavStoreFactory(
   private fun createBootstrapper(): Bootstrapper<Action> =
     coroutineBootstrapper(dispatcher) {
       launch {
-        userConfigService.userConfigFlow.collect {
+        userConfigKStore.userConfigFlow.collect {
           dispatch(Action(it))
         }
       }

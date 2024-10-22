@@ -7,11 +7,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import mikufan.cx.conduit.frontend.logic.service.UserConfigService
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 
 class AuthPageStoreFactory(
   private val storeFactory: StoreFactory,
-  private val userConfigService: UserConfigService,
+  private val userConfigKStore: UserConfigKStore,
   dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) {
 
@@ -34,7 +34,7 @@ class AuthPageStoreFactory(
       onIntent<AuthPageIntent.BackToLanding> {
         launch {
           withContext(Dispatchers.Default) {
-            userConfigService.reset()
+            userConfigKStore.reset()
           }
           publish(Unit) // purely for test purpose
         }

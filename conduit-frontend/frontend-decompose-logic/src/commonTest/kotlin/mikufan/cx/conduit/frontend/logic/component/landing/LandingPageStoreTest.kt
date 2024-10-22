@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import mikufan.cx.conduit.frontend.logic.service.UserConfigService
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -29,15 +29,15 @@ class LandingPageStoreTest {
 
   private val testDispatcher = StandardTestDispatcher()
 
-  lateinit var userConfigService: UserConfigService
+  lateinit var userConfigKStore: UserConfigKStore
   lateinit var landingPageStore: Store<LandingPageIntent, LandingPageState, LandingPageToNextPageLabel>
 
   @BeforeTest
   fun setUp() {
-    userConfigService = mock()
+    userConfigKStore = mock()
     landingPageStore = LandingPageStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
-      userConfigService,
+      userConfigKStore,
       testDispatcher
     ).createStore()
   }
@@ -69,7 +69,7 @@ class LandingPageStoreTest {
     val label = channel.receive()
     assertEquals(label, LandingPageToNextPageLabel)
     verifySuspend(exactly(1)) {
-      userConfigService.setUrl("a change")
+      userConfigKStore.setUrl("a change")
     }
   }
 
@@ -88,7 +88,7 @@ class LandingPageStoreTest {
     log.debug { "Received label" }
     assertEquals(label, LandingPageToNextPageLabel)
     verifySuspend(exactly(1)) {
-      userConfigService.setUrl("a change")
+      userConfigKStore.setUrl("a change")
     }
     log.debug { "After verify" }
     separateScope.cancel()
@@ -104,7 +104,7 @@ class LandingPageStoreTest {
         log.debug { "Received $it" }
         assertEquals(LandingPageToNextPageLabel, it)
         verifySuspend(exactly(1)) {
-          userConfigService.setUrl("a change")
+          userConfigKStore.setUrl("a change")
         }
         log.debug { "Test finished successfully" }
       }
@@ -118,7 +118,7 @@ class LandingPageStoreTest {
 
   @Test
   fun testErrorFlow1() = runTest(testDispatcher) {
-    everySuspend { userConfigService.setUrl("") } throws IllegalArgumentException("some error")
+    everySuspend { userConfigKStore.setUrl("") } throws IllegalArgumentException("some error")
 
     val channel = Channel<LandingPageState>()
     landingPageStore.states(observer {
@@ -135,7 +135,7 @@ class LandingPageStoreTest {
 
     assertEquals("some error", newState.errorMsg)
     verifySuspend(exactly(1)) {
-      userConfigService.setUrl("")
+      userConfigKStore.setUrl("")
     }
     channel.close()
   }

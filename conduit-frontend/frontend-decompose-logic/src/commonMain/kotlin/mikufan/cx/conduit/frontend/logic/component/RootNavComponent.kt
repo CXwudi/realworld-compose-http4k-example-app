@@ -16,8 +16,8 @@ import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentFactory
-import mikufan.cx.conduit.frontend.logic.service.UserConfigService
-import mikufan.cx.conduit.frontend.logic.service.UserConfigState
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
 
 interface RootNavComponent {
   val childStack: Value<ChildStack<*, RootComponentChild>>
@@ -38,7 +38,7 @@ sealed interface RootComponentChild {
 
 class DefaultRootNavComponent(
   componentContext: ComponentContext,
-  private val userConfigService: UserConfigService,
+  private val userConfigKStore: UserConfigKStore,
   private val landingPageComponentFactory: LandingPageComponentFactory,
   private val mainNavComponentFactory: MainNavComponentFactory,
 ) : RootNavComponent, ComponentContext by componentContext {
@@ -60,7 +60,7 @@ class DefaultRootNavComponent(
   }
 
   private suspend fun setupUserConfigStateToNavigation() {
-    userConfigService.userConfigFlow
+    userConfigKStore.userConfigFlow
       .map {
         when (it) {
           is UserConfigState.Loading -> Config.Loading
@@ -100,7 +100,7 @@ class DefaultRootNavComponent(
    * This config doesn't need to contain any data,
    * because each page is pretty much fetching the data from services,
    *
-   * E.g. Landing page pretty much fetch data from [UserConfigService], and
+   * E.g. Landing page pretty much fetch data from [UserConfigKStore], and
    * Main page will also fetch data mainly from various services.
    */
   @Serializable
@@ -117,13 +117,13 @@ class DefaultRootNavComponent(
 }
 
 class RootNavComponentFactory(
-  private val userConfigService: UserConfigService,
+  private val userConfigKStore: UserConfigKStore,
   private val landingPageComponentFactory: LandingPageComponentFactory,
   private val mainNavComponentFactory: MainNavComponentFactory,
 ) {
   fun create(componentContext: ComponentContext) = DefaultRootNavComponent(
     componentContext = componentContext,
-    userConfigService = userConfigService,
+    userConfigKStore = userConfigKStore,
     landingPageComponentFactory = landingPageComponentFactory,
     mainNavComponentFactory = mainNavComponentFactory,
   )
