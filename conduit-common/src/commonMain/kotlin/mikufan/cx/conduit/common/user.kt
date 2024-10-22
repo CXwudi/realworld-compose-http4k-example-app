@@ -4,15 +4,15 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
+data class NewUserReq(
+  val user: NewUserDto
+)
+
+@Serializable
 data class NewUserDto(
   val email: String,
   val username: String,
   val password: String
-)
-
-@Serializable
-data class NewUserReq(
-  val user: NewUserDto
 )
 
 fun NewUserReq(
@@ -20,6 +20,13 @@ fun NewUserReq(
   username: String,
   password: String
 ) = NewUserReq(NewUserDto(email, username, password))
+
+
+
+@Serializable
+data class UserRsp(
+  val user: UserDto
+)
 
 @Serializable
 data class UserDto(
@@ -29,10 +36,5 @@ data class UserDto(
   val bio: String?,
   val image: String?,
   val token: String?
-)
-
-@Serializable
-data class UserRsp(
-  val user: UserDto
 )
 
