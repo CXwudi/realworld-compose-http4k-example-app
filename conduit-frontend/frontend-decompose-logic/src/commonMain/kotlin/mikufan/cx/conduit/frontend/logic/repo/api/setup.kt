@@ -25,23 +25,23 @@ expect fun setupKtorClient(config: HttpClientConfig<*>.() -> Unit = {}): HttpCli
 fun createKtorfit(httpClient: HttpClient): Ktorfit = Ktorfit.Builder().httpClient(httpClient).build()
 
 fun createBaseUrlAndTokenProvidingPlugin(userConfigKStore: UserConfigKStore) = createClientPlugin("BaseUrlAndTokenProvidingPlugin") {
-  onRequest { req, _ ->
+  onRequest { requestBuilder, _ ->
     val userConfigState = userConfigKStore.userConfigFlow.last()
     if (userConfigState !is UserConfigState.Loaded) {
       throw IllegalStateException("User config is not loaded when making API call")
     }
 
-    val baseUrl = userConfigState.url ?: throw IllegalStateException("User config url is not set")
-
-    req.url { reqUrlBuilder ->
-      URLBuilder(baseUrl).apply {
-        appendEncodedPathSegments(reqUrlBuilder.encodedPathSegments)
-        parameters.appendAll(reqUrlBuilder.parameters.build())
+    userConfigState.url?.let { baseUrl ->
+      requestBuilder.url { reqUrlBuilder ->
+        URLBuilder(baseUrl).apply {
+          appendEncodedPathSegments(reqUrlBuilder.encodedPathSegments)
+          parameters.appendAll(reqUrlBuilder.parameters.build())
+        }
       }
     }
 
     userConfigState.token?.let {
-      req.headers["Authorization"] = "Token $it"
+      requestBuilder.headers["Authorization"] = "Token $it"
     }
   }
 }
