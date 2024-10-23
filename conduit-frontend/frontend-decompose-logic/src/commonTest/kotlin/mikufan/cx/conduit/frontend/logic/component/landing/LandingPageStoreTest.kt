@@ -68,7 +68,7 @@ class LandingPageStoreTest {
 
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
-    landingPageStore.accept(LandingPageIntent.ToNextPage)
+    landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
 
     val label = channel.receive()
     assertEquals(label, LandingPageToNextPageLabel)
@@ -90,7 +90,7 @@ class LandingPageStoreTest {
 
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
-    landingPageStore.accept(LandingPageIntent.ToNextPage)
+    landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
 
     val label = labelsChannel.receive()
     log.debug { "Received label" }
@@ -123,7 +123,7 @@ class LandingPageStoreTest {
 
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
-    landingPageStore.accept(LandingPageIntent.ToNextPage)
+    landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
     landingPageStore.dispose()
     // can't do cancel() as it will throw an exception
   }
@@ -140,7 +140,7 @@ class LandingPageStoreTest {
       }
     })
 
-    landingPageStore.accept(LandingPageIntent.ToNextPage)
+    landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
 
     channel.receive() // ignore the first initial state
     val newState = channel.receive()

@@ -15,7 +15,7 @@ import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
 
 sealed interface LandingPageIntent {
   data class TextChanged(val text: String) : LandingPageIntent
-  data object ToNextPage : LandingPageIntent
+  data object CheckAndMoveToMainPage : LandingPageIntent
 }
 
 data object LandingPageToNextPageLabel
@@ -49,7 +49,7 @@ class LandingPageStoreFactory(
           dispatch(Msg.ErrorMsgChanged(""))
         }
       }
-      onIntent<LandingPageIntent.ToNextPage> {
+      onIntent<LandingPageIntent.CheckAndMoveToMainPage> {
 
         launch {
           try {
@@ -63,7 +63,7 @@ class LandingPageStoreFactory(
             }
             log.debug { "Set url = $url" }
             publish(LandingPageToNextPageLabel)
-          } catch (e: Exception) {
+          } catch (e: Throwable) { // TODO: extract out an expect funtion for properly handling throwable based on platform
             log.debug { "Failed with exception $e" }
             dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
           }
