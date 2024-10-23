@@ -8,7 +8,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
 
@@ -26,7 +26,7 @@ fun createKtorfit(httpClient: HttpClient): Ktorfit = Ktorfit.Builder().httpClien
 
 fun createBaseUrlAndTokenProvidingPlugin(userConfigKStore: UserConfigKStore) = createClientPlugin("BaseUrlAndTokenProvidingPlugin") {
   onRequest { requestBuilder, _ ->
-    val userConfigState = userConfigKStore.userConfigFlow.last()
+    val userConfigState = userConfigKStore.userConfigFlow.first()
     if (userConfigState !is UserConfigState.Loaded) {
       throw IllegalStateException("User config is not loaded when making API call")
     }

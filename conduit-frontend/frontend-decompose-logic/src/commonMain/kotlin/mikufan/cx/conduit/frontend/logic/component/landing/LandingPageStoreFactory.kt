@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
 
 
 sealed interface LandingPageIntent {
@@ -28,9 +29,10 @@ data class LandingPageState(
 class LandingPageStoreFactory(
   private val storeFactory: StoreFactory,
   private val userConfigKStore: UserConfigKStore,
+  private val landingService: LandingService,
   mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
   defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-  ) {
+) {
 
   internal sealed interface Msg {
     data class TextChanged(val text: String) : Msg
@@ -38,7 +40,9 @@ class LandingPageStoreFactory(
   }
 
   private val executor =
-    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel>(mainDispatcher) {
+    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel>(
+      mainDispatcher
+    ) {
       onIntent<LandingPageIntent.TextChanged> {
         dispatch(Msg.TextChanged(it.text))
         if (state().errorMsg.isNotBlank()) {
@@ -46,16 +50,29 @@ class LandingPageStoreFactory(
         }
       }
       onIntent<LandingPageIntent.ToNextPage> {
+
         launch {
           try {
-            withContext(defaultDispatcher) {
-              userConfigKStore.setUrl(state().url)
-//              log.debug { "Set url = ${state().url}" }
+            val url = state().url
+            log.info { "Checking accessibility for $url" }
+            val checkResult = withContext(defaultDispatcher) {
+              landingService.checkAccessibility(url)
             }
-            // this label is in fact unused, because every other component is subscribing the userConfigService directly
-            publish(LandingPageToNextPageLabel)
+            if (checkResult.isFailure) {
+              dispatch(Msg.ErrorMsgChanged(checkResult.exceptionOrNull()?.message ?: "Unknown error"))
+              log.debug { "Failed with ${checkResult.exceptionOrNull()?.message}" }
+            } else {
+              withContext(defaultDispatcher) {
+                userConfigKStore.setUrl(url)
+              }
+              log.debug { "Set url = $url" }
+              // this label is in fact unused, because every other component is subscribing the userConfigService directly
+
+              publish(LandingPageToNextPageLabel)
 //            log.debug { "Pushed the label" }
-          } catch (e: IllegalArgumentException) {
+            }
+          } catch (e: Exception) {
+            log.debug { "Failed with exception $e" }
             dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
           }
         }
@@ -70,11 +87,11 @@ class LandingPageStoreFactory(
   }
 
   fun createStore() = storeFactory.create(
-      name = "LandingPageStore",
-      initialState = LandingPageState("", ""),
-      executorFactory = executor,
-      reducer = reducer
-    )
+    name = "LandingPageStore",
+    initialState = LandingPageState("", ""),
+    executorFactory = executor,
+    reducer = reducer
+  )
 }
 
 private val log = KotlinLogging.logger { }

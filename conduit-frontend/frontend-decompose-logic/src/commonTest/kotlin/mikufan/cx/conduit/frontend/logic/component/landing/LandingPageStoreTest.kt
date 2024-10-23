@@ -7,8 +7,9 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.labelsChannel
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import dev.mokkery.answering.throws
+import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.exactly
 import dev.mokkery.verifySuspend
@@ -20,6 +21,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -30,14 +32,17 @@ class LandingPageStoreTest {
   private val testDispatcher = StandardTestDispatcher()
 
   lateinit var userConfigKStore: UserConfigKStore
+  lateinit var landingService: LandingService
   lateinit var landingPageStore: Store<LandingPageIntent, LandingPageState, LandingPageToNextPageLabel>
 
   @BeforeTest
   fun setUp() {
     userConfigKStore = mock()
+    landingService = mock()
     landingPageStore = LandingPageStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
       userConfigKStore,
+      landingService,
       testDispatcher
     ).createStore()
   }
@@ -48,8 +53,7 @@ class LandingPageStoreTest {
   }
 
   @Test
-  fun testNormalFlow1() = runTest(testDispatcher) {
-    // Can't make Store.labels Flow way working in single-threaded env like JS or single-threaded Dispatcher
+  fun testNormalFlowWithManualChannel() = runTest(testDispatcher) {
     val channel = Channel<LandingPageToNextPageLabel>()
 
     landingPageStore.labels(observer(
@@ -62,6 +66,9 @@ class LandingPageStoreTest {
       }
     ))
 
+    everySuspend { landingService.checkAccessibility(any()) } returns Result.success(Unit)
+
+
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
     landingPageStore.accept(LandingPageIntent.ToNextPage)
@@ -70,15 +77,21 @@ class LandingPageStoreTest {
     assertEquals(label, LandingPageToNextPageLabel)
     verifySuspend(exactly(1)) {
       userConfigKStore.setUrl("a change")
+      landingService.checkAccessibility("a change")
     }
   }
 
   @OptIn(ExperimentalMviKotlinApi::class)
   @Test
-  fun testNormalFlowWithAnotherWay() = runTest(testDispatcher) {
+  fun testNormalFlowWithLabelChannelAndSeparateTestScope() = runTest(testDispatcher) {
     // the labelsChannel internally will create a coroutine and just wait for cancellation
-    val separateScope = TestScope(testDispatcher) // hence using separate scope for label channel to unblock the runTest
+    // hence using separate scope for label channel to unblock the runTest
+    // otherwise deadlock as the runTest is waiting for the labelsChannel to be closed,
+    // but the labelsChannel is waiting for the runTest to close the scope
+    val separateScope = TestScope(testDispatcher)
     val labelsChannel = landingPageStore.labelsChannel(separateScope)
+
+    everySuspend { landingService.checkAccessibility(any()) } returns Result.success(Unit)
 
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
@@ -89,13 +102,17 @@ class LandingPageStoreTest {
     assertEquals(label, LandingPageToNextPageLabel)
     verifySuspend(exactly(1)) {
       userConfigKStore.setUrl("a change")
+      landingService.checkAccessibility("a change")
     }
     log.debug { "After verify" }
     separateScope.cancel()
+//    labelsChannel.dispose() // optional you can do this instead of separateScope.cancel()
   }
 
   @Test
   fun testNormalFlowWithFlow() = runTest(testDispatcher) {
+    everySuspend { landingService.checkAccessibility(any()) } returns Result.success(Unit)
+
     // the labels Flow works and the label is actually dispatched.
     // however, the launched coroutine is stuck on the collect call, so the test will never finish
     // if the store.dispose() is not called before runTest finishes
@@ -105,6 +122,7 @@ class LandingPageStoreTest {
         assertEquals(LandingPageToNextPageLabel, it)
         verifySuspend(exactly(1)) {
           userConfigKStore.setUrl("a change")
+          landingService.checkAccessibility("a change")
         }
         log.debug { "Test finished successfully" }
       }
@@ -114,11 +132,12 @@ class LandingPageStoreTest {
     assertEquals("a change", landingPageStore.state.url)
     landingPageStore.accept(LandingPageIntent.ToNextPage)
     landingPageStore.dispose()
+    // can't do cancel() as it will throw an exception
   }
 
   @Test
   fun testErrorFlow1() = runTest(testDispatcher) {
-    everySuspend { userConfigKStore.setUrl("") } throws IllegalArgumentException("some error")
+    everySuspend { landingService.checkAccessibility(any()) } returns Result.failure(Exception("some error"))
 
     val channel = Channel<LandingPageState>()
     landingPageStore.states(observer {
@@ -135,7 +154,7 @@ class LandingPageStoreTest {
 
     assertEquals("some error", newState.errorMsg)
     verifySuspend(exactly(1)) {
-      userConfigKStore.setUrl("")
+      landingService.checkAccessibility("")
     }
     channel.close()
   }

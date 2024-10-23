@@ -2,22 +2,35 @@ package mikufan.cx.conduit.frontend.logic.service.landing
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.isSuccess
+import io.ktor.http.takeFrom
 import mikufan.cx.conduit.common.ArticlesRsp
 
 
-class LandingService(
-  private val httpClient: HttpClient,
-) {
+interface LandingService {
+  suspend fun checkAccessibility(url: String): Result<Unit>
+}
 
-  suspend fun checkAccessibility(url: String): Result<Unit> = try {
+class DefaultLandingService(
+  private val httpClient: HttpClient,
+): LandingService {
+
+  override suspend fun checkAccessibility(url: String): Result<Unit> = try {
+    val normalizedUrl = if (url.startsWith("http://") || url.startsWith("https://")) {
+      url
+    } else {
+      "http://$url"
+    }.removeSuffix("/")
     val httpResponse = httpClient.get {
       url {
-        URLBuilder(url).appendEncodedPathSegments("articles")
+        takeFrom(normalizedUrl).appendEncodedPathSegments("articles")
+      }
+      timeout {
+        requestTimeoutMillis = 10000
       }
     }
     if (httpResponse.status.isSuccess()) {

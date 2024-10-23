@@ -17,7 +17,8 @@ import org.koin.dsl.module
  */
 val storeModule = module {
   single<StoreFactory> { DefaultStoreFactory() }
-  single { LandingPageStoreFactory(get(), get()) }
+  // can't use singleOf on constructor with default parameters
+  single { LandingPageStoreFactory(get(), get(), get()) }
   single { MainNavStoreFactory(get(), get()) }
   single { AuthPageStoreFactory(get(), get()) }
 }
