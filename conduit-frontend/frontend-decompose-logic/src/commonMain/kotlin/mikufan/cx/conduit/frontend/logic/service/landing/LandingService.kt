@@ -22,15 +22,27 @@ interface LandingService {
 
 class DefaultLandingService(
   private val httpClient: HttpClient,
-): LandingService {
+) : LandingService {
+
+  companion object {
+    private val ALLOWED_PROTOCOLS = setOf("http", "https")
+  }
 
   override suspend fun checkAccessibility(url: String) {
-    val normalizedUrl = if (url.startsWith("http://") || url.startsWith("https://")) {
-      url
-    } else {
-      "http://$url"
+    val normalizedUrl = when {
+      // Extract and validate existing protocol
+      url.contains("://") -> {
+        val protocol = url.substringBefore("://")
+        if (protocol.lowercase() !in ALLOWED_PROTOCOLS) {
+          error("Invalid protocol: $protocol. Only HTTP/HTTPS allowed")
+        }
+        url
+      }
+      // Add default http protocol if missing
+      else -> "http://$url"
     }.removeSuffix("/")
 
+    // send a request to a public api to check if the url is accessible
     val httpResponse = httpClient.get {
       url {
         takeFrom(normalizedUrl).appendEncodedPathSegments("articles")
@@ -41,16 +53,17 @@ class DefaultLandingService(
     }
 
     if (!httpResponse.status.isSuccess()) {
-      throw Exception("Failed with status ${httpResponse.status}: ${httpResponse.bodyAsText()}")
+      error("Failed with status ${httpResponse.status}: ${httpResponse.bodyAsText()}")
     }
 
+    // make sure the response is what we are looking for
     val articlesRsp = httpResponse.body<ArticlesRsp>()
     if (articlesRsp.articlesCount == 0 && articlesRsp.articles.isEmpty()) {
       return
     } else if (articlesRsp.articlesCount > 0 && articlesRsp.articles.isNotEmpty() && articlesRsp.articles.first().body.isNotEmpty()) {
       return
     } else {
-      throw Exception("Invalid response")
+      error("Invalid response")
     }
   }
 
