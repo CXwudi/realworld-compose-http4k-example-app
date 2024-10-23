@@ -4,7 +4,7 @@ import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.rx.observer
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +40,6 @@ private class StateFlowValue<out T : Any>(
   }
 }
 
-@ExperimentalCoroutinesApi
 fun <T : Any> Value<T>.toStateFlow(): StateFlow<T> =
   if (this is StateFlowValue) {
     this.source
@@ -48,6 +47,7 @@ fun <T : Any> Value<T>.toStateFlow(): StateFlow<T> =
     ValueStateFlow(this)
   }
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 private class ValueStateFlow<out T : Any>(val source: Value<T>) : StateFlow<T> {
 
   override val value: T
@@ -80,5 +80,5 @@ fun <T : Any> Value<T>.toFlow() = callbackFlow {
 
 fun <T : Any> Value<T>.toStateFlow(
   scope: CoroutineScope,
-  started: SharingStarted = SharingStarted.Eagerly,
+  started: SharingStarted = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
 ): StateFlow<T> = toFlow().stateIn(scope, started, this.value)
