@@ -55,27 +55,20 @@ class LandingPageStoreFactory(
           try {
             val url = state().url
             log.info { "Checking accessibility for $url" }
-            val checkResult = withContext(defaultDispatcher) {
+            withContext(defaultDispatcher) {
               landingService.checkAccessibility(url)
             }
-            if (checkResult.isFailure) {
-              dispatch(Msg.ErrorMsgChanged(checkResult.exceptionOrNull()?.message ?: "Unknown error"))
-              log.debug { "Failed with ${checkResult.exceptionOrNull()?.message}" }
-            } else {
-              withContext(defaultDispatcher) {
-                userConfigKStore.setUrl(url)
-              }
-              log.debug { "Set url = $url" }
-              // this label is in fact unused, because every other component is subscribing the userConfigService directly
-
-              publish(LandingPageToNextPageLabel)
-//            log.debug { "Pushed the label" }
+            withContext(defaultDispatcher) {
+              userConfigKStore.setUrl(url)
             }
+            log.debug { "Set url = $url" }
+            publish(LandingPageToNextPageLabel)
           } catch (e: Exception) {
             log.debug { "Failed with exception $e" }
             dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
           }
         }
+
       }
     }
 

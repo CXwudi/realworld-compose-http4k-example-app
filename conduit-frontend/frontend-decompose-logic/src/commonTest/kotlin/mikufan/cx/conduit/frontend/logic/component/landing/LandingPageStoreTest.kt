@@ -7,7 +7,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.labelsChannel
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import dev.mokkery.answering.returns
+import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
@@ -66,9 +66,6 @@ class LandingPageStoreTest {
       }
     ))
 
-    everySuspend { landingService.checkAccessibility(any()) } returns Result.success(Unit)
-
-
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
     landingPageStore.accept(LandingPageIntent.ToNextPage)
@@ -91,8 +88,6 @@ class LandingPageStoreTest {
     val separateScope = TestScope(testDispatcher)
     val labelsChannel = landingPageStore.labelsChannel(separateScope)
 
-    everySuspend { landingService.checkAccessibility(any()) } returns Result.success(Unit)
-
     landingPageStore.accept(LandingPageIntent.TextChanged("a change"))
     assertEquals("a change", landingPageStore.state.url)
     landingPageStore.accept(LandingPageIntent.ToNextPage)
@@ -111,8 +106,6 @@ class LandingPageStoreTest {
 
   @Test
   fun testNormalFlowWithFlow() = runTest(testDispatcher) {
-    everySuspend { landingService.checkAccessibility(any()) } returns Result.success(Unit)
-
     // the labels Flow works and the label is actually dispatched.
     // however, the launched coroutine is stuck on the collect call, so the test will never finish
     // if the store.dispose() is not called before runTest finishes
@@ -137,7 +130,7 @@ class LandingPageStoreTest {
 
   @Test
   fun testErrorFlow1() = runTest(testDispatcher) {
-    everySuspend { landingService.checkAccessibility(any()) } returns Result.failure(Exception("some error"))
+    everySuspend { landingService.checkAccessibility(any()) } throws Exception("some error")
 
     val channel = Channel<LandingPageState>()
     landingPageStore.states(observer {

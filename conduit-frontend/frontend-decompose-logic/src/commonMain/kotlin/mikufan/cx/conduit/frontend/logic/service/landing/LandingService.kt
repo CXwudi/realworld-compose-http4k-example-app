@@ -12,19 +12,25 @@ import mikufan.cx.conduit.common.ArticlesRsp
 
 
 interface LandingService {
-  suspend fun checkAccessibility(url: String): Result<Unit>
+  /**
+   * Check accessibility of the given [url].
+   *
+   * @throws Exception if in any case the [url] is not accessible.
+   */
+  suspend fun checkAccessibility(url: String)
 }
 
 class DefaultLandingService(
   private val httpClient: HttpClient,
 ): LandingService {
 
-  override suspend fun checkAccessibility(url: String): Result<Unit> = try {
+  override suspend fun checkAccessibility(url: String) {
     val normalizedUrl = if (url.startsWith("http://") || url.startsWith("https://")) {
       url
     } else {
       "http://$url"
     }.removeSuffix("/")
+
     val httpResponse = httpClient.get {
       url {
         takeFrom(normalizedUrl).appendEncodedPathSegments("articles")
@@ -33,20 +39,19 @@ class DefaultLandingService(
         requestTimeoutMillis = 10000
       }
     }
-    if (httpResponse.status.isSuccess()) {
-      val articlesRsp = httpResponse.body<ArticlesRsp>()
-      if (articlesRsp.articlesCount == 0 && articlesRsp.articles.isEmpty()) {
-        Result.success(Unit)
-      } else if (articlesRsp.articlesCount > 0 && articlesRsp.articles.isNotEmpty() && articlesRsp.articles.first().body.isNotEmpty()) {
-        Result.success(Unit)
-      } else {
-        Result.failure(Exception("Invalid response"))
-      }
-    } else {
-      Result.failure(Exception("Failed with status ${httpResponse.status}: ${httpResponse.bodyAsText()}"))
+
+    if (!httpResponse.status.isSuccess()) {
+      throw Exception("Failed with status ${httpResponse.status}: ${httpResponse.bodyAsText()}")
     }
-  } catch (e: Exception) {
-    Result.failure(e)
+
+    val articlesRsp = httpResponse.body<ArticlesRsp>()
+    if (articlesRsp.articlesCount == 0 && articlesRsp.articles.isEmpty()) {
+      return
+    } else if (articlesRsp.articlesCount > 0 && articlesRsp.articles.isNotEmpty() && articlesRsp.articles.first().body.isNotEmpty()) {
+      return
+    } else {
+      throw Exception("Invalid response")
+    }
   }
 
 }
