@@ -1,4 +1,4 @@
-package mikufan.cx.conduit.frontend.logic
+package mikufan.cx.conduit.frontend.logic.poc
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.URLBuilder
@@ -6,7 +6,7 @@ import io.ktor.http.appendEncodedPathSegments
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-class POCTest {
+class HttpPoc {
 
   @Test
   @Ignore
