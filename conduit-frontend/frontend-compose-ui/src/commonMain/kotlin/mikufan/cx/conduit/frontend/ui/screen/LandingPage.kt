@@ -47,12 +47,13 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
       OutlinedTextField(
         value = urlText.value,
         label = { Text("URL") },
-        onValueChange = { component.send(LandingPageIntent.TextChanged(it)) }
+        onValueChange = { component.send(LandingPageIntent.TextChanged(it)) },
+        singleLine = true,
       )
       if (errMsg.value.isNotBlank()) {
-        ErrorMessage(errMsg)
+        ErrorMessage(errMsg) // TODO: consider refactor to use https://github.com/KhubaibKhan4/Alert-KMP
       }
-      Button(onClick = { component.send(LandingPageIntent.ToNextPage) }) {
+      Button(onClick = { component.send(LandingPageIntent.CheckAndMoveToMainPage) }) {
         Text("Connect")
       }
     }
