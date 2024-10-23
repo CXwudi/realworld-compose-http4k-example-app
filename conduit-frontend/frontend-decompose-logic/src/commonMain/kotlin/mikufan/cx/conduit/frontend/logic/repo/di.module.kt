@@ -1,6 +1,7 @@
 package mikufan.cx.conduit.frontend.logic.repo
 
 import de.jensklingenberg.ktorfit.Ktorfit
+import mikufan.cx.conduit.frontend.logic.repo.api.createArticleApi
 import mikufan.cx.conduit.frontend.logic.repo.api.createAuthApi
 import mikufan.cx.conduit.frontend.logic.repo.api.createDefaultHttpClient
 import mikufan.cx.conduit.frontend.logic.repo.api.createKtorfit
@@ -19,7 +20,7 @@ val kstoreModule = module {
 }
 
 /**
- * Require [kstoreModule]
+ * Require [kstoreModule] due to the ktor client plugin that intercept the URL and token.
  */
 val apiModule = module {
   // Originally, we were planning to use a StateFlow<HttpClient> that reflect the user config changes,
@@ -32,6 +33,7 @@ val apiModule = module {
   singleOf(::createDefaultHttpClient)
   singleOf(::createKtorfit)
   single { get<Ktorfit>().createAuthApi() }
+  single { get<Ktorfit>().createArticleApi() }
 }
 
 val repoModules = listOf(kstoreModule, apiModule)
