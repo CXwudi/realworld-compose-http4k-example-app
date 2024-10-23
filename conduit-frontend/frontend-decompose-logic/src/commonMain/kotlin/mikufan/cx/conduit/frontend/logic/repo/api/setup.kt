@@ -9,12 +9,15 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.json.Json
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
 
 fun createDefaultHttpClient(userConfigKStore: UserConfigKStore): HttpClient = setupKtorClient {
   install(ContentNegotiation) {
-    json()
+    json(Json {
+      ignoreUnknownKeys = true
+    })
   }
 
   install(createBaseUrlAndTokenProvidingPlugin(userConfigKStore))
