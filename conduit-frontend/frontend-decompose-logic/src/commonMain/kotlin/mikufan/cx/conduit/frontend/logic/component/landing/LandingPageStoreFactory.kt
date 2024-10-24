@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
+import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
 
@@ -63,9 +64,11 @@ class LandingPageStoreFactory(
             }
             log.debug { "Set url = $url" }
             publish(LandingPageToNextPageLabel)
-          } catch (e: Throwable) { // TODO: extract out an expect funtion for properly handling throwable based on platform
-            log.debug { "Failed with exception $e" }
-            dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
+          } catch (e: Throwable) {
+            rethrowIfShouldNotBeHandled(e) {
+              log.debug { "Failed with exception $e" }
+              dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
+            }
           }
         }
 
