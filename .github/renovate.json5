@@ -19,7 +19,9 @@
         // AGP
         "com.android.tools.build:gradle", 
         "com.android.application",
-        "com.android.library"
+        "com.android.library",
+        // KSP
+        "com.google.devtools.ksp"
       ],
       enabled: false
     }
