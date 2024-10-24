@@ -2,20 +2,30 @@ package mikufan.cx.conduit.frontend.logic.repo.kstore
 
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.kstore.file.storeOf
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.Json
-import okio.Path.Companion.toOkioPath
-import kotlin.io.path.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.exists
 
-fun setupPersistedConfigKStore(): KStore<PersistedConfig> {
+
+fun getAppDirectories(): AppStoreDirectories {
   val parentPath = Path("kstore")
-  if (!parentPath.exists()) parentPath.createDirectories()
-  val path = parentPath.resolve("persisted-config.json")
+  val files = Path(parentPath, "files")
+  val caches = Path(parentPath, "caches")
+  with(SystemFileSystem) {
+    if (!exists(files)) createDirectories(files)
+    if (!exists(caches)) createDirectories(caches)
+  }
+
+  return AppStoreDirectories(
+    files = files,
+    caches = caches
+  )
+}
+
+fun setupPersistedConfigKStore(appStoreDirectories: AppStoreDirectories): KStore<PersistedConfig> {
   return storeOf(
-    file = path.toOkioPath(),
+    file = Path(appStoreDirectories.files, "persisted-config.json"),
     default = PersistedConfig(),
-    enableCache = true,
     json = Json {
       prettyPrint = true
     }

@@ -7,5 +7,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 actual val kstoreKmpModule: Module = module {
-  single(named(KStoreKey.PERSISTED_CONFIG)) { setupPersistedConfigKStore(get<Context>() as Application) }
+  single { getAppDirectories(get<Context>() as Application) }
+  single(named(KStoreKey.PERSISTED_CONFIG)) { setupPersistedConfigKStore(get()) }
 }
