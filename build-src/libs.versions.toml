@@ -13,7 +13,7 @@ kotlin = "2.0.21"
 ksp = "2.0.21-1.0.25"
 java = "21"
 agp = "8.7.1" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
-compose = "1.7.0"
+compose = "1.7.1+build1894-release-1.7.1"
 
 essenty = "2.2.0"
 decompose = "3.2.0"
