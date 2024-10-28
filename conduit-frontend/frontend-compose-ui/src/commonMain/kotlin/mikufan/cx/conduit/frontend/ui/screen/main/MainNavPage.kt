@@ -44,7 +44,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
       BottomNavigationBar(mainStateMode, component::send, selectedIndex)
     }
   ) { innerPadding ->
-    AnimatedContentTransition<MainNavComponentChild>(
+    AnimatedContentTransition(
       targetState = stack.active.instance
     ) {
       when (it) {

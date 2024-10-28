@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.logic.component.main.auth
 data class AuthPageState(
   val username: String,
   val password: String,
+  val email: String,
   val mode: AuthPageMode
 )
 
@@ -20,6 +21,7 @@ enum class AuthPageMode {
 sealed interface AuthPageIntent {
   data class UsernameChanged(val username: String) : AuthPageIntent
   data class PasswordChanged(val password: String) : AuthPageIntent
+  data class EmailChanged(val email: String) : AuthPageIntent
 
   /**
    * Switch between login and register

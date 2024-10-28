@@ -16,7 +16,7 @@ fun MainPageLoginPreview() {
   SetupPreviewUI {
     val fakeComponent = object : AuthPageComponent {
       override val state: StateFlow<AuthPageState> =
-        MutableStateFlow(AuthPageState("my username", "my password", AuthPageMode.SIGN_IN))
+        MutableStateFlow(AuthPageState("my username", "my password", "my email", AuthPageMode.SIGN_IN))
 
       override fun send(intent: AuthPageIntent) {}
     }
@@ -30,7 +30,7 @@ fun MainPageRegisterPreview() {
   SetupPreviewUI {
     val fakeComponent = object : AuthPageComponent {
       override val state: StateFlow<AuthPageState> =
-        MutableStateFlow(AuthPageState("my username", "my password", AuthPageMode.REGISTER))
+        MutableStateFlow(AuthPageState("my username", "my password", "my email", AuthPageMode.REGISTER))
 
       override fun send(intent: AuthPageIntent) {}
     }

@@ -23,6 +23,9 @@ class AuthPageStoreFactory(
       onIntent<AuthPageIntent.PasswordChanged> {
         dispatch(Msg.PasswordChanged(it.password))
       }
+      onIntent<AuthPageIntent.EmailChanged> {
+        dispatch(Msg.EmailChanged(it.email))
+      }
       onIntent<AuthPageIntent.SwitchMode> {
         val state = state()
         dispatch(Msg.SwitchMode(state.mode.opposite))
@@ -45,13 +48,14 @@ class AuthPageStoreFactory(
     when (msg) {
       is Msg.UsernameChanged -> this.copy(username = msg.username)
       is Msg.PasswordChanged -> this.copy(password = msg.password)
-      is Msg.SwitchMode -> this.copy(mode = msg.mode)
+      is Msg.EmailChanged -> this.copy(email = msg.email)
+      is Msg.SwitchMode -> this.copy(mode = msg.mode, email = "")
     }
   }
 
   fun createStore() = storeFactory.create(
     name = "AuthPageStore",
-    initialState = AuthPageState("", "", AuthPageMode.SIGN_IN),
+    initialState = AuthPageState("", "", "", AuthPageMode.SIGN_IN),
     executorFactory = executorFactory,
     reducer = reducer
   )
@@ -59,7 +63,9 @@ class AuthPageStoreFactory(
   private sealed interface Msg {
     data class UsernameChanged(val username: String) : Msg
     data class PasswordChanged(val password: String) : Msg
+    data class EmailChanged(val email: String) : Msg
     data class SwitchMode(val mode: AuthPageMode) : Msg
+
   }
 
 }

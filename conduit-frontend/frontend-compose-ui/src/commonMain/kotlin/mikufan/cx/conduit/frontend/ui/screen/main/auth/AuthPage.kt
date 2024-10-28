@@ -1,6 +1,9 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.auth
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,9 +11,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageMode
@@ -46,67 +49,87 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
   val state by component.state.collectAsState()
-  val mode by remember { derivedStateOf { state.mode } }
+  val isRegisterMode = remember { derivedStateOf { state.mode == AuthPageMode.REGISTER } }
 
+  val email = remember { derivedStateOf { state.email } }
   val username = remember { derivedStateOf { state.username } }
   val password = remember { derivedStateOf { state.password } }
 
   val paddingLarge = LocalSpace.current.vertical.paddingLarge
-  Column(
-    modifier = modifier.fillMaxSize().padding(paddingLarge * 4)
+  Box(
+    modifier = modifier
+      // fill max size on outer box, then animate content size for inner column
+      .fillMaxSize()
+      .padding(paddingLarge * 4)
       .verticalScroll(rememberScrollState()),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
+    contentAlignment = Alignment.Center
   ) {
-    UsernameTextField(
-      usernameProvider = username,
-      onUsernameChanged = { component.send(AuthPageIntent.UsernameChanged(it)) }
-    )
-
-    Spacer(modifier = Modifier.height(paddingLarge * 4).imePadding())
-
-    PasswordTextField(
-      passwordProvider = password,
-      onPasswordChanged = { component.send(AuthPageIntent.PasswordChanged(it)) }
-    )
-
-    Spacer(modifier = Modifier.height(paddingLarge * 6).imePadding())
-
-    Button(
-      onClick = { component.send(AuthPageIntent.AuthAction) },
-      modifier = Modifier
+    Column(
+      modifier = modifier.animateContentSize(),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center,
     ) {
-      Text(if (mode == AuthPageMode.SIGN_IN) "Login" else "Register")
-    }
+      EmailTextField(
+        emailProvider = email,
+        onEmailChanged = { component.send(AuthPageIntent.EmailChanged(it)) }
+      )
 
-    Spacer(modifier = Modifier.height(paddingLarge * 4))
+      AnimatedVisibility(
+        visible = isRegisterMode.value,
 
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-      TextButton(onClick = { component.send(AuthPageIntent.BackToLanding) }) {
-        Text("Change URL")
+      ) {
+        Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
+        
+        OutlinedTextField(
+          value = username.value,
+          onValueChange = { component.send(AuthPageIntent.UsernameChanged(it)) },
+          label = { Text("Username") },
+          modifier = Modifier.padding(top = paddingLarge * 4).fillMaxWidth(),
+        )
       }
-      TextButton(onClick = { component.send(AuthPageIntent.SwitchMode) }) {
-        Text(if (mode == AuthPageMode.SIGN_IN) "To Register" else "To Login")
-      }
-    }
 
-    Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
+      Spacer(modifier = Modifier.height(paddingLarge * 4).windowInsetsBottomHeight(WindowInsets.ime))
+
+      PasswordTextField(
+        passwordProvider = password,
+        onPasswordChanged = { component.send(AuthPageIntent.PasswordChanged(it)) },
+      )
+
+      Spacer(modifier = Modifier.height(paddingLarge * 6).windowInsetsBottomHeight(WindowInsets.ime))
+
+      Button(
+        onClick = { component.send(AuthPageIntent.AuthAction) },
+      ) {
+        Text(if (isRegisterMode.value) "Register" else "Login")
+      }
+
+      Row(
+        modifier = Modifier.padding(top = paddingLarge * 4).fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+      ) {
+        TextButton(onClick = { component.send(AuthPageIntent.BackToLanding) }) {
+          Text("Change URL")
+        }
+        TextButton(onClick = { component.send(AuthPageIntent.SwitchMode) }) {
+          Text(if (isRegisterMode.value) "To Login" else "To Register")
+        }
+      }
+//      Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)) // not sure if I need this
+    }
   }
 }
 
 @Composable
-private fun UsernameTextField(
-  usernameProvider: State<String>,
-  onUsernameChanged: (String) -> Unit,
+private fun EmailTextField(
+  emailProvider: State<String>,
+  onEmailChanged: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   OutlinedTextField(
-    value = usernameProvider.value,
-    onValueChange = onUsernameChanged,
-    label = { Text("Username") },
+    value = emailProvider.value,
+    onValueChange = onEmailChanged,
+    label = { Text("Email") },
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
     modifier = modifier.fillMaxWidth()
   )
 }
@@ -126,7 +149,7 @@ private fun PasswordTextField(
       Text("Password")
     },
     trailingIcon = {
-      IconButton(onClick = { passwordVisibility = !passwordVisibility}) {
+      IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
         // TODO: should use a dedicated image library for image or icon rendering
         if (passwordVisibility) {
           Icon(painterResource(Res.drawable.eye_off_outline), "Hide")
