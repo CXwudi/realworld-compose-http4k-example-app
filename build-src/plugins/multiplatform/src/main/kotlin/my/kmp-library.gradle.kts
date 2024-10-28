@@ -106,16 +106,16 @@ java {
 }
 
 android {
-  compileSdk = 34
+  compileSdk = 35
   defaultConfig {
     minSdk = 26
   }
   // setting targetSdk on per with compileSdk has great benefits, such as layout inspector
   testOptions {
-    targetSdk = 34
+    targetSdk = 35
   }
   lint {
-    targetSdk = 34
+    targetSdk = 35
   }
   // jvm version is covered by java toolchain above
 }
