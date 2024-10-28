@@ -1,7 +1,11 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.auth
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +48,7 @@ import mikufan.cx.conduit.frontend.ui.resources.Res
 import mikufan.cx.conduit.frontend.ui.resources.eye_off_outline
 import mikufan.cx.conduit.frontend.ui.resources.eye_outline
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
+import mikufan.cx.conduit.frontend.ui.util.fadeInAndOut
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -65,7 +70,7 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
     contentAlignment = Alignment.Center
   ) {
     Column(
-      modifier = modifier.animateContentSize(),
+      modifier = modifier,
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center,
     ) {
@@ -76,7 +81,8 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
 
       AnimatedVisibility(
         visible = isRegisterMode.value,
-
+        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
       ) {
         Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
         
@@ -100,21 +106,16 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
       Button(
         onClick = { component.send(AuthPageIntent.AuthAction) },
       ) {
-        Text(if (isRegisterMode.value) "Register" else "Login")
+        AnimatedText(isRegisterMode = isRegisterMode, textForLoginMode = "Login", textForRegisterMode = "Register")
       }
 
-      Row(
-        modifier = Modifier.padding(top = paddingLarge * 4).fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-      ) {
-        TextButton(onClick = { component.send(AuthPageIntent.BackToLanding) }) {
-          Text("Change URL")
-        }
-        TextButton(onClick = { component.send(AuthPageIntent.SwitchMode) }) {
-          Text(if (isRegisterMode.value) "To Login" else "To Register")
-        }
-      }
-//      Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)) // not sure if I need this
+      SwitchModeRow(
+        isRegisterMode = isRegisterMode,
+        onChangeUrlClick = { component.send(AuthPageIntent.BackToLanding) },
+        onSwitchModeClick = { component.send(AuthPageIntent.SwitchMode) },
+        modifier = Modifier.padding(top = paddingLarge * 4),
+      )
+
     }
   }
 }
@@ -150,11 +151,17 @@ private fun PasswordTextField(
     },
     trailingIcon = {
       IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-        // TODO: should use a dedicated image library for image or icon rendering
-        if (passwordVisibility) {
-          Icon(painterResource(Res.drawable.eye_off_outline), "Hide")
-        } else {
-          Icon(painterResource(Res.drawable.eye_outline), "Show")
+        AnimatedContent(
+          targetState = passwordVisibility,
+          transitionSpec = {
+            fadeInAndOut()
+          }
+        ) {
+          if (it) {
+            Icon(painterResource(Res.drawable.eye_off_outline), "Hide")
+          } else {
+            Icon(painterResource(Res.drawable.eye_outline), "Show")
+          }
         }
       }
     },
@@ -162,4 +169,38 @@ private fun PasswordTextField(
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
     modifier = modifier.fillMaxWidth()
   )
+}
+
+@Composable
+private fun SwitchModeRow(
+  isRegisterMode: State<Boolean>,
+  onChangeUrlClick: () -> Unit,
+  onSwitchModeClick: () -> Unit,
+  modifier: Modifier = Modifier,
+) = Row(
+  modifier = modifier.fillMaxWidth(),
+  horizontalArrangement = Arrangement.SpaceBetween,
+) {
+  TextButton(onClick = onChangeUrlClick) {
+    Text("Change URL")
+  }
+  TextButton(onClick = onSwitchModeClick) {
+    AnimatedText(isRegisterMode = isRegisterMode, textForLoginMode = "To Register", textForRegisterMode = "To Login")
+  }
+}
+
+@Composable
+private fun AnimatedText(
+  isRegisterMode: State<Boolean>,
+  textForLoginMode: String,
+  textForRegisterMode: String,
+  modifier: Modifier = Modifier,
+){
+  val text = remember { derivedStateOf { if (isRegisterMode.value) textForRegisterMode else textForLoginMode } }
+  AnimatedContent(
+    targetState = text.value,
+//    transitionSpec = { fadeInAndOut() },
+  ) {
+    Text(it, modifier = modifier)
+  }
 }
