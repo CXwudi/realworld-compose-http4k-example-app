@@ -9,8 +9,8 @@ import io.mockk.mockk
 import mikufan.cx.conduit.backend.db.TransactionManager
 import mikufan.cx.conduit.backend.db.repo.UserRepo
 import mikufan.cx.conduit.backend.util.ConduitException
-import mikufan.cx.conduit.common.NewUserDto
 import mikufan.cx.conduit.common.UserDto
+import mikufan.cx.conduit.common.UserRegisterDto
 import org.jetbrains.exposed.sql.Transaction
 
 class UserServiceTest : ShouldSpec({
@@ -29,20 +29,20 @@ class UserServiceTest : ShouldSpec({
 
 
   context("user registration") {
-    val newUserDto = NewUserDto("new user", "email@email.com", "password")
+    val UserRegisterDto = UserRegisterDto("new user", "email@email.com", "password")
     should("register user successfully") {
       val userRepo = mockk<UserRepo>() {
         every { getByEmail(any()) } returns null
         every { getByUsername(any()) } returns null
         every { insert(any()) } answers {
-          val dto = firstArg<NewUserDto>()
-          UserDto(1, dto.email, dto.username, "", "", null)
+          val dto = firstArg<UserRegisterDto>()
+          UserDto(dto.email, dto.username, "", "", null)
         }
       }
       val userService = UserService(txManager, userRepo)
 
-      val registerUser = userService.registerUser(newUserDto)
-      registerUser shouldBe UserDto(1, "new user", "email@email.com", "", "", null)
+      val registerUser = userService.registerUser(UserRegisterDto)
+      registerUser shouldBe UserDto("new user", "email@email.com", "", "", null)
     }
     should("throw on duplicate user") {
       val userRepo = mockk<UserRepo>() {
@@ -53,7 +53,7 @@ class UserServiceTest : ShouldSpec({
       val userService = UserService(txManager, userRepo)
 
       val conduitException = shouldThrow<ConduitException> {
-        userService.registerUser(newUserDto)
+        userService.registerUser(UserRegisterDto)
       }
 
       conduitException.message shouldContain "User already exists"

@@ -1,6 +1,6 @@
 package mikufan.cx.conduit.backend.controller.handler
 
-import mikufan.cx.conduit.backend.controller.newUserReqLens
+import mikufan.cx.conduit.backend.controller.userRegistrationLen
 import mikufan.cx.conduit.backend.controller.userRspLens
 import mikufan.cx.conduit.backend.service.UserService
 import mikufan.cx.conduit.common.UserRsp
@@ -14,8 +14,8 @@ class RegisterUserHandler(
 ) : HttpHandler {
 
   override fun invoke(request: Request): Response {
-    val userDto = newUserReqLens(request).user
-    val newUserDto = userService.registerUser(userDto)
-    return userRspLens(UserRsp(newUserDto), Response(Status.CREATED))
+    val userDto = userRegistrationLen(request).user
+    val UserRegisterDto = userService.registerUser(userDto)
+    return userRspLens(UserRsp(UserRegisterDto), Response(Status.CREATED))
   }
 }

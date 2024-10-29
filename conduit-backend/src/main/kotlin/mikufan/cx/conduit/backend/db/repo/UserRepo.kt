@@ -1,8 +1,8 @@
 package mikufan.cx.conduit.backend.db.repo
 
 import mikufan.cx.conduit.backend.db.Users
-import mikufan.cx.conduit.common.NewUserDto
 import mikufan.cx.conduit.common.UserDto
+import mikufan.cx.conduit.common.UserRegisterDto
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
@@ -24,10 +24,10 @@ class UserRepo {
     .firstOrNull()
     ?.toUserDto()
 
-  fun insert(newUserDto: NewUserDto): UserDto? = Users.insertReturning {
-    it[email] = newUserDto.email
-    it[username] = newUserDto.username
-    it[password] = newUserDto.password
+  fun insert(UserRegisterDto: UserRegisterDto): UserDto? = Users.insertReturning {
+    it[email] = UserRegisterDto.email
+    it[username] = UserRegisterDto.username
+    it[password] = UserRegisterDto.password
     it[bio] = ""
     it[image] = null
   }
@@ -35,7 +35,6 @@ class UserRepo {
     ?.toUserDto()
 
   private fun ResultRow.toUserDto() = UserDto(
-    id = this[Users.id].value,
     email = this[Users.email],
     username = this[Users.username],
     bio = this[Users.bio],
