@@ -2,16 +2,14 @@ package mikufan.cx.conduit.frontend.ui.screen.main
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -36,14 +34,11 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
 
-  // TODO: switch between bottom bar and vertical bar based on device size
-
-  Scaffold(
-    modifier = modifier,
-    bottomBar = {
-      BottomNavigationBar(mainStateMode, component::send, selectedIndex)
+  NavigationSuiteScaffold(
+    navigationSuiteItems = {
+      navigationItems(mainStateMode, component::send, selectedIndex)
     }
-  ) { innerPadding ->
+  ) {
     AnimatedContentTransition(
       targetState = stack.active.instance
     ) {
@@ -51,30 +46,28 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
         is MainNavComponentChild.MainFeed -> Text("Main Feed")
         is MainNavComponentChild.Favourite -> Text("Favourite")
         is MainNavComponentChild.Me -> Text("Me")
-        is MainNavComponentChild.SignInUp -> AuthPage(it.component, Modifier.padding(innerPadding))
+        is MainNavComponentChild.SignInUp -> AuthPage(it.component)
       }
     }
   }
 }
 
-@Composable
-private fun BottomNavigationBar(
+
+private fun NavigationSuiteScope.navigationItems(
   mainStateMode: MainNavMode,
   onSend: (MainNavIntent) -> Unit,
   selectedIndex: Int,
 ) {
-  BottomAppBar {
-    val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
-      mapMenuItemEnum2NavItem(value, index, onSend)
-    }
-    items.forEach { item ->
-      NavigationBarItem(
-        icon = { Icon(item.icon, contentDescription = item.label) },
-        label = { Text(item.label) },
-        selected = selectedIndex == item.index,
-        onClick = item.onClick
-      )
-    }
+  val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
+    mapMenuItemEnum2NavItem(value, index, onSend)
+  }
+  items.forEach { item ->
+    item(
+      icon = { Icon(item.icon, contentDescription = item.label) },
+      label = { Text(item.label) },
+      selected = selectedIndex == item.index,
+      onClick = item.onClick
+    )
   }
 }
 
