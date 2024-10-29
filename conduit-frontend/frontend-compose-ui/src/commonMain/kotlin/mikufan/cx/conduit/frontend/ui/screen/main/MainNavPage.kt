@@ -7,8 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -63,7 +63,7 @@ private fun BottomNavigationBar(
   onSend: (MainNavIntent) -> Unit,
   selectedIndex: Int,
 ) {
-  NavigationBar {
+  BottomAppBar {
     val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
       mapMenuItemEnum2NavItem(value, index, onSend)
     }
