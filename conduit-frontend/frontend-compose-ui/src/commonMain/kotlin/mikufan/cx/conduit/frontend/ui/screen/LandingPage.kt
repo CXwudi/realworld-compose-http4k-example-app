@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.frontend.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
   val state by component.state.collectAsState()
   val urlText = remember { derivedStateOf { state.url } }
   val errMsg = remember { derivedStateOf { state.errorMsg } }
+  val showError = remember { derivedStateOf { state.errorMsg.isNotBlank() } }
 
   Box(
     contentAlignment = Alignment.Center,
@@ -50,7 +52,9 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
         onValueChange = { component.send(LandingPageIntent.TextChanged(it)) },
         singleLine = true,
       )
-      if (errMsg.value.isNotBlank()) {
+      AnimatedVisibility(
+        visible = showError.value,
+      ) {
         ErrorMessage(errMsg) // TODO: consider refactor to use https://github.com/KhubaibKhan4/Alert-KMP
       }
       Button(onClick = { component.send(LandingPageIntent.CheckAndMoveToMainPage) }) {

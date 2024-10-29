@@ -2,10 +2,6 @@ package mikufan.cx.conduit.frontend.ui.screen.main.auth
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -81,8 +77,8 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
 
       AnimatedVisibility(
         visible = isRegisterMode.value,
-        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
-        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+//        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+//        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
       ) {
         Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
         
@@ -90,6 +86,7 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
           value = username.value,
           onValueChange = { component.send(AuthPageIntent.UsernameChanged(it)) },
           label = { Text("Username") },
+          singleLine = true,
           modifier = Modifier.padding(top = paddingLarge * 4).fillMaxWidth(),
         )
       }
@@ -130,8 +127,9 @@ private fun EmailTextField(
     value = emailProvider.value,
     onValueChange = onEmailChanged,
     label = { Text("Email") },
+    singleLine = true,
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-    modifier = modifier.fillMaxWidth()
+    modifier = modifier.fillMaxWidth(),
   )
 }
 
@@ -166,6 +164,7 @@ private fun PasswordTextField(
       }
     },
     visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
+    singleLine = true,
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
     modifier = modifier.fillMaxWidth()
   )
