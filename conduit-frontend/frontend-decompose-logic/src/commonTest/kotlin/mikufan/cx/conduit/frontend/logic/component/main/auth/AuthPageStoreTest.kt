@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.service.landing.AuthService
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -21,15 +21,15 @@ import kotlin.test.assertEquals
 class AuthPageStoreTest {
   private val testDispatcher = StandardTestDispatcher()
 
-  lateinit var userConfigKStore: UserConfigKStore
+  lateinit var authService: AuthService
   lateinit var authPageStore: Store<AuthPageIntent, AuthPageState, Unit>
 
   @BeforeTest
   fun setUp() {
-    userConfigKStore = mock()
+    authService = mock()
     authPageStore = AuthPageStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
-      userConfigKStore,
+      authService,
       Dispatchers.Default,
     ).createStore()
   }
@@ -58,6 +58,6 @@ class AuthPageStoreTest {
     authPageStore.accept(AuthPageIntent.BackToLanding)
 
     assertEquals(Unit, channel.receive())
-    verifySuspend(exactly(1)) { userConfigKStore.reset() }
+    verifySuspend(exactly(1)) { authService.reset() }
   }
 }
