@@ -1,6 +1,5 @@
 pluginManagement {
   repositories {
-    gradlePluginPortal()
     google {
       mavenContent {
         includeGroupByRegex(".*google.*")
@@ -8,6 +7,7 @@ pluginManagement {
         includeGroupByRegex(".*androidx.*")
       }
     }
+    gradlePluginPortal()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
   }
   includeBuild("../build-src/settings")
@@ -16,7 +16,6 @@ pluginManagement {
 
 dependencyResolutionManagement {
   repositories {
-    mavenCentral()
     google {
       mavenContent {
         includeGroupByRegex(".*google.*")
@@ -24,6 +23,7 @@ dependencyResolutionManagement {
         includeGroupByRegex(".*androidx.*")
       }
     }
+    mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
   }
   versionCatalogs {
