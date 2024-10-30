@@ -1,8 +1,14 @@
 pluginManagement {
   repositories {
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
     gradlePluginPortal()
+    google {
+      mavenContent {
+        includeGroupByRegex(".*google.*")
+        includeGroupByRegex(".*android.*")
+        includeGroupByRegex(".*androidx.*")
+      }
+    }
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
   }
   includeBuild("../build-src/settings")
   includeBuild("../build-src/plugins")
@@ -10,8 +16,14 @@ pluginManagement {
 
 dependencyResolutionManagement {
   repositories {
-    google()
     mavenCentral()
+    google {
+      mavenContent {
+        includeGroupByRegex(".*google.*")
+        includeGroupByRegex(".*android.*")
+        includeGroupByRegex(".*androidx.*")
+      }
+    }
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
   }
   versionCatalogs {
@@ -22,7 +34,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "conduit-frontend"
-
+//
 plugins {
   // my setting plugin that simply has some other setting plugins where versions are managed in version catalogs
   id("my.root-settings-plugin")
