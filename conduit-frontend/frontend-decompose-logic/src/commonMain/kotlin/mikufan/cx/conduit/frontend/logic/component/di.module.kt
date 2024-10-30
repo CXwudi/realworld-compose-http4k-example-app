@@ -19,7 +19,7 @@ val storeModule = module {
 //  single<StoreFactory> { LoggingStoreFactory(DefaultStoreFactory()) } // un-comment to debug, very verbose!
   single<StoreFactory> { DefaultStoreFactory() }
   // can't use singleOf on constructor with default parameters
-  single { LandingPageStoreFactory(get(), get(), get()) }
+  single { LandingPageStoreFactory(get(), get()) }
   single { MainNavStoreFactory(get(), get()) }
   single { AuthPageStoreFactory(get(), get()) }
 }

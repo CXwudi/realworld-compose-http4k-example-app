@@ -3,15 +3,17 @@ package mikufan.cx.conduit.frontend.logic.component.main.auth
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
+import mikufan.cx.conduit.frontend.logic.service.landing.AuthService
 
 class AuthPageStoreFactory(
   private val storeFactory: StoreFactory,
-  private val userConfigKStore: UserConfigKStore,
+  private val authService: AuthService,
   dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) {
 
@@ -31,13 +33,31 @@ class AuthPageStoreFactory(
         dispatch(Msg.SwitchMode(state.mode.opposite))
       }
       onIntent<AuthPageIntent.AuthAction> {
-        // TODO: do either register or login, both will return token in success case
+        val state = state()
+
+        launch {
+          withContext(Dispatchers.Default) {
+            try {
+              if (state.mode == AuthPageMode.SIGN_IN) {
+                authService.login(state.email, state.password)
+              } else {
+                authService.register(state.email, state.username, state.password)
+              }
+            } catch (t: Throwable) {
+              rethrowIfShouldNotBeHandled(t) { e ->
+                log.error(e) { "Failed to login" }
+                // TODO show error message
+              }
+            }
+          }
+        }
+
       }
 
       onIntent<AuthPageIntent.BackToLanding> {
         launch {
           withContext(Dispatchers.Default) {
-            userConfigKStore.reset()
+            authService.reset()
           }
           publish(Unit) // purely for test purpose
         }
@@ -49,7 +69,7 @@ class AuthPageStoreFactory(
       is Msg.UsernameChanged -> this.copy(username = msg.username)
       is Msg.PasswordChanged -> this.copy(password = msg.password)
       is Msg.EmailChanged -> this.copy(email = msg.email)
-      is Msg.SwitchMode -> this.copy(mode = msg.mode, email = "")
+      is Msg.SwitchMode -> this.copy(mode = msg.mode, email = "", password = "", username = "")
     }
   }
 
@@ -69,3 +89,5 @@ class AuthPageStoreFactory(
   }
 
 }
+
+private val log = KotlinLogging.logger {}
