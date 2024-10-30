@@ -32,6 +32,7 @@ kotlin {
       implementation("io.ktor:ktor-client-content-negotiation")
       implementation("io.ktor:ktor-serialization-kotlinx-json")
       implementation(libs.dev.frontend.ktorfitLibLight)
+      implementation(libs.dev.frontend.ktorfitConverter)
       // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700,
       // but for some reason I still need it even I removed sqldelight
       implementation("co.touchlab:stately-common:2.1.0")

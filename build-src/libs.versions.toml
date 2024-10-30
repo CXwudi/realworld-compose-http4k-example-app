@@ -50,6 +50,7 @@ dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.16-0"
 
 dev-frontend-ktorBom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
 dev-frontend-ktorfitLibLight = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light-ktor-3.0.0", version.ref = "ktorfit" }
+dev-frontend-ktorfitConverter = { module = "de.jensklingenberg.ktorfit:ktorfit-converters-response-ktor-3.0.0", version.ref = "ktorfit" }
 dev-frontend-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-frontend-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
