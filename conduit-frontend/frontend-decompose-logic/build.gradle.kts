@@ -31,6 +31,7 @@ kotlin {
       implementation("io.ktor:ktor-client-core")
       implementation("io.ktor:ktor-client-content-negotiation")
       implementation("io.ktor:ktor-serialization-kotlinx-json")
+      implementation("io.ktor:ktor-client-logging")
       implementation(libs.dev.frontend.ktorfitLibLight)
       implementation(libs.dev.frontend.ktorfitConverter)
       // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700,

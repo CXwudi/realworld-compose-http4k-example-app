@@ -1,12 +1,14 @@
 package mikufan.cx.conduit.frontend.logic.repo.api
 
 import de.jensklingenberg.ktorfit.Ktorfit
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
+import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
@@ -25,6 +27,14 @@ fun createDefaultHttpClient(userConfigKStore: UserConfigKStore, json: Json): Htt
     }
 
     install(createBaseUrlAndTokenProvidingPlugin(userConfigKStore))
+//    Logging {
+//      logger = object : io.ktor.client.plugins.logging.Logger {
+//        override fun log(message: String) {
+//          log.debug { message }
+//        }
+//      }
+//      level = LogLevel.HEADERS
+//    }
   }
 
 expect fun setupKtorClient(config: HttpClientConfig<*>.() -> Unit = {}): HttpClient
@@ -53,10 +63,11 @@ fun createBaseUrlAndTokenProvidingPlugin(userConfigKStore: UserConfigKStore) =
 
       userConfigState.url?.let { baseUrl ->
         requestBuilder.url { reqUrlBuilder ->
-          URLBuilder(baseUrl).apply {
+          val newUrlBuilder = URLBuilder(baseUrl).apply {
             appendEncodedPathSegments(reqUrlBuilder.encodedPathSegments)
             parameters.appendAll(reqUrlBuilder.parameters.build())
           }
+          reqUrlBuilder.takeFrom(newUrlBuilder)
         }
       }
 
@@ -65,3 +76,5 @@ fun createBaseUrlAndTokenProvidingPlugin(userConfigKStore: UserConfigKStore) =
       }
     }
   }
+
+private val log = KotlinLogging.logger { }
