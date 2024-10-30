@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -31,17 +30,14 @@ class LandingPageStoreTest {
 
   private val testDispatcher = StandardTestDispatcher()
 
-  lateinit var userConfigKStore: UserConfigKStore
   lateinit var landingService: LandingService
   lateinit var landingPageStore: Store<LandingPageIntent, LandingPageState, LandingPageToNextPageLabel>
 
   @BeforeTest
   fun setUp() {
-    userConfigKStore = mock()
     landingService = mock()
     landingPageStore = LandingPageStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
-      userConfigKStore,
       landingService,
       testDispatcher
     ).createStore()
@@ -73,8 +69,7 @@ class LandingPageStoreTest {
     val label = channel.receive()
     assertEquals(label, LandingPageToNextPageLabel)
     verifySuspend(exactly(1)) {
-      userConfigKStore.setUrl("a change")
-      landingService.checkAccessibility("a change")
+      landingService.checkAccessibilityAndSetUrl("a change")
     }
   }
 
@@ -96,8 +91,7 @@ class LandingPageStoreTest {
     log.debug { "Received label" }
     assertEquals(label, LandingPageToNextPageLabel)
     verifySuspend(exactly(1)) {
-      userConfigKStore.setUrl("a change")
-      landingService.checkAccessibility("a change")
+      landingService.checkAccessibilityAndSetUrl("a change")
     }
     log.debug { "After verify" }
     separateScope.cancel()
@@ -114,8 +108,7 @@ class LandingPageStoreTest {
         log.debug { "Received $it" }
         assertEquals(LandingPageToNextPageLabel, it)
         verifySuspend(exactly(1)) {
-          userConfigKStore.setUrl("a change")
-          landingService.checkAccessibility("a change")
+          landingService.checkAccessibilityAndSetUrl("a change")
         }
         log.debug { "Test finished successfully" }
       }
@@ -130,7 +123,7 @@ class LandingPageStoreTest {
 
   @Test
   fun testErrorFlow1() = runTest(testDispatcher) {
-    everySuspend { landingService.checkAccessibility(any()) } throws Exception("some error")
+    everySuspend { landingService.checkAccessibilityAndSetUrl(any()) } throws Exception("some error")
 
     val channel = Channel<LandingPageState>()
     landingPageStore.states(observer {
@@ -147,7 +140,7 @@ class LandingPageStoreTest {
 
     assertEquals("some error", newState.errorMsg)
     verifySuspend(exactly(1)) {
-      landingService.checkAccessibility("")
+      landingService.checkAccessibilityAndSetUrl("")
     }
     channel.close()
   }

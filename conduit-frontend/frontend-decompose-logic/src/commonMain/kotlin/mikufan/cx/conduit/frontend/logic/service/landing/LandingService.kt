@@ -9,6 +9,7 @@ import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.isSuccess
 import io.ktor.http.takeFrom
 import mikufan.cx.conduit.common.ArticlesRsp
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 
 
 interface LandingService {
@@ -17,18 +18,19 @@ interface LandingService {
    *
    * @throws Exception if in any case the [url] is not accessible.
    */
-  suspend fun checkAccessibility(url: String)
+  suspend fun checkAccessibilityAndSetUrl(url: String)
 }
 
 class DefaultLandingService(
   private val httpClient: HttpClient,
+  private val userConfigKStore: UserConfigKStore,
 ) : LandingService {
 
   companion object {
     private val ALLOWED_PROTOCOLS = setOf("http", "https")
   }
 
-  override suspend fun checkAccessibility(url: String) {
+  override suspend fun checkAccessibilityAndSetUrl(url: String) {
     val normalizedUrl = when {
       // Extract and validate existing protocol
       url.contains("://") -> {
@@ -59,9 +61,9 @@ class DefaultLandingService(
     // make sure the response is what we are looking for
     val articlesRsp = httpResponse.body<ArticlesRsp>()
     if (articlesRsp.articlesCount == 0 && articlesRsp.articles.isEmpty()) {
-      return
-    } else if (articlesRsp.articlesCount > 0 && articlesRsp.articles.isNotEmpty() && articlesRsp.articles.first().body.isNotEmpty()) {
-      return
+      userConfigKStore.setUrl(url)
+    } else if (articlesRsp.articlesCount > 0 && articlesRsp.articles.isNotEmpty() && articlesRsp.articles.first().title.isNotEmpty()) {
+      userConfigKStore.setUrl(url)
     } else {
       error("Invalid response")
     }

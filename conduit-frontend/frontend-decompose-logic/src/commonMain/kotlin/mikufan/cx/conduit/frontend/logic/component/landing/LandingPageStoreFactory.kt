@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
 
 
@@ -29,7 +28,6 @@ data class LandingPageState(
 
 class LandingPageStoreFactory(
   private val storeFactory: StoreFactory,
-  private val userConfigKStore: UserConfigKStore,
   private val landingService: LandingService,
   mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
   defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
@@ -57,10 +55,7 @@ class LandingPageStoreFactory(
             val url = state().url
             log.info { "Checking accessibility for $url" }
             withContext(defaultDispatcher) {
-              landingService.checkAccessibility(url)
-            }
-            withContext(defaultDispatcher) {
-              userConfigKStore.setUrl(url)
+              landingService.checkAccessibilityAndSetUrl(url)
             }
             log.debug { "Set url = $url" }
             publish(LandingPageToNextPageLabel)
