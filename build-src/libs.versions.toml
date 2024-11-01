@@ -24,7 +24,7 @@ ktor = "3.0.1"
 ktorfit = "2.1.0"
 
 junit = "5.11.3"
-http4k = "5.33.0.1"
+http4k = "5.33.1.0"
 exposed = "0.56.0"
 
 [libraries]
