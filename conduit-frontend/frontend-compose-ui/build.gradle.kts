@@ -26,6 +26,9 @@ kotlin {
       implementation(compose.material3)
       implementation(compose.material3AdaptiveNavigationSuite)
       implementation(compose("org.jetbrains.compose.material3:material3-window-size-class"))
+      implementation(libs.dev.frontend.compose.adaptive)
+      implementation(libs.dev.frontend.compose.adaptiveLayout)
+      implementation(libs.dev.frontend.compose.adaptiveNavigation)
       implementation(compose.components.resources)
       implementation(compose.components.uiToolingPreview)
 
