@@ -26,10 +26,11 @@ buildConfig {
     buildConfigStringField("DecomposeCompose", libs.dev.frontend.decomposeCompose)
 
     // MVI Kotlin
-    buildConfigStringField("MviKotlin", libs.dev.frontend.mvikotlin)
-    buildConfigStringField("MviKotlinMain", libs.dev.frontend.mvikotlinMain)
-    buildConfigStringField("MviKotlinCoroutines", libs.dev.frontend.mvikotlinCoroutines)
-    buildConfigStringField("MviKotlinLogging", libs.dev.frontend.mvikotlinLogging)
+    // likely this is only needed for decompose-logic module
+//    buildConfigStringField("MviKotlin", libs.dev.frontend.mvikotlin)
+//    buildConfigStringField("MviKotlinMain", libs.dev.frontend.mvikotlinMain)
+//    buildConfigStringField("MviKotlinCoroutines", libs.dev.frontend.mvikotlinCoroutines)
+//    buildConfigStringField("MviKotlinLogging", libs.dev.frontend.mvikotlinLogging)
 
     // Logging
     buildConfigStringField("KotlinLogging", libs.dev.kotlinLogging)
