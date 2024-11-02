@@ -37,7 +37,8 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   NavigationSuiteScaffold(
     navigationSuiteItems = {
       navigationItems(mainStateMode, component::send, selectedIndex)
-    }
+    },
+    modifier = modifier
   ) {
     AnimatedContentTransition(
       targetState = stack.active.instance

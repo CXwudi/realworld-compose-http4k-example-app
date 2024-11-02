@@ -1,10 +1,7 @@
 package mikufan.cx.conduit.frontend.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -25,7 +22,7 @@ fun MainUI(
       Surface(Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)
-        .windowInsetsPadding(WindowInsets.systemBars) // put system bar in the global UI, emi should be handled differently based on screen
+        // no windows padding adding here, all child UI please add ur own padding
       ) {
         RootNavigation(rootComponent)
       }
