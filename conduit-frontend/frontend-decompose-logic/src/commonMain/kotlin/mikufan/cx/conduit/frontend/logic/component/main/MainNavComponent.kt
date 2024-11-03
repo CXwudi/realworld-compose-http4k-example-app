@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
+import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 
 /**
@@ -39,7 +41,7 @@ sealed interface MainNavComponentChild {
   // TODO: each class need a component class, e.g. LandingPageComponent
   data object MainFeed : MainNavComponentChild
   data object Favourite : MainNavComponentChild
-  data object Me : MainNavComponentChild
+  data class Me(val component: MeNavComponent) : MainNavComponentChild
   data class SignInUp(val component: AuthPageComponent) : MainNavComponentChild
 
 }
@@ -48,6 +50,7 @@ class DefaultMainNavComponent(
   componentContext: ComponentContext,
   private val mainNavStoreFactory: MainNavStoreFactory,
   private val authPageComponentFactory: AuthPageComponentFactory,
+  private val meNavComponentFactory: MeNavComponentFactory,
 ) : MainNavComponent, ComponentContext by componentContext {
 
   private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
@@ -86,7 +89,9 @@ class DefaultMainNavComponent(
   ): MainNavComponentChild = when (config) {
     Config.MainFeed -> MainNavComponentChild.MainFeed
     Config.Favourite -> MainNavComponentChild.Favourite
-    Config.Me -> MainNavComponentChild.Me
+    Config.Me -> MainNavComponentChild.Me(
+      meNavComponentFactory.create(componentContext)
+    )
     Config.SignInUp -> MainNavComponentChild.SignInUp(
       authPageComponentFactory.create(componentContext)
     )
@@ -119,11 +124,13 @@ class DefaultMainNavComponent(
 class MainNavComponentFactory(
   private val storeFactory: MainNavStoreFactory,
   private val authPageComponentFactory: AuthPageComponentFactory,
+  private val meNavComponentFactory: MeNavComponentFactory,
 ) {
   fun create(componentContext: ComponentContext) = DefaultMainNavComponent(
     componentContext = componentContext,
     mainNavStoreFactory = storeFactory,
     authPageComponentFactory = authPageComponentFactory,
+    meNavComponentFactory = meNavComponentFactory,
   )
 }
 

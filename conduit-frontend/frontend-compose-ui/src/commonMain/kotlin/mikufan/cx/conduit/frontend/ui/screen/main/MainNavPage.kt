@@ -24,6 +24,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMenuItem
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 import mikufan.cx.conduit.frontend.ui.screen.main.auth.AuthPage
+import mikufan.cx.conduit.frontend.ui.screen.main.me.MeNavPage
 
 @Composable
 fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
@@ -46,7 +47,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
       when (it) {
         is MainNavComponentChild.MainFeed -> Text("Main Feed")
         is MainNavComponentChild.Favourite -> Text("Favourite")
-        is MainNavComponentChild.Me -> Text("Me")
+        is MainNavComponentChild.Me -> MeNavPage(it.component)
         is MainNavComponentChild.SignInUp -> AuthPage(it.component)
       }
     }
