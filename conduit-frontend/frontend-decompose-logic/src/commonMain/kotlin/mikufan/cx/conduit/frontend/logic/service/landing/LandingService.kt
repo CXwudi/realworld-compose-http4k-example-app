@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.isSuccess
 import io.ktor.http.takeFrom
@@ -44,10 +45,11 @@ class DefaultLandingService(
       else -> "http://$url"
     }.removeSuffix("/")
 
+    val builtUrl = URLBuilder(normalizedUrl)
     // send a request to a public api to check if the url is accessible
     val httpResponse = httpClient.get {
       url {
-        takeFrom(normalizedUrl).appendEncodedPathSegments("articles")
+        takeFrom(builtUrl).appendEncodedPathSegments("articles")
       }
       timeout {
         requestTimeoutMillis = 10000
@@ -60,10 +62,12 @@ class DefaultLandingService(
 
     // make sure the response is what we are looking for
     val articlesRsp = httpResponse.body<ArticlesRsp>()
-    if (articlesRsp.articlesCount == 0 && articlesRsp.articles.isEmpty()) {
-      userConfigKStore.setUrl(url)
-    } else if (articlesRsp.articlesCount > 0 && articlesRsp.articles.isNotEmpty() && articlesRsp.articles.first().title.isNotEmpty()) {
-      userConfigKStore.setUrl(url)
+    val isEmptyResponse = articlesRsp.articlesCount == 0 && articlesRsp.articles.isEmpty()
+    val isValidResponse = articlesRsp.articlesCount > 0 &&
+        articlesRsp.articles.isNotEmpty() && articlesRsp.articles.first().title.isNotEmpty()
+
+    if (isEmptyResponse || isValidResponse) {
+      userConfigKStore.setUrl(builtUrl.buildString())
     } else {
       error("Invalid response")
     }
