@@ -1,14 +1,12 @@
 package mikufan.cx.conduit.frontend.ui.util
 
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
 import mikufan.cx.conduit.frontend.ui.theme.AppTheme
 import mikufan.cx.conduit.frontend.ui.theme.WithProperSize
 
-
+/**
+ * Setup the base UI theme and sizing
+ */
 @Composable
 fun SetupUI(
   content: @Composable () -> Unit
@@ -18,12 +16,12 @@ fun SetupUI(
   }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+/**
+ * Right now it is just a wrapper of [SetupUI],
+ *
+ * but in the future, we may have special setup for just preview
+ */
 @Composable
 fun SetupPreviewUI(
   content: @Composable () -> Unit
-) {
-  WithProperSize(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(600.dp, 900.dp))) {
-    AppTheme(content = content)
-  }
-}
+) = SetupUI(content = content)

@@ -1,11 +1,11 @@
 package mikufan.cx.conduit.frontend.ui.theme
 
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 
 data class Space(
   val horizontal: HorizontalSpace,
@@ -86,21 +86,25 @@ val expandedVerticalSpace = VerticalSpace(
   paddingLarge = 8.dp
 )
 
-fun WindowSizeClass.calculateSpace(): Space {
-  val horizontalSpace = when (widthSizeClass) {
-    WindowWidthSizeClass.Compact -> compactHorizontalSpace
-    WindowWidthSizeClass.Expanded -> expandedHorizontalSpace
-    WindowWidthSizeClass.Medium -> mediumHorizontalSpace
-    else -> error("What is this window width size class: $widthSizeClass")
-  }
+object SpacingDefaults {
+  fun calculateSpacing(windowSizeClass: WindowSizeClass): Space {
+    val windowWidthSizeClass = windowSizeClass.windowWidthSizeClass
+    val windowHeightSizeClass = windowSizeClass.windowHeightSizeClass
+    val horizontalSpace = when (windowWidthSizeClass) {
+      WindowWidthSizeClass.COMPACT -> compactHorizontalSpace
+      WindowWidthSizeClass.MEDIUM -> mediumHorizontalSpace
+      WindowWidthSizeClass.EXPANDED -> expandedHorizontalSpace
+      else -> error("What is this window width size class: $windowWidthSizeClass")
+    }
 
-  // so far we just let the vertical space be the same with the horizontal space
-  val verticalSpace = when (heightSizeClass) {
-    WindowHeightSizeClass.Compact -> compactVerticalSpace
-    WindowHeightSizeClass.Expanded -> expandedVerticalSpace
-    WindowHeightSizeClass.Medium -> medianVerticalSpace
-    else -> error("What is this window height size class: $heightSizeClass")
-  }
+    // so far we just let the vertical space be the same with the horizontal space
+    val verticalSpace = when (windowHeightSizeClass) {
+      WindowHeightSizeClass.COMPACT -> compactVerticalSpace
+      WindowHeightSizeClass.MEDIUM -> medianVerticalSpace
+      WindowHeightSizeClass.EXPANDED -> expandedVerticalSpace
+      else -> error("What is this window height size class: $windowHeightSizeClass")
+    }
 
-  return Space(horizontal = horizontalSpace, vertical = verticalSpace)
+    return Space(horizontal = horizontalSpace, vertical = verticalSpace)
+  }
 }
