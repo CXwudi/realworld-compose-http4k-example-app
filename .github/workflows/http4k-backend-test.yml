@@ -28,9 +28,9 @@ jobs:
       run: |
         ./gradlew check
 
-    - name: Upload test results
+    - name: Upload build reports
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: backend-test-results
-        path: conduit-backend/build/reports/tests/
+        name: backend-build-reports
+        path: conduit-backend/build/reports/
