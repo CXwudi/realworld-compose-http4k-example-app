@@ -14,14 +14,14 @@
         "org.jetbrains.kotlin"
       ],
       matchDepNames: [
-        // koin disabled until 3.6.0 is out
-        "io.insert-koin:koin-bom", 
         // AGP
         "com.android.tools.build:gradle", 
         "com.android.application",
         "com.android.library",
         // KSP
-        "com.google.devtools.ksp"
+        "com.google.devtools.ksp",
+        // kotlin js warpper
+        "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom",
       ],
       enabled: false
     }
