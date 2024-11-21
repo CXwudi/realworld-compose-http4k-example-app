@@ -1,28 +1,24 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    "config:base",
-    ":automergeMinor",
-    ":automergeBranch"
+    'config:recommended',
+    ':automergeMinor',
+    ':automergeBranch',
   ],
-  commitMessageAction: "⬆ upgrade",
-  timezone: "America/Toronto",
+  commitMessageAction: '⬆ upgrade',
+  timezone: 'America/Toronto',
   packageRules: [
     {
-      matchPackagePrefixes: [
-        // Kotlin and Compose
-        "org.jetbrains.kotlin",
-        "org.jetbrains.compose",
-        // AGP
-        "com.android.tools.build:gradle", 
-        "com.android.application",
-        "com.android.library",
-        // KSP
-        "com.google.devtools.ksp",
-        // kotlin js warpper
-        "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom",
+      enabled: false,
+      matchPackageNames: [
+        'org.jetbrains.kotlin{/,}**',
+        'org.jetbrains.compose{/,}**',
+        'com.android.tools.build:gradle{/,}**',
+        'com.android.application{/,}**',
+        'com.android.library{/,}**',
+        'com.google.devtools.ksp{/,}**',
+        'org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom{/,}**',
       ],
-      enabled: false
-    }
-  ]
+    },
+  ],
 }
