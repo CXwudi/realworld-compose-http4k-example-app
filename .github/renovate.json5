@@ -10,10 +10,9 @@
   packageRules: [
     {
       matchPackagePrefixes: [
-        // kotlin disabled to avoid issue with compose
-        "org.jetbrains.kotlin"
-      ],
-      matchDepNames: [
+        // Kotlin and Compose
+        "org.jetbrains.kotlin",
+        "org.jetbrains.compose",
         // AGP
         "com.android.tools.build:gradle", 
         "com.android.application",
