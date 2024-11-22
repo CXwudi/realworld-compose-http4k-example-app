@@ -13,9 +13,6 @@
       matchPackageNames: [
         'org.jetbrains.kotlin{/,}**',
         'org.jetbrains.compose{/,}**',
-        'com.android.tools.build:gradle{/,}**',
-        'com.android.application{/,}**',
-        'com.android.library{/,}**',
         'com.google.devtools.ksp{/,}**',
         'org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom{/,}**',
       ],
