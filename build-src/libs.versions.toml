@@ -10,7 +10,7 @@
 # 
 [versions]
 kotlin = "2.1.0"
-ksp = "2.1.0-1.0.29"
+ksp = "2.1.0-1.0.28"
 java = "21"
 agp = "8.7.2" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 compose = "1.7.1"
@@ -58,6 +58,7 @@ dev-frontend-ktorfitConverter = { module = "de.jensklingenberg.ktorfit:ktorfit-c
 dev-frontend-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-frontend-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
+dev-frontend-browserWasm = "org.jetbrains.kotlinx:kotlinx-browser:0.3" # see https://kotlinlang.org/docs/wasm-js-interop.html#web-related-browser-apis
 
 # android
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.15.0"

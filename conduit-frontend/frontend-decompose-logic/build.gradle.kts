@@ -66,6 +66,7 @@ kotlin {
     }
 
     wasmJsMain.dependencies {
+      implementation(libs.dev.frontend.browserWasm)
     }
 
     iosMain.dependencies {
