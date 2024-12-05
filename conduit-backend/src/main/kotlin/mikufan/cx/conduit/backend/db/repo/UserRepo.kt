@@ -4,6 +4,7 @@ import mikufan.cx.conduit.backend.db.Users
 import mikufan.cx.conduit.common.UserDto
 import mikufan.cx.conduit.common.UserRegisterDto
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
@@ -35,7 +36,7 @@ class UserRepo {
     .firstOrNull()
     ?.toUserDto()
 
-  fun delete(id: Int): Boolean = Users.deleteWhere { with(it) { Users.id eq id } } > 0
+  fun delete(id: Int): Boolean = Users.deleteWhere { Users.id eq id } > 0
 
   private fun ResultRow.toUserDto() = UserDto(
     email = this[Users.email],
