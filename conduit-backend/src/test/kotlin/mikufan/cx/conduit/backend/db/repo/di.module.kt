@@ -11,7 +11,7 @@ val testDbConfig = module {
     Config(
       port = 0,
       cors = mockk(),
-      db = DbConfig(url = "jdbc:sqlite::memory:", driver = "org.sqlite.JDBC")
+      db = DbConfig(url = "jdbc:postgresql://localhost:5432/conduit-db", user = "conduit-user", password = "conduit-password", driver = "org.postgresql.Driver")
     )
   }
   includes(dbModule)
