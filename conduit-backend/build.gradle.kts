@@ -30,7 +30,7 @@ dependencies {
   // https://toolbox.http4k.org/stack/dD1BQU1BWlFETEFTOEItQU1sQTRZRDZBUHBCTEFGRmcmYz1NYWluJnA9bWlrdWZhbi5jeC5jb25kdWl0LmJhY2tlbmQ
   implementation(platform(libs.dev.backend.http4kBom))
   implementation("org.http4k:http4k-core")
-  implementation("org.http4k:http4k-server-jetty")
+  implementation("org.http4k:http4k-server-helidon") // loom native web server
   implementation("org.http4k:http4k-format-kotlinx-serialization")
   implementation("org.http4k:http4k-metrics-micrometer")
   implementation(platform(libs.dev.backend.exposedBom))

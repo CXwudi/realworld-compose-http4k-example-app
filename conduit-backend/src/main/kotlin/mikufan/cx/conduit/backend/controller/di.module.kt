@@ -33,9 +33,7 @@ val routeModule = module {
 }
 
 /**
- * require [configModule]
- * require [filterModule]
- * require [routeModule]
+ * require [configModule], [filterModule], [routeModule]
  */
 val serverModule = module {
   single {

@@ -8,8 +8,8 @@ import org.http4k.core.Method.POST
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
+import org.http4k.server.Helidon
 import org.http4k.server.Http4kServer
-import org.http4k.server.JettyLoom
 import org.http4k.server.asServer
 
 //// route setup ////
@@ -57,7 +57,7 @@ typealias ConduitServer = Http4kServer
 fun conduitServer(
   config: Config,
   handler: HttpHandler,
-): ConduitServer = handler.asServer(JettyLoom(config.port))
+): ConduitServer = handler.asServer(Helidon(config.port))
 
 
 
