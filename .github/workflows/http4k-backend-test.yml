@@ -9,6 +9,7 @@ on:
     paths:
       - 'conduit-backend/**'
       - 'build-src/**'
+  workflow_dispatch:
 
 jobs:
   test:
