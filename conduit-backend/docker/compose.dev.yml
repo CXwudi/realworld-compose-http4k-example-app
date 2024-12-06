@@ -1,0 +1,21 @@
+# This file contains development-specific overrides
+# Use with compose.base.yml like this:
+# docker compose -f compose.base.yml -f compose.dev.yml up
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  flyway:
+    volumes:
+      - ../db-migration/main:/flyway/sql           # Regular migrations
+      - ../db-migration/test:/flyway/sql-test # Test migrations in separate directory
+    environment:
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql,filesystem:/flyway/sql-test
+      FLYWAY_CLEAN_DISABLED: false
+    command: clean migrate

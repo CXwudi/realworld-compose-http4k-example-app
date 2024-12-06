@@ -12,6 +12,7 @@ import org.http4k.server.Http4kServer
 import org.http4k.server.JettyLoom
 import org.http4k.server.asServer
 
+//// route setup ////
 
 fun conduitRoute(apiRoute: RoutingHttpHandler): RoutingHttpHandler = routes(
   "/healthcheck" bind GET to { Response(Status.OK).body("OK") },

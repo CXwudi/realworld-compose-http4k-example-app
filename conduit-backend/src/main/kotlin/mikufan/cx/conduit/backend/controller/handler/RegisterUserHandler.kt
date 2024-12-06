@@ -15,7 +15,7 @@ class RegisterUserHandler(
 
   override fun invoke(request: Request): Response {
     val userDto = userRegistrationLen(request).user
-    val UserRegisterDto = userService.registerUser(userDto)
-    return userRspLens(UserRsp(UserRegisterDto), Response(Status.CREATED))
+    val userRegisterDto = userService.registerUser(userDto)
+    return userRspLens(UserRsp(userRegisterDto), Response(Status.CREATED))
   }
 }

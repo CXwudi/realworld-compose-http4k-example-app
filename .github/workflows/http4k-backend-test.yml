@@ -2,6 +2,10 @@ name: Http4k Backend Tests
 
 on:
   push:
+    branches:
+      - main
+      - master
+      - 'renovate/**'
     paths:
       - 'conduit-backend/**'
       - 'build-src/**'
@@ -9,6 +13,31 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_DB: test-db
+          POSTGRES_USER: test-user
+          POSTGRES_PASSWORD: test-password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 3s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 3s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
 
     steps:
     - name: Checkout code
@@ -20,13 +49,26 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
+    - name: Run Database Migrations
+      uses: red-gate/FlywayGitHubAction@main
+      with:
+        url: jdbc:postgresql://localhost:5432/test-db
+        user: test-user
+        password: test-password
+        locations: filesystem:./conduit-backend/db-migration/main,filesystem:./conduit-backend/db-migration/test
+        extraArgs: -cleanDisabled=false -clean=true
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
 
     - name: Run Backend Tests
       working-directory: conduit-backend
+      env:
+        DB__URL: jdbc:postgresql://localhost:5432/test-db
+        DB__USER: test-user
+        DB__PASSWORD: test-password
       run: |
-        ./gradlew check
+        ./gradlew check 
 
     - name: Upload build reports
       uses: actions/upload-artifact@v4

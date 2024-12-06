@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: conduit-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    container_name: conduit-redis
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  flyway:
+    image: flyway/flyway:latest-alpine
+    container_name: conduit-flyway
+    profiles: ["migration"]
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      FLYWAY_USER: ${POSTGRES_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+      FLYWAY_CONNECT_RETRIES: 10
+    volumes: # consider having different migration files for different environments, see https://documentation.red-gate.com/fd/configuration-files-224003079.html
+      - ../db/migration:/flyway/sql
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: migrate
+
+volumes:
+  postgres_data:
+    name: conduit-postgres-data
+  redis_data:
+    name: conduit-redis-data
+
+networks:
+  default:
+    name: conduit-network

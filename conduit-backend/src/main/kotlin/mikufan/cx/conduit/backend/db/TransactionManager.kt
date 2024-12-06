@@ -5,15 +5,13 @@ import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
 interface TransactionManager {
-  val db: Database
-
-  fun <T> tx(block: Transaction.() -> T): T {
-    return transaction(db) {
-      block()
-    }
-  }
+  fun <T> tx(block: Transaction.() -> T): T
 }
 
 class TransactionManagerImpl(
-  override val db: Database
-) : TransactionManager
+  val db: Database
+) : TransactionManager {
+  override fun <T> tx(block: Transaction.() -> T): T = transaction(db) {
+    block()
+  }
+}
