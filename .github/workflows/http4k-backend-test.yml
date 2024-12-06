@@ -24,11 +24,11 @@ jobs:
       postgres:
         image: postgres:alpine
         env:
-          POSTGRES_DB: ${DB_NAME}
-          POSTGRES_USER: ${DB_USER}
-          POSTGRES_PASSWORD: ${DB_PASSWORD}
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
         options: >-
-          --health-cmd "pg_isready -U ${DB_USER} -d ${DB_NAME}"
+          --health-cmd "pg_isready -U test-user -d test-db"
           --health-interval 3s
           --health-timeout 5s
           --health-retries 5
@@ -58,9 +58,9 @@ jobs:
     - name: Run Database Migrations
       uses: docker://flyway/flyway:latest-alpine
       env:
-        FLYWAY_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
-        FLYWAY_USER: ${DB_USER}
-        FLYWAY_PASSWORD: ${DB_PASSWORD}
+        FLYWAY_URL: jdbc:postgresql://postgres:5432/${{ env.DB_NAME }}
+        FLYWAY_USER: ${{ env.DB_USER }}
+        FLYWAY_PASSWORD: ${{ env.DB_PASSWORD }}
         FLYWAY_CLEAN_DISABLED: false
         FLYWAY_LOCATIONS: filesystem:/github/workspace/conduit-backend/db-migration/main,filesystem:/github/workspace/conduit-backend/db-migration/test
       with:
@@ -72,9 +72,9 @@ jobs:
     - name: Run Backend Tests
       working-directory: conduit-backend
       env:
-        DB__URL: jdbc:postgresql://postgres:5432/${DB_NAME}
-        DB__USER: ${DB_USER}
-        DB__PASSWORD: ${DB_PASSWORD}
+        DB__URL: jdbc:postgresql://postgres:5432/${{ env.DB_NAME }}
+        DB__USER: ${{ env.DB_USER }}
+        DB__PASSWORD: ${{ env.DB_PASSWORD }}
       run: |
         ./gradlew check 
 
