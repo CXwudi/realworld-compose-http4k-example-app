@@ -2,6 +2,9 @@ name: Frontend Decompose Module Tests
 
 on:
   push:
+    branches:
+      - main
+      - 'renovate/**'
     paths:
       - 'conduit-frontend/frontend-decompose-logic/**'
       - 'build-src/**'
