@@ -1,18 +1,20 @@
 package mikufan.cx.conduit.backend.db.repo
 
-import io.mockk.mockk
+import com.sksamuel.hoplite.ConfigLoaderBuilder
+import com.sksamuel.hoplite.addEnvironmentSource
+import com.sksamuel.hoplite.addResourceOrFileSource
 import mikufan.cx.conduit.backend.config.Config
-import mikufan.cx.conduit.backend.config.DbConfig
 import mikufan.cx.conduit.backend.db.dbModule
 import org.koin.dsl.module
 
 val testDbConfig = module {
   single {
-    Config(
-      port = 0,
-      cors = mockk(),
-      db = DbConfig(url = "jdbc:postgresql://localhost:5432/conduit-db", user = "conduit-user", password = "conduit-password", driver = "org.postgresql.Driver")
-    )
+    ConfigLoaderBuilder.default()
+      .addEnvironmentSource()
+      .addResourceOrFileSource("/application-test.yml", optional = true, allowEmpty = true)
+      .addResourceOrFileSource("/application.yml", allowEmpty = true)
+      .build()
+      .loadConfigOrThrow<Config>()
   }
   includes(dbModule)
 }

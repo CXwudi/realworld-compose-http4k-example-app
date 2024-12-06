@@ -12,17 +12,26 @@ class UserService(
   private val userRepo: UserRepo,
 ) {
 
-  fun registerUser(user: UserRegisterDto): UserDto =
-    txManager.tx {
+  fun registerUser(user: UserRegisterDto): UserDto {
+    val newUser = txManager.tx {
       val userDto = userRepo.getByUsername(user.username) ?: userRepo.getByEmail(user.email)
       if (userDto != null) {
         throw ConduitException("User already exists, username or email must be unique")
       } else {
-        val newUser = userRepo.insert(user) ?: throw ConduitException("Failed to create new user ${user.username}")
-        log.info { "Successfully created new user ${user.username}" }
-        newUser
+        userRepo.insert(user)
       }
     }
+    log.info { "Successfully created new user ${user.username}" }
+
+    // TODO: set token
+    return UserDto(
+      email = newUser.email,
+      username = newUser.username,
+      bio = newUser.bio,
+      image = newUser.image,
+      token = null
+    )
+  }
 }
 
 private val log = KInlineLogging.logger()

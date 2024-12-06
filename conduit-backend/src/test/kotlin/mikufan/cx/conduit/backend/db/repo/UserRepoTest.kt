@@ -24,7 +24,7 @@ class UserRepoTest : ShouldSpec(), KoinTest {
         txManager.tx {
           val newUser = userRepo.insert(UserRegisterDto)
           newUser shouldNotBe null
-          newUser?.apply {
+          newUser.apply {
             email shouldBe UserRegisterDto.email
             username shouldBe UserRegisterDto.username
           }

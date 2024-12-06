@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.mockk.every
 import io.mockk.mockk
+import mikufan.cx.conduit.backend.db.User
 import mikufan.cx.conduit.backend.db.repo.UserRepo
 import mikufan.cx.conduit.backend.util.ConduitException
 import mikufan.cx.conduit.backend.util.NoOpsTxManager
@@ -17,21 +18,28 @@ class UserServiceTest : ShouldSpec({
   val txManager = NoOpsTxManager
 
   context("user registration") {
-    val UserRegisterDto = UserRegisterDto("new user", "email@email.com", "password")
+    val userRegisterDto = UserRegisterDto("new user", "email@email.com", "password")
     should("register user successfully") {
       val userRepo = mockk<UserRepo>() {
         every { getByEmail(any()) } returns null
         every { getByUsername(any()) } returns null
         every { insert(any()) } answers {
           val dto = firstArg<UserRegisterDto>()
-          UserDto(dto.email, dto.username, "", "", null)
+          mockk<User> {
+            every { email } returns dto.email
+            every { username } returns dto.username
+            every { password } returns dto.password
+            every { bio } returns ""
+            every { image } returns ""
+          }
         }
       }
       val userService = UserService(txManager, userRepo)
 
-      val registerUser = userService.registerUser(UserRegisterDto)
+      val registerUser = userService.registerUser(userRegisterDto)
       registerUser shouldBe UserDto("new user", "email@email.com", "", "", null)
     }
+
     should("throw on duplicate user") {
       val userRepo = mockk<UserRepo>() {
         every { getByEmail(any()) } returns mockk()
@@ -41,7 +49,7 @@ class UserServiceTest : ShouldSpec({
       val userService = UserService(txManager, userRepo)
 
       val conduitException = shouldThrow<ConduitException> {
-        userService.registerUser(UserRegisterDto)
+        userService.registerUser(userRegisterDto)
       }
 
       conduitException.message shouldContain "User already exists"
