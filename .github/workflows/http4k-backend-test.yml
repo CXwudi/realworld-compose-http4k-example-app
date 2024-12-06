@@ -63,6 +63,9 @@ jobs:
         FLYWAY_PASSWORD: ${{ env.DB_PASSWORD }}
         FLYWAY_CLEAN_DISABLED: false
         FLYWAY_LOCATIONS: filesystem:/github/workspace/conduit-backend/db-migration/main,filesystem:/github/workspace/conduit-backend/db-migration/test
+        # Set container's JAVA_HOME to prevent GitHub Actions from passing its own Java path
+        # This ensures the container uses its internal Java installation at /opt/java/openjdk
+        JAVA_HOME: /opt/java/openjdk
       with:
         args: clean migrate
 
