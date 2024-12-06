@@ -14,13 +14,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      DB_NAME: test-db
+      DB_USER: test-user
+      DB_PASSWORD: test-password
+
     services:
       postgres:
         image: postgres:alpine
         env:
-          POSTGRES_DB: test-db
-          POSTGRES_USER: test-user
-          POSTGRES_PASSWORD: test-password
+          POSTGRES_DB: ${DB_NAME}
+          POSTGRES_USER: ${DB_USER}
+          POSTGRES_PASSWORD: ${DB_PASSWORD}
         options: >-
           --health-cmd pg_isready
           --health-interval 3s
@@ -50,13 +55,15 @@ jobs:
         distribution: 'temurin'
 
     - name: Run Database Migrations
-      uses: red-gate/FlywayGitHubAction@main
+      uses: docker://flyway/flyway:latest-alpine
+      env:
+        FLYWAY_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+        FLYWAY_USER: ${DB_USER}
+        FLYWAY_PASSWORD: ${DB_PASSWORD}
+        FLYWAY_CLEAN_DISABLED: false
+        FLYWAY_LOCATIONS: filesystem:/github/workspace/conduit-backend/db-migration/main,filesystem:/github/workspace/conduit-backend/db-migration/test
       with:
-        url: jdbc:postgresql://localhost:5432/test-db
-        user: test-user
-        password: test-password
-        locations: filesystem:./conduit-backend/db-migration/main,filesystem:./conduit-backend/db-migration/test
-        extraArgs: -cleanDisabled=false -clean=true
+        args: clean migrate
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
@@ -64,9 +71,9 @@ jobs:
     - name: Run Backend Tests
       working-directory: conduit-backend
       env:
-        DB__URL: jdbc:postgresql://localhost:5432/test-db
-        DB__USER: test-user
-        DB__PASSWORD: test-password
+        DB__URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+        DB__USER: ${DB_USER}
+        DB__PASSWORD: ${DB_PASSWORD}
       run: |
         ./gradlew check 
 
