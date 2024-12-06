@@ -26,7 +26,7 @@ ktorfit = "2.2.0"
 
 junit = "5.11.3"
 http4k = "5.37.1.1"
-exposed = "0.56.0"
+exposed = "0.57.0"
 
 [libraries]
 # dev dep
