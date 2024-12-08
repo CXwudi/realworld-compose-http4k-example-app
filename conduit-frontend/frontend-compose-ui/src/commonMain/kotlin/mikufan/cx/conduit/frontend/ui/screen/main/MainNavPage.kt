@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -35,9 +34,20 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
 
+  val manuItems = remember(mainStateMode) { // not using derivedStateOf because it updates whenever mainStateMode changes
+    navigationItems(mainStateMode, component::send)
+  }
+
   NavigationSuiteScaffold(
     navigationSuiteItems = {
-      navigationItems(mainStateMode, component::send, selectedIndex)
+      manuItems.forEach { item ->
+        item(
+          icon = { Icon(item.icon, contentDescription = item.label) },
+          label = { Text(item.label) },
+          selected = selectedIndex == item.index,
+          onClick = item.onClick
+        )
+      }
     },
     modifier = modifier
   ) {
@@ -55,21 +65,12 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
 }
 
 
-private fun NavigationSuiteScope.navigationItems(
+private fun navigationItems(
   mainStateMode: MainNavMode,
   onSend: (MainNavIntent) -> Unit,
-  selectedIndex: Int,
-) {
-  val items = mainStateMode.menuItems.withIndex().map { (index, value) ->
+): List<NavigationItem> {
+  return mainStateMode.menuItems.withIndex().map { (index, value) ->
     mapMenuItemEnum2NavItem(value, index, onSend)
-  }
-  items.forEach { item ->
-    item(
-      icon = { Icon(item.icon, contentDescription = item.label) },
-      label = { Text(item.label) },
-      selected = selectedIndex == item.index,
-      onClick = item.onClick
-    )
   }
 }
 
