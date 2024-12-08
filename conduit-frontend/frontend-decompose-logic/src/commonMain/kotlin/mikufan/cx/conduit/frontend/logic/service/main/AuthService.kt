@@ -1,4 +1,4 @@
-package mikufan.cx.conduit.frontend.logic.service.landing
+package mikufan.cx.conduit.frontend.logic.service.main
 
 import mikufan.cx.conduit.common.UserDtoUtils
 import mikufan.cx.conduit.frontend.logic.repo.api.AuthApi

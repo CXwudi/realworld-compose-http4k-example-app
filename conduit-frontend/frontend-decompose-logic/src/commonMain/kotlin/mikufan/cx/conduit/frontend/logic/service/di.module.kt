@@ -1,10 +1,10 @@
 package mikufan.cx.conduit.frontend.logic.service
 
 import mikufan.cx.conduit.frontend.logic.repo.repoModules
-import mikufan.cx.conduit.frontend.logic.service.landing.AuthService
-import mikufan.cx.conduit.frontend.logic.service.landing.DefaultAuthService
 import mikufan.cx.conduit.frontend.logic.service.landing.DefaultLandingService
 import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
+import mikufan.cx.conduit.frontend.logic.service.main.AuthService
+import mikufan.cx.conduit.frontend.logic.service.main.DefaultAuthService
 import org.koin.dsl.module
 
 

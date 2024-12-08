@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import mikufan.cx.conduit.frontend.logic.service.landing.AuthService
+import mikufan.cx.conduit.frontend.logic.service.main.AuthService
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
