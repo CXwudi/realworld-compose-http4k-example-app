@@ -1,4 +1,4 @@
-package mikufan.cx.conduit.frontend.logic.service
+package mikufan.cx.conduit.frontend.logic.repo.kstore
 
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -9,15 +9,12 @@ import dev.mokkery.verifySuspend
 import io.github.xxfast.kstore.Codec
 import io.github.xxfast.kstore.KStore
 import kotlinx.coroutines.test.runTest
-import mikufan.cx.conduit.frontend.logic.repo.kstore.PersistedConfig
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStoreImpl
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class UserConfigServiceTest {
+class UserConfigKStoreTest {
 
   lateinit var codec: Codec<PersistedConfig>
   lateinit var userConfigKStore: UserConfigKStore
