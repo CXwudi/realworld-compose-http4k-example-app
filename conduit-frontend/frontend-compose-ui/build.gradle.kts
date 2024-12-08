@@ -55,7 +55,7 @@ compose.resources {
 
 composeCompiler {
   // string skipping mode is now enabled by default since Kotlin 2.0.20
-  stabilityConfigurationFile = projectDir.resolve("compose-stability.txt")
+  stabilityConfigurationFiles.addAll(layout.projectDirectory.file("compose-stability.txt"))
   reportsDestination = layout.buildDirectory.dir("compose-reports")
   metricsDestination = layout.buildDirectory.dir("compose-reports")
 }
