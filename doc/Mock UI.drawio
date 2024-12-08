@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="5">
     <diagram name="Landing" id="x6D8E37I-bTPpWvTAXMf">
-        <mxGraphModel dx="606" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="523" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -371,72 +371,96 @@
         </mxGraphModel>
     </diagram>
     <diagram id="bBld6-BTcuxn1okW1GBd" name="Me Flow (Just current page)">
-        <mxGraphModel dx="1078" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="995" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="UUxr2__IacFQmJypGf8D-4" style="edgeStyle=none;html=1;" edge="1" parent="1" source="UUxr2__IacFQmJypGf8D-3" target="V-uMMKaNKVndgrNO-3Ly-1">
+                <mxCell id="UUxr2__IacFQmJypGf8D-4" style="edgeStyle=none;html=1;" parent="1" source="UUxr2__IacFQmJypGf8D-3" target="V-uMMKaNKVndgrNO-3Ly-1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="340" y="345" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="UUxr2__IacFQmJypGf8D-3" value="" style="ellipse;fillColor=strokeColor;" vertex="1" parent="1">
+                <mxCell id="TnCAGnV7lRd3Yaf2j3Va-4" value="When Just Started" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" vertex="1" connectable="0" parent="UUxr2__IacFQmJypGf8D-4">
+                    <mxGeometry x="0.2701" y="-2" relative="1" as="geometry">
+                        <mxPoint x="-19" y="11" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="TnCAGnV7lRd3Yaf2j3Va-2" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="UUxr2__IacFQmJypGf8D-3" target="TnCAGnV7lRd3Yaf2j3Va-6">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="374.51612903225805" y="220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="TnCAGnV7lRd3Yaf2j3Va-5" value="When User Click anything" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" vertex="1" connectable="0" parent="TnCAGnV7lRd3Yaf2j3Va-2">
+                    <mxGeometry x="0.1831" y="4" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="UUxr2__IacFQmJypGf8D-3" value="" style="ellipse;fillColor=strokeColor;" parent="1" vertex="1">
                     <mxGeometry x="170" y="330" width="30" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="V-uMMKaNKVndgrNO-3Ly-3" style="edgeStyle=none;html=1;" edge="1" parent="1" source="V-uMMKaNKVndgrNO-3Ly-1" target="NthpyFx-oyOaUX9pSVIg-15">
+                <mxCell id="V-uMMKaNKVndgrNO-3Ly-3" style="edgeStyle=none;html=1;" parent="1" source="V-uMMKaNKVndgrNO-3Ly-1" target="NthpyFx-oyOaUX9pSVIg-15" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="620" y="345" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="V-uMMKaNKVndgrNO-3Ly-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;System show loading&lt;br&gt;and make API calls to fetch user info&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" vertex="1" parent="1">
+                <mxCell id="V-uMMKaNKVndgrNO-3Ly-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;System show loading&lt;br&gt;and make API calls to fetch user info&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="340" y="297.75" width="151" height="94.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-1" style="edgeStyle=none;html=1;" edge="1" parent="1" source="NthpyFx-oyOaUX9pSVIg-15" target="NthpyFx-oyOaUX9pSVIg-8">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-1" style="edgeStyle=none;html=1;" parent="1" source="NthpyFx-oyOaUX9pSVIg-15" target="NthpyFx-oyOaUX9pSVIg-8" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="590" y="480" as="targetPoint"/>
                         <mxPoint x="637.8926441351889" y="364.6819085487077" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-2" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Fail&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NthpyFx-oyOaUX9pSVIg-1">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-2" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Fail&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NthpyFx-oyOaUX9pSVIg-1" vertex="1" connectable="0">
                     <mxGeometry x="-0.6591" y="-1" relative="1" as="geometry">
                         <mxPoint y="9" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-5" value="" style="edgeStyle=none;html=1;fontSize=14;" edge="1" parent="1" source="NthpyFx-oyOaUX9pSVIg-15" target="NthpyFx-oyOaUX9pSVIg-7">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-5" value="" style="edgeStyle=none;html=1;fontSize=14;" parent="1" source="NthpyFx-oyOaUX9pSVIg-15" target="NthpyFx-oyOaUX9pSVIg-7" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="669.8010610079575" y="344.7811671087534" as="sourcePoint"/>
                         <mxPoint x="810" y="343.16666666666674" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-6" value="Success" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" vertex="1" connectable="0" parent="NthpyFx-oyOaUX9pSVIg-5">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-6" value="Success" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" parent="NthpyFx-oyOaUX9pSVIg-5" vertex="1" connectable="0">
                     <mxGeometry x="-0.5247" y="1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-14" value="" style="edgeStyle=none;html=1;fontSize=14;" edge="1" parent="1" source="NthpyFx-oyOaUX9pSVIg-7" target="NthpyFx-oyOaUX9pSVIg-16">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-14" value="" style="edgeStyle=none;html=1;fontSize=14;" parent="1" source="NthpyFx-oyOaUX9pSVIg-7" target="NthpyFx-oyOaUX9pSVIg-16" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1120" y="342.75" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-7" value="System show user info" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" vertex="1" parent="1">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-7" value="System show user info" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="810" y="297.75" width="180" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-10" value="" style="edgeStyle=none;html=1;fontSize=14;" edge="1" parent="1" source="NthpyFx-oyOaUX9pSVIg-8" target="NthpyFx-oyOaUX9pSVIg-12">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-10" value="" style="edgeStyle=none;html=1;fontSize=14;" parent="1" source="NthpyFx-oyOaUX9pSVIg-8" target="NthpyFx-oyOaUX9pSVIg-12" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="580" y="695" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-8" value="System shows error info" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" vertex="1" parent="1">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-8" value="System shows error info" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="480" y="480" width="200" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-12" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;fontSize=14;" vertex="1" parent="1">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-12" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="565" y="690" width="30" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-15" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;fillColor=rgb(255, 255, 255);rounded=1;" vertex="1" parent="1">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-15" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;fillColor=rgb(255, 255, 255);rounded=1;" parent="1" vertex="1">
                     <mxGeometry x="600" y="302.75" width="80" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="NthpyFx-oyOaUX9pSVIg-16" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;fontSize=14;" vertex="1" parent="1">
+                <mxCell id="NthpyFx-oyOaUX9pSVIg-16" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="1130" y="327.75" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="TnCAGnV7lRd3Yaf2j3Va-8" style="edgeStyle=none;html=1;fontSize=14;" edge="1" parent="1" source="TnCAGnV7lRd3Yaf2j3Va-6" target="TnCAGnV7lRd3Yaf2j3Va-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="TnCAGnV7lRd3Yaf2j3Va-6" value="System handle the intent.&lt;br&gt;All intents are navigation based" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="150" width="220" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="TnCAGnV7lRd3Yaf2j3Va-7" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;fontSize=14;" vertex="1" parent="1">
+                    <mxGeometry x="720" y="175" width="30" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
