@@ -18,7 +18,7 @@ class DefaultMeNavComponent(
   private val stackNavigation = StackNavigation<Config>()
   override val childStack: Value<ChildStack<*, MeNavComponentChild>> = childStack(
     source = stackNavigation,
-    initialConfiguration = Config.MeComponent,
+    initialConfiguration = Config.RootMeComponent,
     serializer = Config.serializer(),
     childFactory = ::childFactory
   )
@@ -28,13 +28,13 @@ class DefaultMeNavComponent(
     componentContext: ComponentContext
   ): MeNavComponentChild {
     // TODO: switch to real creation
-    return MeNavComponentChild.MeComponent
+    return MeNavComponentChild.RootMeComponent
   }
 
   @Serializable
   sealed interface Config {
     @Serializable
-    data object MeComponent : Config
+    data object RootMeComponent : Config
   }
 }
 
