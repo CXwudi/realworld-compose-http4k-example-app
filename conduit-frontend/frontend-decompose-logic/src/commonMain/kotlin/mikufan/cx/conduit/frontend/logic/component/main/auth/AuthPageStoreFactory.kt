@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
-import mikufan.cx.conduit.frontend.logic.service.landing.AuthService
+import mikufan.cx.conduit.frontend.logic.service.main.AuthService
 
 class AuthPageStoreFactory(
   private val storeFactory: StoreFactory,
