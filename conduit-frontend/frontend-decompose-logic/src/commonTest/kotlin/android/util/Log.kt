@@ -43,6 +43,12 @@ object Log {
   }
 
   @JvmStatic
+  fun e(tag: String, msg: String, exception: Throwable): Int {
+    println("ERROR: $tag: $msg , $exception")
+    return 0
+  }
+
+  @JvmStatic
   fun isLoggable(tag: String, level: Int): Boolean {
     return true
   }
