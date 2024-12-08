@@ -9,6 +9,8 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MeStoreFactory
 import mikufan.cx.conduit.frontend.logic.service.serviceModule
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -23,6 +25,7 @@ val storeModule = module {
   single { LandingPageStoreFactory(get(), get()) }
   single { MainNavStoreFactory(get(), get()) }
   single { AuthPageStoreFactory(get(), get()) }
+  single { MeStoreFactory(get(), get()) }
 }
 
 /**
@@ -34,6 +37,7 @@ val componentFactoryModule = module {
   singleOf(::LandingPageComponentFactory)
   singleOf(::AuthPageComponentFactory)
   singleOf(::MeNavComponentFactory)
+  singleOf(::MePageComponentFactory)
 }
 
 val decomposeViewModelModules = listOf(storeModule, componentFactoryModule)
