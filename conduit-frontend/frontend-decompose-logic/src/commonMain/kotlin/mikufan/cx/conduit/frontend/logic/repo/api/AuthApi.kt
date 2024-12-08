@@ -1,6 +1,7 @@
 package mikufan.cx.conduit.frontend.logic.repo.api
 
 import de.jensklingenberg.ktorfit.http.Body
+import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import mikufan.cx.conduit.common.UserLoginDto
@@ -24,4 +25,7 @@ interface AuthApi {
     @Body body: UserReq<UserLoginDto>
   ): ConduitResponse<UserRsp>
 
+  @GET("user")
+  @Headers("Content-Type: application/json")
+  suspend fun getCurrentUser(): ConduitResponse<UserRsp>
 }
