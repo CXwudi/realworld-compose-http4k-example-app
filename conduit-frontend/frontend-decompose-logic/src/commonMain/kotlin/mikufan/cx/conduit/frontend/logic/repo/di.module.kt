@@ -32,6 +32,7 @@ val apiModule = module {
   // So we decided to just create a static all-in-one HttpClient,
   // and let all Ktorfit interfaces accept URL and token as parameters.
   // This also makes a better performance since we don't need to create a new HttpClient for each user config change.
+  // See https://bbasoglu.medium.com/part-1-how-to-change-base-url-on-runtime-in-an-android-project-1d7607bbfa48
 
   singleOf(::defaultJson)
   singleOf(::createDefaultHttpClient)
