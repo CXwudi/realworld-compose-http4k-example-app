@@ -77,7 +77,7 @@ dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
 dev-backend-postgresql = "org.postgresql:postgresql:42.7.4"
 dev-backend-hikari = "com.zaxxer:HikariCP:6.2.1"
 dev-backend-flyway = "org.flywaydb:flyway-core:11.1.0"
-dev-backend-logback = "ch.qos.logback:logback-classic:1.5.12"
+dev-backend-logback = "ch.qos.logback:logback-classic:1.5.13"
 dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.16"
 dev-backend-inlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
 
