@@ -53,6 +53,7 @@ class MeStoreTest {
 
     // Given
     val loadedMe = LoadedMe(
+      email = "test@email.com",
       username = "testuser",
       bio = "test bio",
       imageUrl = "test image url"
@@ -71,6 +72,7 @@ class MeStoreTest {
     assertTrue { newState is MePageState.Loaded }
     verifySuspend(exactly(1)) { mePageService.getCurrentUser() }
     (newState as MePageState.Loaded).let {
+      assertEquals(loadedMe.email, it.email)
       assertEquals(loadedMe.username, it.username)
       assertEquals(loadedMe.bio, it.bio)
       assertEquals(loadedMe.imageUrl, it.imageUrl)
@@ -111,6 +113,7 @@ class MeStoreTest {
 
     // Given
     val loadedMe = LoadedMe(
+      email = "test@email.com",
       username = "testuser",
       bio = "test bio",
       imageUrl = "test image url"
@@ -144,6 +147,7 @@ class MeStoreTest {
 
     // Given
     val loadedMe = LoadedMe(
+      email = "test@email.com",
       username = "testuser",
       bio = "test bio",
       imageUrl = "test image url"
