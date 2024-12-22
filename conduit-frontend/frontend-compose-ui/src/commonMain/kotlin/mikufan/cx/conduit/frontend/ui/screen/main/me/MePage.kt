@@ -344,7 +344,12 @@ private fun ProfileImage(
       )
     }
     is AsyncImagePainter.State.Loading -> {
-      CircularProgressIndicator()
+      CircularProgressIndicator(
+        modifier = modifier
+          .then(sizeResolver)
+          .size(120.dp)
+          .clip(CircleShape)
+      )
     }
     is AsyncImagePainter.State.Success -> {
       Image(
