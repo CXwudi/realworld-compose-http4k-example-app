@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowWidthSizeClass
+import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.compose.rememberConstraintsSizeResolver
@@ -55,8 +56,12 @@ import coil3.request.ImageRequest
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageState
+import mikufan.cx.conduit.frontend.ui.resources.Res
+import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
+import mikufan.cx.conduit.frontend.ui.resources.outlined_hide_image
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 import mikufan.cx.conduit.frontend.ui.util.LocalWindowAdaptiveInfo
+import org.jetbrains.compose.resources.painterResource
 
 /**
  * The main composable for the Me page that displays the user's profile.
@@ -322,14 +327,45 @@ private fun ProfileImage(
       .build(),
   )
 
-  Image(
-    painter = painter,
-    contentDescription = "Profile picture of $username",
-    contentScale = ContentScale.Crop,
-    modifier = modifier
-      .then(sizeResolver)
-      .size(120.dp)
-      .clip(CircleShape)
-  )
+  val painterState by painter.state.collectAsState()
+
+  when (painterState) {
+    is AsyncImagePainter.State.Empty -> {
+      Image(
+        painter = painterResource(Res.drawable.outlined_hide_image),
+        contentDescription = "No profile picture for $username",
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+          .then(sizeResolver)
+          .size(120.dp)
+          .clip(CircleShape)
+      )
+    }
+    is AsyncImagePainter.State.Loading -> {
+      CircularProgressIndicator()
+    }
+    is AsyncImagePainter.State.Success -> {
+      Image(
+        painter = painter,
+        contentDescription = "Profile picture of $username",
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+          .then(sizeResolver)
+          .size(120.dp)
+          .clip(CircleShape)
+      )
+    }
+    is AsyncImagePainter.State.Error -> {
+      Icon(
+        painter = painterResource(Res.drawable.outlined_broken_image),
+        contentDescription = "Broken profile picture of $username",
+        modifier = modifier
+          .then(sizeResolver)
+          .size(120.dp)
+          .clip(CircleShape)
+      )
+    }
+  }
+
 
 }
