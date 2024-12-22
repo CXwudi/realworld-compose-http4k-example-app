@@ -308,6 +308,8 @@ private fun ExpandableBioText(
 /**
  * Displays the user's profile image in a circular shape.
  * Uses Coil for image loading and applies proper content scaling.
+ * Shows broken image icon if loading failed.
+ * Shows hide image icon if image is not available.
  *
  * @param imageUrl URL of the profile image to load
  * @param username Username used for accessibility description
