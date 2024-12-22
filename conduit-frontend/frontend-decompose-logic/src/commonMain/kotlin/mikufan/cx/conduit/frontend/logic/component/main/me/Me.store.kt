@@ -59,15 +59,6 @@ class MeStoreFactory(
         }
       }
     }
-
-    // TODO: implement navigation to other pages
-    onIntent<MePageIntent.EditProfile> {
-
-    }
-
-    onIntent<MePageIntent.AddArticle> {
-
-    }
   }
 
   private fun createBootstrapper() = coroutineBootstrapper(mainDispatcher) {

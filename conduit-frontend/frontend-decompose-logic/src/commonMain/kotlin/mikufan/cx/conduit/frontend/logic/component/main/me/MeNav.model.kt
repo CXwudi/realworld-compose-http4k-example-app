@@ -1,6 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.component.main.me
 
 sealed interface MeNavComponentChild {
-  data object RootMeComponent : MeNavComponentChild
+  data class MePage(val mePageComponent: MePageComponent) : MeNavComponentChild
 }
 
