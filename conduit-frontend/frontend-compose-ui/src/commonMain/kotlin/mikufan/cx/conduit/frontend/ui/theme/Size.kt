@@ -14,7 +14,7 @@ fun WithProperSize(
 ) {
   val spacing = SpacingDefaults.calculateSpacing(windowAdaptiveInfo.windowSizeClass)
   CompositionLocalProvider(
-    LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
+    LocalWindowAdaptiveInfo provides windowAdaptiveInfo,
     LocalSpace provides spacing,
     content = content
   )
