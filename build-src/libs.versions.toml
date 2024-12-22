@@ -15,6 +15,7 @@ java = "21"
 agp = "8.7.3" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 compose = "1.7.3"
 compose-adaptive = "1.0.1"
+coil = "3.0.4"
 
 essenty = "2.4.0"
 decompose = "3.2.2"
@@ -49,6 +50,10 @@ dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:
 dev-frontend-compose-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-adaptive" }
 dev-frontend-compose-adaptiveLayout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-adaptive" }
 dev-frontend-compose-adaptiveNavigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "compose-adaptive" }
+dev-frontend-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+dev-frontend-coil-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+dev-frontend-coil-cacheControl = { module = "io.coil-kt.coil3:coil-network-cache-control", version.ref = "coil" }
+dev-frontend-coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil" }
 
 dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.16-0"
 

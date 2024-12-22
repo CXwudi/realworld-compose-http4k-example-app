@@ -1,5 +1,3 @@
-import org.jetbrains.compose.compose
-
 /**
  * The pure UI module in Compose Multiplatform.
  *
@@ -25,15 +23,21 @@ kotlin {
       implementation(compose.foundation)
       implementation(compose.material3)
       implementation(compose.material3AdaptiveNavigationSuite)
-      implementation(compose("org.jetbrains.compose.material3:material3-window-size-class"))
       implementation(libs.dev.frontend.compose.adaptive)
       implementation(libs.dev.frontend.compose.adaptiveLayout)
       implementation(libs.dev.frontend.compose.adaptiveNavigation)
       implementation(compose.components.resources)
       implementation(compose.components.uiToolingPreview)
 
+      implementation(libs.dev.frontend.coil.compose)
+      implementation(libs.dev.frontend.coil.ktor3)
+      implementation(libs.dev.frontend.coil.cacheControl)
+      implementation(libs.dev.frontend.coil.svg)
+
       implementation(libs.dev.frontend.decomposeCompose)
       implementation("io.insert-koin:koin-compose")
+
+
     }
     commonJvmMain.dependencies {
       implementation(compose.uiTooling)

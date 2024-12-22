@@ -48,12 +48,10 @@ kotlin {
 
     commonJvmMain.dependencies {
       implementation(libs.dev.frontend.kstore.file)
-      implementation("io.ktor:ktor-client-okhttp")
     }
 
     commonWebMain.dependencies {
       implementation(libs.dev.frontend.kstore.storage)
-      implementation("io.ktor:ktor-client-js")
     }
 
     androidMain.dependencies {
@@ -71,7 +69,6 @@ kotlin {
 
     iosMain.dependencies {
       implementation(libs.dev.frontend.kstore.file)
-      implementation("io.ktor:ktor-client-darwin")
     }
   }
 }

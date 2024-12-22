@@ -40,6 +40,9 @@ buildConfig {
     // Koin
     buildConfigStringField("KoinBom", libs.dev.koinBom)
 
+    // Ktor
+    buildConfigStringField("KtorBom", libs.dev.frontend.ktorBom)
+
     // Kotlin Wrapper
     buildConfigStringField("KotlinWrapper", libs.dev.frontend.kotlinWrapper)
 
