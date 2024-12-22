@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="5">
     <diagram name="Landing" id="x6D8E37I-bTPpWvTAXMf">
-        <mxGraphModel dx="995" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="775" dy="476" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -260,7 +260,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="7v7ZJNCBt_DzQo7xC0Lz" name="Me">
-        <mxGraphModel dx="199" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="-52" dy="476" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -295,7 +295,7 @@
                     <mxGeometry x="915.5" y="300" width="109" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="gR5BF-UQT2PxlcCrOIPF-15" value="Logout" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
-                    <mxGeometry x="911" y="350" width="109" height="30" as="geometry"/>
+                    <mxGeometry x="910" y="330" width="109" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="gR5BF-UQT2PxlcCrOIPF-18" value="" style="html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;shadow=0;dashed=0;strokeWidth=2;shape=mxgraph.ios7.misc.add;fillColor=#00dd00;strokeColor=#ffffff;sketch=0;" parent="1" vertex="1">
                     <mxGeometry x="999" y="386" width="50" height="50" as="geometry"/>
@@ -337,23 +337,23 @@
                         <mxPoint x="1770" y="710" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-1" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Switch Server&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-                    <mxGeometry x="910" y="326" width="120" height="30" as="geometry"/>
+                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-1" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Switch Server&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="904.5" y="360" width="120" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-2" value="Edit Profile" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-2" value="Edit Profile" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
                     <mxGeometry x="1301" y="266" width="109" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-3" value="Logout" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
-                    <mxGeometry x="1301" y="336" width="109" height="30" as="geometry"/>
+                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-3" value="Logout" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1301" y="296" width="109" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-4" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Switch Server&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-                    <mxGeometry x="1291" y="300" width="120" height="30" as="geometry"/>
+                <mxCell id="ttmMyb6bRD-jz1Ypzgzh-4" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Switch Server&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1295.5" y="330" width="120" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="bBld6-BTcuxn1okW1GBd" name="Me Flow (Just current page)">
-        <mxGraphModel dx="523" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1026" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
