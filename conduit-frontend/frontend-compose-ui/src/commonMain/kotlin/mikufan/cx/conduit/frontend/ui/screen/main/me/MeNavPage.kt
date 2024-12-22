@@ -19,7 +19,7 @@ fun MeNavPage(meNavComponent: MeNavComponent, modifier: Modifier = Modifier) {
     modifier = modifier,
     content = { child ->
       when (child) {
-        is MeNavComponentChild.RootMeComponent -> MePage()
+        is MeNavComponentChild.MePage -> MePage(child.mePageComponent)
       }
     }
   )
