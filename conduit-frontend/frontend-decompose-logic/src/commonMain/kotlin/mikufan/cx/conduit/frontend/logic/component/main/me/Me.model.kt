@@ -4,6 +4,7 @@ sealed interface MePageState {
   data object Loading : MePageState
   data class Error(val errorMsg: String) : MePageState
   data class Loaded(
+    val email: String,
     val imageUrl: String,
     val username: String = "",
     val bio: String = "",
@@ -14,6 +15,7 @@ sealed interface MePageState {
  * Used for passing the information from service to store
  */
 class LoadedMe(
+  val email: String,
   val username: String,
   val bio: String = "",
   val imageUrl: String = "",

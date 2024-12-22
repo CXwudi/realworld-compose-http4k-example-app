@@ -21,6 +21,7 @@ class DefaultMePageService(
     val userRsp = rsp.getOrThrow()
 
     return LoadedMe(
+      email = userRsp.user.email,
       username = userRsp.user.username,
       bio = userRsp.user.bio ?: "",
       imageUrl = userRsp.user.image ?: "",

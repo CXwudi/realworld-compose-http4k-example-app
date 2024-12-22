@@ -80,6 +80,7 @@ class MeStoreFactory(
   private val reducer = Reducer<MePageState, Msg> { msg ->
     when (msg) {
       is Msg.LoadMe -> MePageState.Loaded(
+        email = msg.loadedMe.email,
         imageUrl = msg.loadedMe.imageUrl,
         username = msg.loadedMe.username,
         bio = msg.loadedMe.bio,
