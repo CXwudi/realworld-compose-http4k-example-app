@@ -2,7 +2,6 @@ package mikufan.cx.conduit.frontend.ui.theme
 
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import mikufan.cx.conduit.frontend.ui.util.LocalWindowAdaptiveInfo
@@ -19,6 +18,3 @@ fun WithProperSize(
     content = content
   )
 }
-
-@Composable
-expect fun calculateWindowSizeClass(): WindowSizeClass
