@@ -12,24 +12,24 @@ interface MePageComponent : MviComponent<MePageIntent, MePageState>
 class DefaultMePageComponent(
   componentContext: ComponentContext,
   meStoreFactory: MeStoreFactory,
-  onEditProfile: () -> Unit,
-  onAddArticle: () -> Unit,
+  private val onEditProfile: (LoadedMe) -> Unit,
+  private val onAddArticle: () -> Unit,
 ) : MePageComponent, ComponentContext by componentContext {
-
-  private val navigationToActionMap: Map<MePageIntent, () -> Unit> = mapOf(
-    MePageIntent.EditProfile to onEditProfile,
-    MePageIntent.AddArticle to onAddArticle,
-  )
 
   private val store = instanceKeeper.getStore { meStoreFactory.createStore() }
 
   override val state: StateFlow<MePageState> = store.stateFlow(coroutineScope())
 
   override fun send(intent: MePageIntent) {
-    if (intent in navigationToActionMap.keys) {
-      navigationToActionMap[intent]!!.invoke()
-    } else {
-      store.accept(intent)
+    when (intent) {
+      is MePageIntent.EditProfile -> {
+        val stateValue = state.value
+        if (stateValue is MePageState.Loaded) {
+          onEditProfile(LoadedMe(stateValue.email, stateValue.username, stateValue.bio, stateValue.imageUrl))
+        }
+      }
+      is MePageIntent.AddArticle -> onAddArticle()
+      else -> store.accept(intent)
     }
   }
 }
@@ -39,7 +39,7 @@ class MePageComponentFactory(
 ) {
   fun create(
     componentContext: ComponentContext,
-    onEditProfile: () -> Unit,
+    onEditProfile: (LoadedMe) -> Unit,
     onAddArticle: () -> Unit,
   ) =
     DefaultMePageComponent(

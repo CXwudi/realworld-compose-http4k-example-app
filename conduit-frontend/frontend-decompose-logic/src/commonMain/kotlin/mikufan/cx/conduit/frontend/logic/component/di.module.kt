@@ -8,6 +8,8 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeStoreFactory
@@ -26,6 +28,7 @@ val storeModule = module {
   single { MainNavStoreFactory(get(), get()) }
   single { AuthPageStoreFactory(get(), get()) }
   single { MeStoreFactory(get(), get()) }
+  single { EditProfileStoreFactory(get()) }
 }
 
 /**
@@ -38,6 +41,7 @@ val componentFactoryModule = module {
   singleOf(::AuthPageComponentFactory)
   singleOf(::MeNavComponentFactory)
   singleOf(::MePageComponentFactory)
+  singleOf(::EditProfileComponentFactory)
 }
 
 val decomposeViewModelModules = listOf(storeModule, componentFactoryModule)

@@ -1,5 +1,7 @@
 package mikufan.cx.conduit.frontend.logic.component.main.me
 
+import kotlinx.serialization.Serializable
+
 sealed interface MePageState {
   data object Loading : MePageState
   data class Error(val errorMsg: String) : MePageState
@@ -14,6 +16,7 @@ sealed interface MePageState {
 /**
  * Used for passing the information from service to store
  */
+@Serializable
 class LoadedMe(
   val email: String,
   val username: String,

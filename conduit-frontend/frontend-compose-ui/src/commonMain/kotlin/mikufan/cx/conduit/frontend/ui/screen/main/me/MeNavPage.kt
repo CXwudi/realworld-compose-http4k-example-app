@@ -1,6 +1,7 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.me
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ fun MeNavPage(meNavComponent: MeNavComponent, modifier: Modifier = Modifier) {
     content = { child ->
       when (child) {
         is MeNavComponentChild.MePage -> MePage(child.mePageComponent)
+        is MeNavComponentChild.EditProfile -> Text("TODO: Edit Profile")
       }
     }
   )

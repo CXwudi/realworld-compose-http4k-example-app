@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
@@ -15,6 +16,7 @@ interface MeNavComponent {
 class DefaultMeNavComponent(
   componentContext: ComponentContext,
   private val mePageComponentFactory: MePageComponentFactory,
+  private val editProfileComponentFactory: EditProfileComponentFactory,
 ) : MeNavComponent, ComponentContext by componentContext {
 
   private val stackNavigation = StackNavigation<Config>()
@@ -33,13 +35,18 @@ class DefaultMeNavComponent(
       Config.MePage -> {
         val mePageComponent = mePageComponentFactory.create(
           componentContext = componentContext,
-          onEditProfile = { stackNavigation.pushNew(Config.EditProfile) },
+          onEditProfile = { loadedMe -> stackNavigation.pushNew(Config.EditProfile(loadedMe)) },
           onAddArticle = { stackNavigation.pushNew(Config.AddArticle) },
         )
         return MeNavComponentChild.MePage(mePageComponent)
       }
-      Config.EditProfile -> {
-        TODO("Not yet implemented")
+      is Config.EditProfile -> {
+        val editProfileComponent = editProfileComponentFactory.create(
+          componentContext = componentContext,
+          loadedMe = config.loadedMe,
+          onSaveSuccess = { stackNavigation.pop() },
+        )
+        return MeNavComponentChild.EditProfile(editProfileComponent)
       }
       Config.AddArticle -> {
         TODO("Not yet implemented")
@@ -53,7 +60,7 @@ class DefaultMeNavComponent(
     data object MePage : Config
 
     @Serializable
-    data object EditProfile : Config
+    data class EditProfile(val loadedMe: LoadedMe) : Config
 
     @Serializable
     data object AddArticle : Config
@@ -62,10 +69,12 @@ class DefaultMeNavComponent(
 
 class MeNavComponentFactory(
   private val mePageComponentFactory: MePageComponentFactory,
+  private val editProfileComponentFactory: EditProfileComponentFactory,
 ) {
   fun create(componentContext: ComponentContext) = DefaultMeNavComponent(
     componentContext = componentContext,
     mePageComponentFactory = mePageComponentFactory,
+    editProfileComponentFactory = editProfileComponentFactory,
   )
 }
 
