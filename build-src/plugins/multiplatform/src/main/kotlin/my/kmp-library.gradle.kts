@@ -3,7 +3,6 @@ package my
 import my.util.Libs
 import my.util.Versions
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 
 /**
@@ -37,18 +36,6 @@ kotlin {
     // unsupported libraries:
     // - io.github.theapache64:rebugger:1.0.0-rc03
     browser {
-      // copied from KMP wizard
-      val rootDirPath = project.rootDir.path
-      val projectDirPath = project.projectDir.path
-      commonWebpackConfig {
-        devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-          static = (static ?: mutableListOf()).apply {
-            // Serve sources to debug inside browser
-            add(rootDirPath)
-            add(projectDirPath)
-          }
-        }
-      }
       testTask {
         useKarma {
           if (System.getenv("CI") == "true") {
