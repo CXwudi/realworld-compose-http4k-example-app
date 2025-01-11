@@ -165,7 +165,7 @@ class EditProfileStoreTest {
 
   @OptIn(ExperimentalMviKotlinApi::class)
   @Test
-  fun testSave() = runTest(testDispatcher) {
+  fun testSaveSuccessful() = runTest(testDispatcher) {
     val stateChannel = Channel<EditProfileState>()
     val testScope = TestScope(testDispatcher)
     val labelChannel = editProfileStore.labelsChannel(testScope)
@@ -189,5 +189,11 @@ class EditProfileStoreTest {
     assertEquals((newLabel as EditProfileLabel.SaveSuccessLabel).newMe, newLoadedMe)
 
     disposable.dispose()
+  }
+
+  @OptIn(ExperimentalMviKotlinApi::class)
+  @Test
+  fun testSaveFailed() = runTest(testDispatcher) {
+
   }
 }
