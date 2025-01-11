@@ -184,8 +184,8 @@ class EditProfileStoreTest {
 
     // Then
     stateChannel.receive() // ignore the initial state
-    verifySuspend(exactly(1)) { editProfileService.update(any()) }
     val newLabel = labelChannel.receive() // wait until the label is emitted
+    verifySuspend(exactly(1)) { editProfileService.update(any()) }
     assertTrue { newLabel is EditProfileLabel.SaveSuccessLabel }
     assertEquals((newLabel as EditProfileLabel.SaveSuccessLabel).newMe, newLoadedMe)
 
