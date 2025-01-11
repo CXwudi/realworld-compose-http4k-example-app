@@ -89,14 +89,32 @@ class MeStoreFactory(
     }
   }
 
-  fun createStore(autoInit: Boolean = true) = storeFactory.create(
-    name = "MePageStore",
-    autoInit = autoInit,
-    initialState = MePageState.Loading,
-    executorFactory = executorFactory,
-    bootstrapper = createBootstrapper(),
-    reducer = reducer
-  )
+  fun createStore(preloadedMe: LoadedMe? = null, autoInit: Boolean = true) =
+    if (preloadedMe != null) {
+      val initialState = MePageState.Loaded(
+        email = preloadedMe.email,
+        imageUrl = preloadedMe.imageUrl,
+        username = preloadedMe.username,
+        bio = preloadedMe.bio,
+      )
+      storeFactory.create(
+        name = "MePageStore",
+        autoInit = autoInit,
+        initialState = initialState,
+        executorFactory = executorFactory,
+        bootstrapper = createBootstrapper(),
+        reducer = reducer
+      )
+    } else {
+      storeFactory.create(
+        name = "MePageStore",
+        autoInit = autoInit,
+        initialState = MePageState.Loading,
+        executorFactory = executorFactory,
+        bootstrapper = createBootstrapper(),
+        reducer = reducer
+      )
+    }
 
   private sealed interface Action{
     data class LoadMeSuccess(val loadedMe: LoadedMe) : Action
