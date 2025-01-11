@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.logic.repo.api
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Query
 import mikufan.cx.conduit.common.ArticlesRsp
+import mikufan.cx.conduit.frontend.logic.repo.api.util.ConduitResponse
 
 interface ArticleApi {
   @GET("articles")
@@ -12,5 +13,5 @@ interface ArticleApi {
     @Query favorited: String? = null,
     @Query limit: Int? = null,
     @Query offset: Int? = null
-  ): ArticlesRsp
+  ): ConduitResponse<ArticlesRsp>
 }
