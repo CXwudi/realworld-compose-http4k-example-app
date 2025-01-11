@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labelsChannel
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.mokkery.answering.returns
+import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
@@ -191,12 +192,9 @@ class EditProfileStoreTest {
     disposable.dispose()
   }
 
-  @OptIn(ExperimentalMviKotlinApi::class)
   @Test
   fun testSaveFailed() = runTest(testDispatcher) {
     val stateChannel = Channel<EditProfileState>()
-    val testScope = TestScope(testDispatcher)
-    val labelChannel = editProfileStore.labelsChannel(testScope)
 
     // When
     val disposable = editProfileStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))

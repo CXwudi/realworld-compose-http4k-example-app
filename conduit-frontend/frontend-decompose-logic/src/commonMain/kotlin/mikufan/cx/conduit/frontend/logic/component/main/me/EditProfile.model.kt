@@ -9,6 +9,10 @@ data class EditProfileState(
    * use null to indicate no change to password
    */
   val password: String? = null,
+  /**
+   * error message if any, empty string means no error
+   */
+  val errorMsg: String = "",
 ) {
   init {
     if (password != null) {

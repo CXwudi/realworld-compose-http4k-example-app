@@ -57,7 +57,7 @@ class EditProfileStoreFactory(
         } catch (t: Throwable) {
           rethrowIfShouldNotBeHandled(t) { e ->
             log.error(e) { "Failed to update profile" }
-            //TODO: show user error
+            dispatch(Msg.ShowErrorMsg(e.message ?: "Unknown error"))
           }
         }
       }
@@ -66,11 +66,12 @@ class EditProfileStoreFactory(
 
   private val reducer: Reducer<EditProfileState, Msg> = Reducer { msg ->
     when (msg) {
-      is Msg.EmailChanged -> this.copy(email = msg.email)
-      is Msg.UsernameChanged -> this.copy(username = msg.username)
-      is Msg.BioChanged -> this.copy(bio = msg.bio)
-      is Msg.ImageUrlChanged -> this.copy(imageUrl = msg.imageUrl)
-      is Msg.PasswordChanged -> this.copy(password = msg.password)
+      is Msg.EmailChanged -> this.copy(email = msg.email, errorMsg = "")
+      is Msg.UsernameChanged -> this.copy(username = msg.username, errorMsg = "")
+      is Msg.BioChanged -> this.copy(bio = msg.bio, errorMsg = "")
+      is Msg.ImageUrlChanged -> this.copy(imageUrl = msg.imageUrl, errorMsg = "")
+      is Msg.PasswordChanged -> this.copy(password = msg.password, errorMsg = "")
+      is Msg.ShowErrorMsg -> this.copy(errorMsg = msg.errorMsg)
     }
   }
 
@@ -87,6 +88,7 @@ class EditProfileStoreFactory(
     data class BioChanged(val bio: String) : Msg
     data class ImageUrlChanged(val imageUrl: String) : Msg
     data class PasswordChanged(val password: String) : Msg
+    data class ShowErrorMsg(val errorMsg: String) : Msg
   }
 }
 
