@@ -89,21 +89,18 @@ class MeStoreFactory(
     }
   }
 
-  private fun createInitialState(preloadedMe: LoadedMe?): MePageState =
-    preloadedMe?.let { me ->
-      MePageState.Loaded(
-        email = me.email,
-        imageUrl = me.imageUrl,
-        username = me.username,
-        bio = me.bio,
-      )
-    } ?: MePageState.Loading
-
   fun createStore(preloadedMe: LoadedMe? = null, autoInit: Boolean = true) =
     storeFactory.create(
       name = "MePageStore",
       autoInit = autoInit,
-      initialState = createInitialState(preloadedMe),
+      initialState = preloadedMe?.let { me ->
+        MePageState.Loaded(
+          email = me.email,
+          imageUrl = me.imageUrl,
+          username = me.username,
+          bio = me.bio,
+        )
+      } ?: MePageState.Loading,
       executorFactory = executorFactory,
       bootstrapper = createBootstrapper(),
       reducer = reducer
