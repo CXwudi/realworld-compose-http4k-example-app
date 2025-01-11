@@ -194,6 +194,22 @@ class EditProfileStoreTest {
   @OptIn(ExperimentalMviKotlinApi::class)
   @Test
   fun testSaveFailed() = runTest(testDispatcher) {
+    val stateChannel = Channel<EditProfileState>()
+    val testScope = TestScope(testDispatcher)
+    val labelChannel = editProfileStore.labelsChannel(testScope)
 
+    // When
+    val disposable = editProfileStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    val errorMessage = "Failed to update profile"
+    everySuspend { editProfileService.update(any()) } throws RuntimeException(errorMessage)
+    editProfileStore.accept(EditProfileIntent.Save)
+
+    // Then
+    stateChannel.receive() // ignore the initial state
+    val newState = stateChannel.receive()
+    assertEquals(errorMessage, newState.errorMsg)
+    verifySuspend(exactly(1)) { editProfileService.update(any()) }
+
+    disposable.dispose()
   }
 }
