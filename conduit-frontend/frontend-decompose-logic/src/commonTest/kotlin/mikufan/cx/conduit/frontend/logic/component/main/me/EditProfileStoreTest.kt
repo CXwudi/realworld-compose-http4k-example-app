@@ -6,12 +6,18 @@ import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.labelsChannel
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import kotlinx.coroutines.Dispatchers
+import dev.mokkery.answering.returns
+import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
+import dev.mokkery.mock
+import dev.mokkery.verify.VerifyMode.Companion.exactly
+import dev.mokkery.verifySuspend
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import mikufan.cx.conduit.frontend.logic.service.main.EditProfileService
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -21,6 +27,7 @@ import kotlin.test.assertTrue
 class EditProfileStoreTest {
   private val testDispatcher = StandardTestDispatcher()
 
+  private lateinit var editProfileService: EditProfileService
   private lateinit var editProfileStore: Store<EditProfileIntent, EditProfileState, EditProfileLabel>
 
   private val initialState = EditProfileState(
@@ -32,8 +39,10 @@ class EditProfileStoreTest {
 
   @BeforeTest
   fun setUp() {
+    editProfileService = mock()
     editProfileStore = EditProfileStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
+      editProfileService,
       testDispatcher,
     ).createStore(initialState)
   }
@@ -163,13 +172,22 @@ class EditProfileStoreTest {
 
     // When
     val disposable = editProfileStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    // editProfileStore.accept(EditProfileIntent.Save)
+    val newLoadedMe = LoadedMe(
+      email = "test2@email.com",
+      username = "testuser2",
+      bio = "test bio 2",
+      imageUrl = "test image url 2"
+    )
+    everySuspend { editProfileService.update(any()) } returns newLoadedMe
+     editProfileStore.accept(EditProfileIntent.Save)
 
     // Then
-    // TODO: Once the Save intent implementation is completed in EditProfile.store.kt,
-    // add assertions here to verify the save operation and label emission
-
     stateChannel.receive() // ignore the initial state
+    verifySuspend(exactly(1)) { editProfileService.update(any()) }
+    val newLabel = labelChannel.receive() // wait until the label is emitted
+    assertTrue { newLabel is EditProfileLabel.SaveSuccessLabel }
+    assertEquals((newLabel as EditProfileLabel.SaveSuccessLabel).newMe, newLoadedMe)
+
     disposable.dispose()
   }
 }

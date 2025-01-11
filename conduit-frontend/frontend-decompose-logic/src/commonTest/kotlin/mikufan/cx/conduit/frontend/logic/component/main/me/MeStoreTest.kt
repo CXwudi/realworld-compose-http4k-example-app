@@ -39,7 +39,7 @@ class MeStoreTest {
       LoggingStoreFactory(DefaultStoreFactory()),
       mePageService,
       Dispatchers.Default,
-    ).createStore(false)
+    ).createStore(autoInit = false)
   }
 
   @AfterTest
@@ -171,5 +171,36 @@ class MeStoreTest {
     disposable.dispose()
     testScope.cancel()
   }
+
+  @Test
+  fun createStoreWithPreloadedMe() = runTest(testDispatcher) {
+    meStore.dispose()
+
+    // Given
+    val preloadedMe = LoadedMe(
+      email = "test2@email.com",
+      username = "testuser2",
+      bio = "test bio 2",
+      imageUrl = "test image url 2"
+    )
+    meStore = MeStoreFactory(
+      LoggingStoreFactory(DefaultStoreFactory()),
+      mePageService,
+      Dispatchers.Default,
+    ).createStore(preloadedMe = preloadedMe)
+
+    // Then
+    assertEquals(
+      meStore.state,
+      MePageState.Loaded(
+        preloadedMe.email,
+        preloadedMe.imageUrl,
+        preloadedMe.username,
+        preloadedMe.bio
+      )
+    )
+
+  }
+
 
 }

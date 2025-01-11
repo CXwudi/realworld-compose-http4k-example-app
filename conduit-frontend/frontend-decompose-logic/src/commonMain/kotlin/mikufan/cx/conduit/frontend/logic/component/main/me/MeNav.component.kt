@@ -4,8 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 
@@ -22,7 +22,7 @@ class DefaultMeNavComponent(
   private val stackNavigation = StackNavigation<Config>()
   override val childStack: Value<ChildStack<*, MeNavComponentChild>> = childStack(
     source = stackNavigation,
-    initialConfiguration = Config.MePage,
+    initialConfiguration = Config.MePage(),
     serializer = Config.serializer(),
     childFactory = ::childFactory
   )
@@ -32,9 +32,10 @@ class DefaultMeNavComponent(
     componentContext: ComponentContext
   ): MeNavComponentChild {
     when (config) {
-      Config.MePage -> {
+      is Config.MePage -> {
         val mePageComponent = mePageComponentFactory.create(
           componentContext = componentContext,
+          preloadedMe = config.preloadedMe,
           onEditProfile = { loadedMe -> stackNavigation.pushNew(Config.EditProfile(loadedMe)) },
           onAddArticle = { stackNavigation.pushNew(Config.AddArticle) },
         )
@@ -44,7 +45,9 @@ class DefaultMeNavComponent(
         val editProfileComponent = editProfileComponentFactory.create(
           componentContext = componentContext,
           loadedMe = config.loadedMe,
-          onSaveSuccess = { stackNavigation.pop() },
+          onSaveSuccess = { newMe ->
+            stackNavigation.replaceAll(Config.MePage(newMe))
+          },
         )
         return MeNavComponentChild.EditProfile(editProfileComponent)
       }
@@ -57,7 +60,7 @@ class DefaultMeNavComponent(
   @Serializable
   private sealed interface Config {
     @Serializable
-    data object MePage : Config
+    data class MePage(val preloadedMe: LoadedMe? = null) : Config
 
     @Serializable
     data class EditProfile(val loadedMe: LoadedMe) : Config

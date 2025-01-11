@@ -27,7 +27,7 @@ sealed interface EditProfileIntent {
 }
 
 sealed interface EditProfileLabel {
-  data object SaveSuccessLabel : EditProfileLabel
+  data class SaveSuccessLabel(val newMe: LoadedMe) : EditProfileLabel
   /**
    * Just for test purpose
    */

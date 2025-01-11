@@ -20,6 +20,15 @@ data class UserLoginDto(
   val password: String
 )
 
+@Serializable
+data class UserUpdateDto(
+  val email: String,
+  val username: String,
+  val image: String,
+  val bio: String,
+  val password: String?,
+)
+
 object UserDtoUtils {
   fun createLoginReq(email: String, password: String) = UserReq(
     UserLoginDto(

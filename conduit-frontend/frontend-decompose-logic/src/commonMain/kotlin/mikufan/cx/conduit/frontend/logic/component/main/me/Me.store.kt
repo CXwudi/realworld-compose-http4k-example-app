@@ -1,6 +1,8 @@
 package mikufan.cx.conduit.frontend.logic.component.main.me
 
+import com.arkivanov.mvikotlin.core.store.Bootstrapper
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
@@ -89,22 +91,33 @@ class MeStoreFactory(
     }
   }
 
-  fun createStore(preloadedMe: LoadedMe? = null, autoInit: Boolean = true) =
-    storeFactory.create(
+  fun createStore(preloadedMe: LoadedMe? = null, autoInit: Boolean = true): Store<MePageIntent, MePageState, Unit> {
+    val initialState = if (preloadedMe != null) {
+      MePageState.Loaded(
+        email = preloadedMe.email,
+        imageUrl = preloadedMe.imageUrl,
+        username = preloadedMe.username,
+        bio = preloadedMe.bio,
+      )
+    } else {
+      MePageState.Loading
+    }
+
+    val bootstrapper: Bootstrapper<Action>? = if (preloadedMe != null) {
+      null
+    } else {
+      createBootstrapper()
+    }
+
+    return storeFactory.create(
       name = "MePageStore",
       autoInit = autoInit,
-      initialState = preloadedMe?.let { me ->
-        MePageState.Loaded(
-          email = me.email,
-          imageUrl = me.imageUrl,
-          username = me.username,
-          bio = me.bio,
-        )
-      } ?: MePageState.Loading,
+      initialState = initialState,
       executorFactory = executorFactory,
-      bootstrapper = createBootstrapper(),
+      bootstrapper = bootstrapper,
       reducer = reducer
     )
+  }
 
   private sealed interface Action{
     data class LoadMeSuccess(val loadedMe: LoadedMe) : Action

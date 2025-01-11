@@ -18,6 +18,7 @@ import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
 
 fun defaultJson(): Json = Json {
   ignoreUnknownKeys = true
+  explicitNulls = false // used for the update user request when password is null -> don't update password
 }
 
 fun createDefaultHttpClient(userConfigKStore: UserConfigKStore, json: Json): HttpClient =
