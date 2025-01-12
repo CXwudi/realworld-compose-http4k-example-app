@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 
+// TODO: write some kotlin doc for these classes/interfaces. AI!
 interface EditProfileComponent : MviComponent<EditProfileIntent, EditProfileState>
 
 class DefaultEditProfileComponent(
