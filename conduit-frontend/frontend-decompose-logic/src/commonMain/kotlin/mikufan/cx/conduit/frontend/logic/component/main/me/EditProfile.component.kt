@@ -9,9 +9,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 
-// TODO: write some kotlin doc for these classes/interfaces. AI!
+/**
+ * Component interface for the edit profile screen that handles user profile editing functionality.
+ * Implements the MVI pattern through [MviComponent] with [EditProfileIntent] and [EditProfileState].
+ */
 interface EditProfileComponent : MviComponent<EditProfileIntent, EditProfileState>
 
+/**
+ * Default implementation of [EditProfileComponent] that manages the edit profile screen's state and behavior.
+ *
+ * @param initialState The initial state of the edit profile form
+ * @param componentContext The Decompose component context for lifecycle management
+ * @param editProfileStoreFactory Factory to create the MVI store for profile editing
+ * @param onSaveSuccess Callback function invoked when profile updates are successfully saved
+ */
 class DefaultEditProfileComponent(
   initialState: EditProfileState,
   componentContext: ComponentContext,
