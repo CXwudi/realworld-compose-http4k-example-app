@@ -47,7 +47,7 @@ class EditProfileStoreFactory(
               UserUpdateDto(
                 email = state().email,
                 username = state().username,
-                password = state().password,
+                password = state().password.ifEmpty { null },
                 image = state().imageUrl,
                 bio = state().bio,
               )

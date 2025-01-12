@@ -6,20 +6,14 @@ data class EditProfileState(
   val bio: String,
   val imageUrl: String,
   /**
-   * use null to indicate no change to password
+   * use empty string to indicate no change to password
    */
-  val password: String? = null,
+  val password: String = "",
   /**
    * error message if any, empty string means no error
    */
   val errorMsg: String = "",
-) {
-  init {
-    if (password != null) {
-      require(password.isNotEmpty()) { "Password cannot be empty" }
-    }
-  }
-}
+)
 
 sealed interface EditProfileIntent {
   data class EmailChanged(val email: String) : EditProfileIntent
@@ -28,6 +22,7 @@ sealed interface EditProfileIntent {
   data class ImageUrlChanged(val imageUrl: String) : EditProfileIntent
   data class PasswordChanged(val password: String) : EditProfileIntent
   data object Save : EditProfileIntent
+  data object BackWithoutSave : EditProfileIntent
 }
 
 sealed interface EditProfileLabel {

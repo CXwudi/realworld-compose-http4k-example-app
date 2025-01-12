@@ -28,13 +28,12 @@ class DefaultEditProfileComponent(
   componentContext: ComponentContext,
   editProfileStoreFactory: EditProfileStoreFactory,
   private val onSaveSuccess: (LoadedMe) -> Unit,
+  private val onBackWithoutSave: () -> Unit,
 ) : EditProfileComponent, ComponentContext by componentContext {
 
   private val store = instanceKeeper.getStore { editProfileStoreFactory.createStore(initialState) }
 
   override val state: StateFlow<EditProfileState> = store.stateFlow(coroutineScope())
-
-  override fun send(intent: EditProfileIntent) = store.accept(intent)
 
   init {
     coroutineScope().launch {
@@ -47,6 +46,13 @@ class DefaultEditProfileComponent(
     }
   }
 
+  override fun send(intent: EditProfileIntent) {
+    when (intent) {
+      is EditProfileIntent.BackWithoutSave -> onBackWithoutSave()
+      else -> store.accept(intent)
+    }
+  }
+
 }
 
 class EditProfileComponentFactory(
@@ -56,6 +62,7 @@ class EditProfileComponentFactory(
     componentContext: ComponentContext,
     loadedMe: LoadedMe,
     onSaveSuccess: (LoadedMe) -> Unit,
+    onBackWithoutSave: () -> Unit,
   ): EditProfileComponent = DefaultEditProfileComponent(
     initialState = EditProfileState(
       email = loadedMe.email,
@@ -66,5 +73,6 @@ class EditProfileComponentFactory(
     componentContext = componentContext,
     editProfileStoreFactory = editProfileStoreFactory,
     onSaveSuccess = onSaveSuccess,
+    onBackWithoutSave = onBackWithoutSave,
   )
 }
