@@ -42,7 +42,7 @@ class ConduitResponseConverter(
           // Hence we are just checking if the body is empty or not
           val bodyText = response.bodyAsText()
           if (bodyText.isBlank() || statusCode.value == 422) {
-            ConduitResponse.failure(Exception("Request failed with status $statusCode and empty return body"))
+            ConduitResponse.failure(Exception(bodyText.ifBlank { "Request failed with status $statusCode and empty return body" }))
           } else {
             val errorRsp = json.decodeFromString<ErrorRsp>(bodyText)
             ConduitResponse.error(errorRsp)
