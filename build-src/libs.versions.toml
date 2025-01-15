@@ -69,7 +69,7 @@ dev-frontend-browserWasm = "org.jetbrains.kotlinx:kotlinx-browser:0.3" # see htt
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.15.0"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
 dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.7"
-dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.9.3"
+dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.10.0"
 
 # backend
 dev-backend-http4kBom = { module = "org.http4k:http4k-bom", version.ref = "http4k" }
