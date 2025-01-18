@@ -18,6 +18,7 @@ class DefaultMeNavComponent(
   componentContext: ComponentContext,
   private val mePageComponentFactory: MePageComponentFactory,
   private val editProfileComponentFactory: EditProfileComponentFactory,
+  private val addArticleComponentFactory: AddArticleComponentFactory,
 ) : MeNavComponent, ComponentContext by componentContext {
 
   private val stackNavigation = StackNavigation<Config>()
@@ -60,7 +61,11 @@ class DefaultMeNavComponent(
       }
 
       Config.AddArticle -> {
-        TODO("Not yet implemented")
+        val addArticleComponent = addArticleComponentFactory.create(
+          componentContext = componentContext,
+          onBack = { stackNavigation.pop() },
+        )
+        return MeNavComponentChild.AddArticle(addArticleComponent)
       }
     }
   }
@@ -81,11 +86,13 @@ class DefaultMeNavComponent(
 class MeNavComponentFactory(
   private val mePageComponentFactory: MePageComponentFactory,
   private val editProfileComponentFactory: EditProfileComponentFactory,
+  private val addArticleComponentFactory: AddArticleComponentFactory,
 ) {
   fun create(componentContext: ComponentContext) = DefaultMeNavComponent(
     componentContext = componentContext,
     mePageComponentFactory = mePageComponentFactory,
     editProfileComponentFactory = editProfileComponentFactory,
+    addArticleComponentFactory = addArticleComponentFactory,
   )
 }
 

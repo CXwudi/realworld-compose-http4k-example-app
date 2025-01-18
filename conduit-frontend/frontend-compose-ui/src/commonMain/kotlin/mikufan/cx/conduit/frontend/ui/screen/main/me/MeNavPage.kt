@@ -21,6 +21,7 @@ fun MeNavPage(meNavComponent: MeNavComponent, modifier: Modifier = Modifier) {
       when (child) {
         is MeNavComponentChild.MePage -> MePage(child.mePageComponent)
         is MeNavComponentChild.EditProfile -> EditProfilePage(child.editProfileComponent)
+        is MeNavComponentChild.AddArticle -> AddArticlePage(child.addArticleComponent)
       }
     }
   )
