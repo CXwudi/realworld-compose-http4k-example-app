@@ -210,4 +210,18 @@ class EditProfileStoreTest {
 
     disposable.dispose()
   }
+
+  @OptIn(ExperimentalMviKotlinApi::class)
+  @Test
+  fun testBackWithoutSave() = runTest(testDispatcher) {
+    val testScope = TestScope(testDispatcher)
+    val labelChannel = editProfileStore.labelsChannel(testScope)
+
+    // When
+    editProfileStore.accept(EditProfileIntent.BackWithoutSave)
+
+    // Then
+    val label = labelChannel.receive()
+    assertTrue(label is EditProfileLabel.BackWithoutSave)
+  }
 }
