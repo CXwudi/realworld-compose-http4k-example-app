@@ -67,7 +67,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 }
 
 @Composable
-fun ColumnScope.ErrorMessage(message: State<String>, modifier: Modifier = Modifier) {
+private fun ColumnScope.ErrorMessage(message: State<String>, modifier: Modifier = Modifier) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.align(Alignment.Start)

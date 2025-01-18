@@ -1,8 +1,10 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.me
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsTopHeight
@@ -19,12 +22,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -116,7 +121,38 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
         Text("Save")
       }
 
+      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
+
+      val errorMsgState = remember { derivedStateOf { model.errorMsg } }
+      val showErrorMsg = remember { derivedStateOf { model.errorMsg.isNotBlank() } }
+      AnimatedVisibility(
+        visible = showErrorMsg.value,
+      ) {
+        ErrorMessage(errorMsgState) // TODO: consider refactor to use https://github.com/KhubaibKhan4/Alert-KMP
+      }
+
       Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
+    }
+  }
+}
+
+@Composable
+private fun ErrorMessage(message: State<String>, modifier: Modifier = Modifier) {
+  if (message.value.isNotBlank()) {
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = modifier
+    ) {
+      Icon(
+        imageVector = Icons.Filled.Warning,
+        contentDescription = "Error",
+        tint = androidx.compose.ui.graphics.Color.Red
+      )
+      Spacer(modifier = Modifier.width(LocalSpace.current.horizontal.spacing))
+      Text(
+        text = message.value,
+        color = androidx.compose.ui.graphics.Color.Red
+      )
     }
   }
 }

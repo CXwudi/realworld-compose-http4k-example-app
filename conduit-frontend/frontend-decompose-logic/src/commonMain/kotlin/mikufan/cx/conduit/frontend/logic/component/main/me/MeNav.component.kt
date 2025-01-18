@@ -43,17 +43,22 @@ class DefaultMeNavComponent(
         )
         return MeNavComponentChild.MePage(mePageComponent)
       }
+
       is Config.EditProfile -> {
         val editProfileComponent = editProfileComponentFactory.create(
           componentContext = componentContext,
           loadedMe = config.loadedMe,
           onSaveSuccess = { newMe ->
+            // we can also have the returned new me being directly passed into the existing me page component
+            // and update the store through the component.
+            // However, that was too much rigging, so we are just lazy and recreate the me page component.
             stackNavigation.replaceAll(Config.MePage(newMe))
           },
           onBackWithoutSave = { stackNavigation.pop() },
         )
         return MeNavComponentChild.EditProfile(editProfileComponent)
       }
+
       Config.AddArticle -> {
         TODO("Not yet implemented")
       }
