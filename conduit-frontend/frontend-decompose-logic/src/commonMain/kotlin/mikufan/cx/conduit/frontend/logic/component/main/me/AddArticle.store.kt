@@ -30,7 +30,7 @@ class AddArticleStoreFactory(
     }
 
     onIntent<AddArticleIntent.TagListChanged> {
-      val splitTags = it.tagRawString.split(",")
+      val splitTags = it.tagRawString.split(",", " ")
       dispatch(Msg.TagListChanged(splitTags))
     }
 
@@ -61,10 +61,10 @@ class AddArticleStoreFactory(
 
   private val reducer = Reducer<AddArticleState, Msg> { msg ->
     when (msg) {
-      is Msg.TitleChanged -> this.copy(title = msg.title)
-      is Msg.DescriptionChanged -> this.copy(description = msg.description)
-      is Msg.BodyChanged -> this.copy(body = msg.body)
-      is Msg.TagListChanged -> this.copy(tagList = msg.tagList)
+      is Msg.TitleChanged -> this.copy(title = msg.title, errorMsg = "")
+      is Msg.DescriptionChanged -> this.copy(description = msg.description, errorMsg = "")
+      is Msg.BodyChanged -> this.copy(body = msg.body, errorMsg = "")
+      is Msg.TagListChanged -> this.copy(tagList = msg.tagList, errorMsg = "")
       is Msg.ShowErrorMsg -> this.copy(errorMsg = msg.errorMsg)
     }
   }

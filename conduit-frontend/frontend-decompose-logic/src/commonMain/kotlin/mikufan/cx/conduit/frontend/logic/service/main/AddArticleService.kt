@@ -2,6 +2,7 @@ package mikufan.cx.conduit.frontend.logic.service.main
 
 import mikufan.cx.conduit.common.ArticleDtoUtils
 import mikufan.cx.conduit.frontend.logic.repo.api.ArticleApi
+import mikufan.cx.conduit.frontend.logic.repo.api.util.getOrThrow
 
 
 interface AddArticleService {
@@ -30,6 +31,7 @@ class DefaultAddArticleService(
       tagList = tagList
     )
 
-    articleApi.createArticle(createArticleReq)
+    val response = articleApi.createArticle(createArticleReq)
+    response.getOrThrow()
   }
 }
