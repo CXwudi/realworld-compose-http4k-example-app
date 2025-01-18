@@ -40,18 +40,14 @@ class DefaultEditProfileComponent(
       store.labels.collect {
         when (it) {
           is EditProfileLabel.SaveSuccessLabel -> onSaveSuccess(it.newMe)
+          is EditProfileLabel.BackWithoutSave -> onBackWithoutSave()
           is EditProfileLabel.Unit -> Unit // do nothing as this label is just for test purpose
         }
       }
     }
   }
 
-  override fun send(intent: EditProfileIntent) {
-    when (intent) {
-      is EditProfileIntent.BackWithoutSave -> onBackWithoutSave()
-      else -> store.accept(intent)
-    }
-  }
+  override fun send(intent: EditProfileIntent) = store.accept(intent)
 
 }
 

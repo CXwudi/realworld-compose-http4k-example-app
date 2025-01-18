@@ -62,6 +62,10 @@ class EditProfileStoreFactory(
         }
       }
     }
+
+    onIntent<EditProfileIntent.BackWithoutSave> {
+      publish(EditProfileLabel.BackWithoutSave)
+    }
   }
 
   private val reducer: Reducer<EditProfileState, Msg> = Reducer { msg ->
