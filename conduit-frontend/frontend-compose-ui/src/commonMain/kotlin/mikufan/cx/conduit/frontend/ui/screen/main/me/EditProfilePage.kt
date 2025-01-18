@@ -65,6 +65,7 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
       val bio by remember { derivedStateOf { model.bio } }
       val imageUrl by remember { derivedStateOf { model.imageUrl } }
       val passwordState = remember { derivedStateOf { model.password } }
+      val errorMsgState = remember { derivedStateOf { model.errorMsg } }
 
       Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.systemBars))
 
@@ -123,7 +124,6 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
 
       Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
 
-      val errorMsgState = remember { derivedStateOf { model.errorMsg } }
       val showErrorMsg = remember { derivedStateOf { model.errorMsg.isNotBlank() } }
       AnimatedVisibility(
         visible = showErrorMsg.value,
@@ -138,21 +138,19 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
 
 @Composable
 private fun ErrorMessage(message: State<String>, modifier: Modifier = Modifier) {
-  if (message.value.isNotBlank()) {
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      modifier = modifier
-    ) {
-      Icon(
-        imageVector = Icons.Filled.Warning,
-        contentDescription = "Error",
-        tint = androidx.compose.ui.graphics.Color.Red
-      )
-      Spacer(modifier = Modifier.width(LocalSpace.current.horizontal.spacing))
-      Text(
-        text = message.value,
-        color = androidx.compose.ui.graphics.Color.Red
-      )
-    }
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = modifier
+  ) {
+    Icon(
+      imageVector = Icons.Filled.Warning,
+      contentDescription = "Error",
+      tint = androidx.compose.ui.graphics.Color.Red
+    )
+    Spacer(modifier = Modifier.width(LocalSpace.current.horizontal.spacing))
+    Text(
+      text = message.value,
+      color = androidx.compose.ui.graphics.Color.Red
+    )
   }
 }
