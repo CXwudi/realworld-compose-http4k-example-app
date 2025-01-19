@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -60,7 +61,6 @@ import mikufan.cx.conduit.frontend.ui.resources.Res
 import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
 import mikufan.cx.conduit.frontend.ui.resources.outlined_hide_image
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
-import mikufan.cx.conduit.frontend.ui.util.LocalWindowAdaptiveInfo
 import org.jetbrains.compose.resources.painterResource
 
 /**
@@ -189,7 +189,7 @@ private fun Profile(
   imageUrl: String,
   modifier: Modifier = Modifier
 ) {
-  val widthClass = LocalWindowAdaptiveInfo.current.windowSizeClass.windowWidthSizeClass
+  val widthClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
   val shouldExpand by remember(widthClass) { derivedStateOf { widthClass != WindowWidthSizeClass.COMPACT } }
 
 
