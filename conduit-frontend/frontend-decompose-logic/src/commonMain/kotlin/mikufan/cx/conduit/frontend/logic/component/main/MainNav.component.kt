@@ -1,7 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -25,12 +24,8 @@ import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 /**
  * The component for the main page, it unfortunately breaks the MVI pattern where it has two state values.
  *
- * One from the Decompose navigation ([childSlot]) and another we create ourselves ([MainNavState]).
+ * One from the Decompose navigation ([childStack]) and another we create ourselves ([MainNavState]).
  *
- * The [send] method is divided into two different methods, one for navigation and one for state update.
- *
- * The [MainNavIntent] is also divided into two groups ([ModeSwitchingIntent] and [PageSwitchingIntent]), to
- * distinguish between intent for the navigation and the state update.
  */
 interface MainNavComponent : MviComponent<MainNavIntent, MainNavState> {
   val childStack: Value<ChildStack<*, MainNavComponentChild>>
