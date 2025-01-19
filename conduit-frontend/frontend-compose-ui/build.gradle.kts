@@ -29,13 +29,14 @@ kotlin {
       implementation(compose.components.resources)
       implementation(compose.components.uiToolingPreview)
 
+      implementation(libs.dev.frontend.decomposeCompose)
+      implementation(libs.dev.frontend.decomposeComposeExperimental)
+      implementation("io.insert-koin:koin-compose")
+
       implementation(libs.dev.frontend.coil.compose)
       implementation(libs.dev.frontend.coil.ktor3)
       implementation(libs.dev.frontend.coil.cacheControl)
       implementation(libs.dev.frontend.coil.svg)
-
-      implementation(libs.dev.frontend.decomposeCompose)
-      implementation("io.insert-koin:koin-compose")
 
 
     }
