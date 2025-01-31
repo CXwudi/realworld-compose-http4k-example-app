@@ -13,7 +13,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.allModules
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
-import mikufan.cx.conduit.frontend.ui.MainUI
+import mikufan.cx.conduit.frontend.ui.setupAndStartMainUI
 import org.koin.core.KoinApplication
 import org.koin.dsl.koinApplication
 import org.w3c.dom.Document
@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
     setupBrowserUI("Conduit Web")
 
     ComposeViewport(document.body!!) {
-      MainUI(koin, rootComponent)
+      setupAndStartMainUI(koin, rootComponent)
     }
   }
 

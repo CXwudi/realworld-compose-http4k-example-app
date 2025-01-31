@@ -17,7 +17,7 @@ import org.koin.compose.KoinContext
 import org.koin.core.Koin
 
 @Composable
-fun MainUI(
+fun setupAndStartMainUI(
   koin: Koin,
   rootComponent: DefaultRootNavComponent,
 ) {
@@ -30,14 +30,22 @@ fun MainUI(
       .build()
   }
   KoinContext(context = koin) { // currently unused, but added in case if we need it
-    SetupUI {
-      Surface(Modifier
+    MainUI(rootComponent)
+  }
+}
+
+@Composable
+fun MainUI(
+  rootComponent: DefaultRootNavComponent,
+) {
+  SetupUI {
+    Surface(
+      Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)
-        // no windows padding adding here, all child UI please add ur own padding
-      ) {
-        RootNavigation(rootComponent)
-      }
+      // no windows padding adding here, all child UI please add ur own padding
+    ) {
+      RootNavigation(rootComponent)
     }
   }
 }

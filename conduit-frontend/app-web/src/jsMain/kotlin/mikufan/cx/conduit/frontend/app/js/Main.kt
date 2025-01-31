@@ -12,7 +12,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.allModules
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
-import mikufan.cx.conduit.frontend.ui.MainUI
+import mikufan.cx.conduit.frontend.ui.setupAndStartMainUI
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.core.KoinApplication
 import org.koin.dsl.koinApplication
@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
       val canvasElementId = "ConduitCanvas"
       setupBrowserUI()
       CanvasBasedWindow(title = "Conduit Web", canvasElementId = canvasElementId) {
-        MainUI(koin, rootComponent)
+        setupAndStartMainUI(koin, rootComponent)
       }
     }
   }

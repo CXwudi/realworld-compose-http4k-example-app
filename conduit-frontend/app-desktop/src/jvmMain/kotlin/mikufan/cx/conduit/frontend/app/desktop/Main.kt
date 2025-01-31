@@ -10,7 +10,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.frontend.app.desktop.util.runOnUiThread
 import mikufan.cx.conduit.frontend.logic.allModules
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
-import mikufan.cx.conduit.frontend.ui.MainUI
+import mikufan.cx.conduit.frontend.ui.setupAndStartMainUI
 import org.koin.dsl.koinApplication
 
 fun initKoin() = koinApplication {
@@ -41,7 +41,7 @@ fun main(args: Array<String>) {
       },
       title = "Conduit Desktop",
     ) {
-      MainUI(koin, rootComponent)
+      setupAndStartMainUI(koin, rootComponent)
     }
   }
 }

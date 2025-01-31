@@ -8,7 +8,7 @@ import androidx.startup.AppInitializer
 import com.arkivanov.decompose.defaultComponentContext
 import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
-import mikufan.cx.conduit.frontend.ui.MainUI
+import mikufan.cx.conduit.frontend.ui.setupAndStartMainUI
 import org.koin.androix.startup.KoinInitializer
 
 
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     enableEdgeToEdge()
     setContent {
-      MainUI(koin, rootComponent)
+      setupAndStartMainUI(koin, rootComponent)
     }
   }
 
