@@ -13,6 +13,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavState
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailComponent
 import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 @Composable
@@ -20,7 +21,10 @@ import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 fun MainPagePreview() {
   SetupPreviewUI {
     val fakeComponent = object : MainNavComponent {
-      override val childStack: Value<ChildStack<*, MainNavComponentChild>> = MutableValue(ChildStack(Child.Created(Unit, MainNavComponentChild.MainFeed)))
+      override val childStack: Value<ChildStack<*, MainNavComponentChild>> = MutableValue(ChildStack(Child.Created(Unit, MainNavComponentChild.MainFeed(
+        object : ArticlesListDetailComponent {
+
+        }))))
       override val state: StateFlow<MainNavState> = MutableStateFlow(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
       override fun send(intent: MainNavIntent) = Unit
     }
@@ -33,7 +37,10 @@ fun MainPagePreview() {
 fun MainPagePreviewForLoginUser() {
   SetupPreviewUI {
     val fakeComponent = object : MainNavComponent {
-      override val childStack: Value<ChildStack<*, MainNavComponentChild>> = MutableValue(ChildStack(Child.Created(Unit, MainNavComponentChild.MainFeed)))
+      override val childStack: Value<ChildStack<*, MainNavComponentChild>> = MutableValue(ChildStack(Child.Created(Unit, MainNavComponentChild.MainFeed(
+        object : ArticlesListDetailComponent {
+
+        }))))
       override val state: StateFlow<MainNavState> = MutableStateFlow(MainNavState(MainNavMode.LOGGED_IN, 0))
       override fun send(intent: MainNavIntent) = Unit
     }

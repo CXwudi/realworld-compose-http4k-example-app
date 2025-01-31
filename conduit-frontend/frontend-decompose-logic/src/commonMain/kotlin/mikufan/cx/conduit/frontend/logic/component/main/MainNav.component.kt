@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
@@ -34,7 +35,7 @@ interface MainNavComponent : MviComponent<MainNavIntent, MainNavState> {
 sealed interface MainNavComponentChild {
 
   // TODO: each class need a component class, e.g. LandingPageComponent
-  data object MainFeed : MainNavComponentChild
+  data class MainFeed(val testComponent: ArticlesListDetailComponent) : MainNavComponentChild
   data object Favourite : MainNavComponentChild
   data class Me(val component: MeNavComponent) : MainNavComponentChild
   data class SignInUp(val component: AuthPageComponent) : MainNavComponentChild
@@ -82,7 +83,9 @@ class DefaultMainNavComponent(
     config: Config,
     componentContext: ComponentContext
   ): MainNavComponentChild = when (config) {
-    Config.MainFeed -> MainNavComponentChild.MainFeed
+    Config.MainFeed -> MainNavComponentChild.MainFeed(
+      TODO("Implement the ArticlesListDetailComponent")
+    )
     Config.Favourite -> MainNavComponentChild.Favourite
     Config.Me -> MainNavComponentChild.Me(
       meNavComponentFactory.create(componentContext)
