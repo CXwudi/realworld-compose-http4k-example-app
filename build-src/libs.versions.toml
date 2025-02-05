@@ -15,7 +15,7 @@ java = "21"
 agp = "8.8.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 compose = "1.7.3"
 compose-adaptive = "1.0.1"
-coil = "3.0.4"
+coil = "3.1.0"
 
 essenty = "2.4.0"
 decompose = "3.2.2"
