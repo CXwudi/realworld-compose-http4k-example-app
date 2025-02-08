@@ -4,10 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ErrorRsp(
-  val message: ErrorBody
+  val errors: ErrorBody
 ) {
   val messagesAsString: String
-    get() = if (message.body.size == 1) message.body.first() else message.body.toString()
+    get() = if (errors.body.size == 1) errors.body.first() else errors.body.toString()
 }
 
 @Serializable
