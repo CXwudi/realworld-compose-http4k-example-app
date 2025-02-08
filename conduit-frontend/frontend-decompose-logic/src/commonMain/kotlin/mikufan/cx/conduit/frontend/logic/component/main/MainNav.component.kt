@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
-import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailComponent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesPanelNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
@@ -35,7 +36,7 @@ interface MainNavComponent : MviComponent<MainNavIntent, MainNavState> {
 sealed interface MainNavComponentChild {
 
   // TODO: each class need a component class, e.g. LandingPageComponent
-  data class MainFeed(val testComponent: ArticlesListDetailComponent) : MainNavComponentChild
+  data class MainFeed(val testComponent: ArticlesListDetailNavComponent) : MainNavComponentChild
   data object Favourite : MainNavComponentChild
   data class Me(val component: MeNavComponent) : MainNavComponentChild
   data class SignInUp(val component: AuthPageComponent) : MainNavComponentChild
@@ -47,6 +48,7 @@ class DefaultMainNavComponent(
   private val mainNavStoreFactory: MainNavStoreFactory,
   private val authPageComponentFactory: AuthPageComponentFactory,
   private val meNavComponentFactory: MeNavComponentFactory,
+  val articleListDetailComponentFactory: ArticlesPanelNavComponentFactory,
 ) : MainNavComponent, ComponentContext by componentContext {
 
   private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
@@ -84,7 +86,7 @@ class DefaultMainNavComponent(
     componentContext: ComponentContext
   ): MainNavComponentChild = when (config) {
     Config.MainFeed -> MainNavComponentChild.MainFeed(
-      TODO("Implement the ArticlesListDetailComponent")
+      articleListDetailComponentFactory.create(componentContext)
     )
     Config.Favourite -> MainNavComponentChild.Favourite
     Config.Me -> MainNavComponentChild.Me(
@@ -121,12 +123,14 @@ class DefaultMainNavComponent(
 
 class MainNavComponentFactory(
   private val storeFactory: MainNavStoreFactory,
+  private val articleListDetailComponentFactory: ArticlesPanelNavComponentFactory,
   private val authPageComponentFactory: AuthPageComponentFactory,
   private val meNavComponentFactory: MeNavComponentFactory,
 ) {
   fun create(componentContext: ComponentContext) = DefaultMainNavComponent(
     componentContext = componentContext,
     mainNavStoreFactory = storeFactory,
+    articleListDetailComponentFactory = articleListDetailComponentFactory,
     authPageComponentFactory = authPageComponentFactory,
     meNavComponentFactory = meNavComponentFactory,
   )
