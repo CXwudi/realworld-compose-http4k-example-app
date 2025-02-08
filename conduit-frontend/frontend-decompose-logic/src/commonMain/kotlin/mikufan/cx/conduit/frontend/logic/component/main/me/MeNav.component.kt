@@ -14,14 +14,21 @@ interface MeNavComponent {
   val childStack: Value<ChildStack<*, MeNavComponentChild>>
 }
 
+sealed interface MeNavComponentChild {
+  data class MePage(val mePageComponent: MePageComponent) : MeNavComponentChild
+  data class EditProfile(val editProfileComponent: EditProfileComponent) : MeNavComponentChild
+  data class AddArticle(val addArticleComponent: AddArticleComponent) : MeNavComponentChild
+}
+
+
 class DefaultMeNavComponent(
   componentContext: ComponentContext,
   private val mePageComponentFactory: MePageComponentFactory,
   private val editProfileComponentFactory: EditProfileComponentFactory,
   private val addArticleComponentFactory: AddArticleComponentFactory,
 ) : MeNavComponent, ComponentContext by componentContext {
-
   private val stackNavigation = StackNavigation<Config>()
+
   override val childStack: Value<ChildStack<*, MeNavComponentChild>> = childStack(
     source = stackNavigation,
     initialConfiguration = Config.MePage(),
@@ -72,12 +79,12 @@ class DefaultMeNavComponent(
 
   @Serializable
   private sealed interface Config {
+
     @Serializable
     data class MePage(val preloadedMe: LoadedMe? = null) : Config
 
     @Serializable
     data class EditProfile(val loadedMe: LoadedMe) : Config
-
     @Serializable
     data object AddArticle : Config
   }
@@ -95,4 +102,3 @@ class MeNavComponentFactory(
     addArticleComponentFactory = addArticleComponentFactory,
   )
 }
-
