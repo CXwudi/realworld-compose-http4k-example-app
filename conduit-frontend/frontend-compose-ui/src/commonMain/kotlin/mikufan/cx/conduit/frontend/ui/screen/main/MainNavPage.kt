@@ -1,6 +1,5 @@
 package mikufan.cx.conduit.frontend.ui.screen.main
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -15,6 +14,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
@@ -25,6 +30,7 @@ import mikufan.cx.conduit.frontend.ui.screen.main.auth.AuthPage
 import mikufan.cx.conduit.frontend.ui.screen.main.feed.ArticlesListDetailPanel
 import mikufan.cx.conduit.frontend.ui.screen.main.me.MeNavPage
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
 
@@ -51,14 +57,15 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
     },
     modifier = modifier
   ) {
-    AnimatedContent(
-      targetState = stack.active.instance,
+    ChildStack(
+      stack = component.childStack,
+      animation = stackAnimation(fade() + slide())
     ) {
-      when (it) {
-        is MainNavComponentChild.MainFeed -> ArticlesListDetailPanel(it.testComponent)
+      when (val child = it.instance) {
+        is MainNavComponentChild.MainFeed -> ArticlesListDetailPanel(child.testComponent)
         is MainNavComponentChild.Favourite -> Text("Favourite")
-        is MainNavComponentChild.Me -> MeNavPage(it.component)
-        is MainNavComponentChild.SignInUp -> AuthPage(it.component)
+        is MainNavComponentChild.Me -> MeNavPage(child.component)
+        is MainNavComponentChild.SignInUp -> AuthPage(child.component)
       }
     }
   }
