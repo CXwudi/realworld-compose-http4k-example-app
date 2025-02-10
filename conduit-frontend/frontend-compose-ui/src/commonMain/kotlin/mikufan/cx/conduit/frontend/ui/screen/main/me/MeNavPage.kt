@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentChild
+import mikufan.cx.conduit.frontend.ui.util.fadeInAndOut
 
 
 @Composable
@@ -17,6 +18,7 @@ fun MeNavPage(meNavComponent: MeNavComponent, modifier: Modifier = Modifier) {
   AnimatedContent(
     targetState = childStack.active.instance,
     modifier = modifier,
+    transitionSpec = { fadeInAndOut() },
     content = { child ->
       when (child) {
         is MeNavComponentChild.MePage -> MePage(child.mePageComponent)

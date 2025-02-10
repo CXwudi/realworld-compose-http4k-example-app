@@ -13,7 +13,9 @@ import mikufan.cx.conduit.frontend.ui.screen.main.MainNavPage
 fun RootNavigation(rootComponent: DefaultRootNavComponent, modifier: Modifier = Modifier) {
   val childStack by rootComponent.childStack.subscribeAsState()
 
-  Crossfade(childStack.active.instance) {
+  Crossfade(
+    targetState = childStack.active.instance,
+  ) {
     when (it) {
       is RootComponentChild.Loading -> LoadingScreen()
       is RootComponentChild.LandingPage -> LandingPage(it.component)
@@ -21,27 +23,3 @@ fun RootNavigation(rootComponent: DefaultRootNavComponent, modifier: Modifier = 
     }
   }
 }
-
-//@Composable
-//private fun <S> AnimatedContentTransition(
-//  targetState: S,
-//  modifier: Modifier = Modifier,
-//  content: @Composable AnimatedContentScope.(targetState: S) -> Unit
-//) {
-//  AnimatedContent(
-//    targetState = targetState,
-//    modifier = modifier,
-//    transitionSpec = {
-//      slideIntoContainer(
-//        towards = SlideDirection.Left,
-//        animationSpec = tween(),
-//      ).togetherWith(
-//        slideOutOfContainer(
-//          towards = SlideDirection.Left,
-//          animationSpec = tween()
-//        )
-//      )
-//    },
-//    content = content
-//  )
-//}

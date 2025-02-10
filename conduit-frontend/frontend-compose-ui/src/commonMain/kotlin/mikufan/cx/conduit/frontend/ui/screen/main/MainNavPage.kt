@@ -1,7 +1,6 @@
 package mikufan.cx.conduit.frontend.ui.screen.main
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -52,8 +51,8 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
     },
     modifier = modifier
   ) {
-    AnimatedContentTransition(
-      targetState = stack.active.instance
+    AnimatedContent(
+      targetState = stack.active.instance,
     ) {
       when (it) {
         is MainNavComponentChild.MainFeed -> ArticlesListDetailPanel(it.testComponent)
@@ -73,19 +72,6 @@ private fun navigationItems(
   return mainStateMode.menuItems.withIndex().map { (index, value) ->
     mapMenuItemEnum2NavItem(value, index, onSend)
   }
-}
-
-@Composable
-private fun <S> AnimatedContentTransition(
-  targetState: S,
-  modifier: Modifier = Modifier,
-  content: @Composable AnimatedContentScope.(targetState: S) -> Unit
-) {
-  AnimatedContent(
-    targetState = targetState,
-    modifier = modifier,
-    content = content
-  )
 }
 
 data class NavigationItem(

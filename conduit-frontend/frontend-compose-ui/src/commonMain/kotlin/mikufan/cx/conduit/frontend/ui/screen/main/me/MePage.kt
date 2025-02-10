@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.me
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -221,7 +222,8 @@ private fun Profile(
   } else {
     Column(
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing * 2),
-      horizontalAlignment = Alignment.CenterHorizontally
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
     ) {
       ProfileImage(imageUrl = imageUrl, username = username)
       Spacer(modifier = Modifier.height(LocalSpace.current.vertical.spacing * 2)) // so this is doubled the spacing
@@ -233,11 +235,10 @@ private fun Profile(
         bio = bio,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
         maxLength = when (widthClass) {
-            WindowWidthSizeClass.EXPANDED -> 300
-            WindowWidthSizeClass.MEDIUM -> 200
-            else -> 100
+          WindowWidthSizeClass.EXPANDED -> 300
+          WindowWidthSizeClass.MEDIUM -> 200
+          else -> 100
         }
       )
     }
@@ -262,16 +263,21 @@ private fun ExpandableBioText(
   style: TextStyle,
   color: Color,
   modifier: Modifier = Modifier,
-  textAlign: TextAlign? = null,
+  textButtonPadding: PaddingValues = PaddingValues(0.dp),
   maxLength: Int
 ) {
   var isExpanded by remember { mutableStateOf(false) }
-  val shouldTruncate = bio.length > maxLength
-  val displayText = if (shouldTruncate && !isExpanded) {
-    bio.trim().take(maxLength).trimEnd() + "..."
-  } else {
-    bio.trim()
+  val shouldTruncate by remember { derivedStateOf { bio.length > maxLength } }
+  val displayText by remember(maxLength) {
+    derivedStateOf {
+      if (shouldTruncate && !isExpanded) {
+        bio.trim().take(maxLength).trimEnd() + "..."
+      } else {
+        bio.trim()
+      }
+    }
   }
+  val textButtonText by remember { derivedStateOf { if (isExpanded) "Collapse" else "Show more" } }
 
   Column(
     // we want the bio and the button to be closer
@@ -282,7 +288,6 @@ private fun ExpandableBioText(
       text = displayText,
       style = style,
       color = color,
-      textAlign = textAlign,
       modifier = Modifier.animateContentSize(
         animationSpec = spring(
           stiffness = Spring.StiffnessMedium,
@@ -293,13 +298,18 @@ private fun ExpandableBioText(
     if (shouldTruncate) {
       TextButton(
         onClick = { isExpanded = !isExpanded },
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = textButtonPadding,
       ) {
-        Text(
-          text = if (isExpanded) "Collapse" else "Show more",
-          style = MaterialTheme.typography.labelMedium,
-          color = MaterialTheme.colorScheme.primary
-        )
+        AnimatedContent(
+          targetState = textButtonText,
+        ) {
+          Text(
+            text = it,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Left,
+          )
+        }
       }
     }
   }
@@ -343,6 +353,7 @@ private fun ProfileImage(
           .clip(CircleShape)
       )
     }
+
     is AsyncImagePainter.State.Loading -> {
       CircularProgressIndicator(
         modifier = modifier
@@ -351,6 +362,7 @@ private fun ProfileImage(
           .clip(CircleShape)
       )
     }
+
     is AsyncImagePainter.State.Success -> {
       Image(
         painter = painter,
@@ -362,6 +374,7 @@ private fun ProfileImage(
           .clip(CircleShape)
       )
     }
+
     is AsyncImagePainter.State.Error -> {
       Icon(
         painter = painterResource(Res.drawable.outlined_broken_image),
