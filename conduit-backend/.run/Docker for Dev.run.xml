@@ -1,8 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Docker for Dev" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker Window">
+  <configuration default="false" name="Docker for Dev" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
     <deployment type="docker-compose.yml">
       <settings>
-        <option name="envFilePath" value="D:\coding-workspace\jvm\conduit-related\realworld-compose-http4k-example-app\conduit-backend\docker\.env" />
+        <option name="envFilePath" value="" />
+        <option name="profiles">
+          <list>
+            <option value="migration" />
+          </list>
+        </option>
         <option name="secondarySourceFiles">
           <list>
             <option value="docker/compose.dev.yml" />
