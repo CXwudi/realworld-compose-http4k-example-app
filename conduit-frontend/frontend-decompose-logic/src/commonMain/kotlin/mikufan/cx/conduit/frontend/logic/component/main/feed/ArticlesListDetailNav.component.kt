@@ -6,11 +6,11 @@ import com.arkivanov.decompose.router.panels.ChildPanels
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 import com.arkivanov.decompose.router.panels.Panels
 import com.arkivanov.decompose.router.panels.PanelsNavigation
-import com.arkivanov.decompose.router.panels.childPanels
 import com.arkivanov.decompose.router.panels.setMode
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import mikufan.cx.conduit.frontend.logic.component.custom.customChildPanels
 
 /**
  * Naming is a bit confusing
@@ -44,7 +44,7 @@ class DefaultArticlesListDetailNavComponent(
 
   @OptIn(ExperimentalSerializationApi::class)
   override val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList, *, ArticlesListDetailNavComponentChild.ArticleDetail, Unit, Unit>> =
-    childPanels(
+    customChildPanels(
       source = panelNavigation,
       serializers = Config.ArticlesList.serializer() to Config.ArticleDetail.serializer(),
       initialPanels = { Panels(Config.ArticlesList) },
