@@ -32,7 +32,7 @@ dependencies {
   implementation("org.http4k:http4k-core")
   implementation("org.http4k:http4k-server-helidon") // loom native web server
   implementation("org.http4k:http4k-format-kotlinx-serialization")
-  implementation("org.http4k:http4k-metrics-micrometer")
+  implementation("org.http4k:http4k-ops-micrometer")
   implementation(platform(libs.dev.backend.exposedBom))
   implementation("org.jetbrains.exposed:exposed-core")
   implementation("org.jetbrains.exposed:exposed-dao")
