@@ -36,7 +36,7 @@ val fakeArticlesListDetailComponent = object : ArticlesListDetailNavComponent {
       )
     )
 
-  override fun setMode(mode: ChildPanelsMode) {}
+  override fun setWidestAllowedMode(mode: ChildPanelsMode) {}
 }
 
 

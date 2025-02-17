@@ -8,6 +8,7 @@ import com.arkivanov.decompose.router.panels.Panels
 import com.arkivanov.decompose.router.panels.PanelsNavigation
 import com.arkivanov.decompose.router.panels.setMode
 import com.arkivanov.decompose.value.Value
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.custom.customChildPanels
@@ -26,7 +27,7 @@ import mikufan.cx.conduit.frontend.logic.component.custom.customChildPanels
 interface ArticlesListDetailNavComponent {
   val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList, *, ArticlesListDetailNavComponentChild.ArticleDetail, Unit, Unit>>
 
-  fun setMode(mode: ChildPanelsMode)
+  fun setWidestAllowedMode(mode: ChildPanelsMode)
 }
 
 sealed interface ArticlesListDetailNavComponentChild {
@@ -39,13 +40,14 @@ class DefaultArticlesListDetailNavComponent(
   componentContext: ComponentContext,
 ) : ArticlesListDetailNavComponent, ComponentContext by componentContext {
 
-
   private val panelNavigation = PanelsNavigation<Config.ArticlesList, Config.ArticleDetail, Nothing>()
+  private var widestMode: ChildPanelsMode = ChildPanelsMode.SINGLE
 
   @OptIn(ExperimentalSerializationApi::class)
   override val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList, *, ArticlesListDetailNavComponentChild.ArticleDetail, Unit, Unit>> =
     customChildPanels(
       source = panelNavigation,
+      key = "ArticlesListDetailPanel",
       serializers = Config.ArticlesList.serializer() to Config.ArticleDetail.serializer(),
       initialPanels = { Panels(Config.ArticlesList) },
       handleBackButton = true,
@@ -53,7 +55,18 @@ class DefaultArticlesListDetailNavComponent(
       detailsFactory = ::detailComponent,
     )
 
-  override fun setMode(mode: ChildPanelsMode) = panelNavigation.setMode(mode)
+  override fun setWidestAllowedMode(mode: ChildPanelsMode) {
+    // TODO: untested
+    log.debug { "setWidestAllowedMode: $mode" }
+    widestMode = mode
+    val panel = panels.value
+    val currentMode = panel.mode
+    val hasDetails = panel.details != null
+
+    if (hasDetails && currentMode != mode) {
+      panelNavigation.setMode(mode)
+    }
+  }
 
   private fun mainComponent(config: Config.ArticlesList, componentContext: ComponentContext): ArticlesListDetailNavComponentChild.ArticlesList {
     return ArticlesListDetailNavComponentChild.ArticlesList
@@ -81,3 +94,5 @@ class ArticlesPanelNavComponentFactory(
     componentContext = componentContext,
   )
 }
+
+private val log = KotlinLogging.logger { }

@@ -3,9 +3,10 @@ package mikufan.cx.conduit.frontend.ui.screen.main.feed
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanels
@@ -15,6 +16,7 @@ import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.p
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
+import mikufan.cx.conduit.frontend.ui.common.CustomHorizontalChildPanelsLayout
 
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -22,21 +24,23 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailN
 fun ArticlesListDetailPanel(component: ArticlesListDetailNavComponent) {
   val mode = getPanelMode()
   LaunchedEffect(mode) {
-    component.setMode(mode)
+
+    component.setWidestAllowedMode(mode.value)
   }
   ChildPanels(
     component.panels,
     mainChild = { ArticlesList() },
     detailsChild = { ArticleContent() },
+    layout = remember { CustomHorizontalChildPanelsLayout(250.dp, 250.dp to 250.dp) },
     animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
   )
 }
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-fun getPanelMode(): ChildPanelsMode {
+fun getPanelMode(): State<ChildPanelsMode> {
   val windowWidthSizeClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
-  val mode by remember {
+  val mode = remember(windowWidthSizeClass) {
     derivedStateOf {
       when (windowWidthSizeClass) {
         WindowWidthSizeClass.COMPACT -> ChildPanelsMode.SINGLE
