@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.backend.service
 
+import com.auth0.jwt.JWT
 import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.backend.db.TransactionManager
 import mikufan.cx.conduit.backend.db.repo.UserRepo
@@ -24,6 +25,8 @@ class UserService(
     log.info { "Successfully created new user ${user.username}" }
 
     // TODO: set token
+
+
     return UserDto(
       email = newUser.email,
       username = newUser.username,
