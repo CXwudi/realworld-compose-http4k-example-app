@@ -42,6 +42,7 @@ dependencies {
   implementation(libs.dev.kotlinLogging)
   implementation(libs.dev.backend.slf4j)
   runtimeOnly(libs.dev.backend.logback)
+  implementation(libs.dev.backend.jwt)
 
   testImplementation("io.insert-koin:koin-test-junit5")
   testImplementation(libs.dev.backend.kotestKoin)
