@@ -1,9 +1,9 @@
 package mikufan.cx.conduit.backend.controller
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import mikufan.cx.conduit.backend.config.CorsConfig
 import mikufan.cx.conduit.backend.util.ConduitException
-import mikufan.cx.inlinelogging.KInlineLogging
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method
@@ -20,7 +20,7 @@ class LoggingFilter : Filter {
 
   companion object {
     @JvmStatic
-    private val log = KInlineLogging.logger()
+    private val log = KotlinLogging.logger {}
     private val logExecutor = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("logging-", 0L).factory())
   }
 
@@ -59,7 +59,7 @@ class ConduitBusinessLogicExceptionFilter : Filter {
 
   companion object {
     @JvmStatic
-    private val log = KInlineLogging.logger()
+    private val log = KotlinLogging.logger {}
   }
 
   override fun invoke(next: HttpHandler): HttpHandler = { req ->

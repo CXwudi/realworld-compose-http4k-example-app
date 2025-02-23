@@ -39,7 +39,7 @@ dependencies {
   implementation("org.jetbrains.exposed:exposed-jdbc")
   implementation(libs.dev.backend.postgresql)
   implementation(libs.dev.backend.hikari)
-  implementation(libs.dev.backend.inlineLogging)
+  implementation(libs.dev.kotlinLogging)
   implementation(libs.dev.backend.slf4j)
   runtimeOnly(libs.dev.backend.logback)
 

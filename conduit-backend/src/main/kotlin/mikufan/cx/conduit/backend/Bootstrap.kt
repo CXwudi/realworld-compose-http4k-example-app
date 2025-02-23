@@ -1,7 +1,7 @@
 package mikufan.cx.conduit.backend
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.backend.controller.ConduitServer
-import mikufan.cx.inlinelogging.KInlineLogging
 
 class Bootstrap(
   private val server: ConduitServer
@@ -17,4 +17,4 @@ class Bootstrap(
   }
 }
 
-private val log = KInlineLogging.logger()
+private val log = KotlinLogging.logger {}

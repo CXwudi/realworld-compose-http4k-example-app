@@ -1,11 +1,11 @@
 package mikufan.cx.conduit.backend.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.backend.db.TransactionManager
 import mikufan.cx.conduit.backend.db.repo.UserRepo
 import mikufan.cx.conduit.backend.util.ConduitException
 import mikufan.cx.conduit.common.UserDto
 import mikufan.cx.conduit.common.UserRegisterDto
-import mikufan.cx.inlinelogging.KInlineLogging
 
 class UserService(
   private val txManager: TransactionManager,
@@ -34,4 +34,4 @@ class UserService(
   }
 }
 
-private val log = KInlineLogging.logger()
+private val log = KotlinLogging.logger {}
