@@ -3,7 +3,8 @@ package mikufan.cx.conduit.backend.service
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.github.oshai.kotlinlogging.KotlinLogging
-import java.util.*
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import mikufan.cx.conduit.backend.db.TransactionManager
 import mikufan.cx.conduit.backend.db.repo.UserRepo
 import mikufan.cx.conduit.backend.util.ConduitException
@@ -31,8 +32,8 @@ class UserService(
       .withSubject(newUser.id.toString())
       .withClaim("email", newUser.email)
       .withClaim("username", newUser.username)
-      .withIssuedAt(Date())
-      .withExpiresAt(Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 7 days
+      .withIssuedAt(Instant.now())
+      .withExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS))
       .sign(Algorithm.HMAC256("your-secret-key")) // TODO: Move to configuration
 
     return UserDto(
