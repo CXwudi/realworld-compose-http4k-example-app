@@ -14,10 +14,10 @@ class UserRepo {
 
   fun getByUsername(username: String): User? = User.find { Users.username eq username }.firstOrNull()
 
-  fun insert(UserRegisterDto: UserRegisterDto): User = User.new {
-    email = UserRegisterDto.email
-    username = UserRegisterDto.username
-    password = UserRegisterDto.password
+  fun insert(userRegisterDto: UserRegisterDto): User = User.new {
+    email = userRegisterDto.email
+    username = userRegisterDto.username
+    password = userRegisterDto.password
     bio = ""
     image = null
   }
