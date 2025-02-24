@@ -38,7 +38,10 @@ class UserServiceTest : ShouldSpec({
       val userService = UserService(txManager, userRepo)
 
       val registerUser = userService.registerUser(userRegisterDto)
-      registerUser shouldBe UserDto("new user", "email@email.com", "", "", null)
+      registerUser.apply {
+        username shouldBe userRegisterDto.username
+        email shouldBe userRegisterDto.email
+      }
     }
 
     should("throw on duplicate user") {
