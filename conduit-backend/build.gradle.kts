@@ -45,15 +45,13 @@ dependencies {
   implementation(libs.dev.backend.jwt)
 
   testImplementation("io.insert-koin:koin-test-junit5")
-  testImplementation(libs.dev.backend.kotestKoin)
   testImplementation("org.http4k:http4k-testing-approval")
   testImplementation("org.http4k:http4k-testing-hamkrest")
-  testImplementation("org.http4k:http4k-testing-kotest")
-  testImplementation(platform(libs.dev.backend.kotestBom))
-  testImplementation("io.kotest:kotest-runner-junit5")
   testImplementation(platform(libs.dev.backend.junitBom))
+  testImplementation("org.junit.jupiter:junit-jupiter")
   testImplementation("org.junit.jupiter:junit-jupiter-api")
   testImplementation("org.junit.jupiter:junit-jupiter-engine")
+  testImplementation("org.junit.jupiter:junit-jupiter-params")
   testImplementation(libs.dev.backend.mockk)
 }
 
