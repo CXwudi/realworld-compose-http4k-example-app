@@ -50,9 +50,9 @@ dependencies {
   testImplementation(platform(libs.dev.backend.junitBom))
   testImplementation("org.junit.jupiter:junit-jupiter")
   testImplementation("org.junit.jupiter:junit-jupiter-api")
-  testImplementation("org.junit.jupiter:junit-jupiter-engine")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
   testImplementation("org.junit.jupiter:junit-jupiter-params")
-  testImplementation("org.junit.platform:junit-platform-launcher")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
   testImplementation(libs.dev.backend.mockk)
 }
 
