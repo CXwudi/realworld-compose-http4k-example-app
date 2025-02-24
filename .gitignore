@@ -68,3 +68,4 @@ out/
 conduit-frontend/app-desktop/kstore/*
 conduit-frontend/report/*
 .aider*
+.qodo

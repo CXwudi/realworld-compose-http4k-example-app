@@ -3,13 +3,13 @@ package mikufan.cx.conduit.backend.service
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.github.oshai.kotlinlogging.KotlinLogging
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 import mikufan.cx.conduit.backend.db.TransactionManager
 import mikufan.cx.conduit.backend.db.repo.UserRepo
 import mikufan.cx.conduit.backend.util.ConduitException
 import mikufan.cx.conduit.common.UserDto
 import mikufan.cx.conduit.common.UserRegisterDto
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class UserService(
   private val txManager: TransactionManager,
@@ -41,7 +41,7 @@ class UserService(
       username = newUser.username,
       bio = newUser.bio,
       image = newUser.image,
-      token = null
+      token = token
     )
   }
 }

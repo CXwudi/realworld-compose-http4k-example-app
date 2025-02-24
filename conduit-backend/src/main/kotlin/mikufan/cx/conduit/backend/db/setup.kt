@@ -4,22 +4,17 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import mikufan.cx.conduit.backend.config.DbConfig
 import org.jetbrains.exposed.sql.Database
-import javax.sql.DataSource
 
-fun creatDataSource(dbConfig: DbConfig): DataSource {
+fun creatDataSource(dbConfig: DbConfig): HikariDataSource {
   val config = HikariConfig().apply {
     jdbcUrl = dbConfig.url
     username = dbConfig.user
     password = dbConfig.password
     driverClassName = dbConfig.driver
   }
-  val hikariDataSource = HikariDataSource(config)
-  Runtime.getRuntime().addShutdownHook(Thread {
-    hikariDataSource.close()
-  })
-  return hikariDataSource
+  return HikariDataSource(config)
 }
 
-fun createExposedDb(dataSource: DataSource) : Database = Database.connect(dataSource)
+fun createExposedDb(dataSource: HikariDataSource) : Database = Database.connect(dataSource)
 
 fun createConduitTransactionManager(db: Database) : TransactionManager = TransactionManagerImpl(db)
