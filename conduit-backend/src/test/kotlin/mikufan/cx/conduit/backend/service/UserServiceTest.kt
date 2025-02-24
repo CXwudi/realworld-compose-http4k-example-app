@@ -1,63 +1,64 @@
 package mikufan.cx.conduit.backend.service
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import io.mockk.every
 import io.mockk.mockk
 import mikufan.cx.conduit.backend.db.User
 import mikufan.cx.conduit.backend.db.repo.UserRepo
 import mikufan.cx.conduit.backend.util.ConduitException
 import mikufan.cx.conduit.backend.util.NoOpsTxManager
-import mikufan.cx.conduit.common.UserDto
 import mikufan.cx.conduit.common.UserRegisterDto
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-class UserServiceTest : ShouldSpec({
+class UserServiceTest {
 
-  val txManager = NoOpsTxManager
+    private val txManager = NoOpsTxManager
+    private val userRegisterDto = UserRegisterDto("new user", "email@email.com", "password")
 
-  context("user registration") {
-    val userRegisterDto = UserRegisterDto("new user", "email@email.com", "password")
-    should("register user successfully") {
-      val userRepo = mockk<UserRepo>() {
-        every { getByEmail(any()) } returns null
-        every { getByUsername(any()) } returns null
-        every { insert(any()) } answers {
-          val dto = firstArg<UserRegisterDto>()
-          mockk<User> {
-            every { id } returns mockk { every { value } returns 1 }
-            every { email } returns dto.email
-            every { username } returns dto.username
-            every { password } returns dto.password
-            every { bio } returns ""
-            every { image } returns ""
-          }
+    @Nested
+    inner class UserRegistration {
+        
+        @Test
+        fun `should register user successfully`() {
+            val userRepo = mockk<UserRepo>().apply {
+                every { getByEmail(any()) } returns null
+                every { getByUsername(any()) } returns null
+                every { insert(any()) } answers {
+                    val dto = firstArg<UserRegisterDto>()
+                    mockk<User> {
+                        every { id } returns mockk { every { value } returns 1 }
+                        every { email } returns dto.email
+                        every { username } returns dto.username
+                        every { password } returns dto.password
+                        every { bio } returns ""
+                        every { image } returns ""
+                    }
+                }
+            }
+            val userService = UserService(txManager, userRepo)
+
+            val registerUser = userService.registerUser(userRegisterDto)
+            
+            assertEquals(userRegisterDto.username, registerUser.username)
+            assertEquals(userRegisterDto.email, registerUser.email)
         }
-      }
-      val userService = UserService(txManager, userRepo)
 
-      val registerUser = userService.registerUser(userRegisterDto)
-      registerUser.apply {
-        username shouldBe userRegisterDto.username
-        email shouldBe userRegisterDto.email
-      }
+        @Test
+        fun `should throw on duplicate user`() {
+            val userRepo = mockk<UserRepo>().apply {
+                every { getByEmail(any()) } returns mockk()
+                every { getByUsername(any()) } returns mockk()
+            }
+
+            val userService = UserService(txManager, userRepo)
+
+            val exception = assertThrows<ConduitException> {
+                userService.registerUser(userRegisterDto)
+            }
+
+            assert(exception.message?.contains("User already exists") == true)
+        }
     }
-
-    should("throw on duplicate user") {
-      val userRepo = mockk<UserRepo>() {
-        every { getByEmail(any()) } returns mockk()
-        every { getByUsername(any()) } returns mockk()
-      }
-
-      val userService = UserService(txManager, userRepo)
-
-      val conduitException = shouldThrow<ConduitException> {
-        userService.registerUser(userRegisterDto)
-      }
-
-      conduitException.message shouldContain "User already exists"
-    }
-  }
-
-})
+}
