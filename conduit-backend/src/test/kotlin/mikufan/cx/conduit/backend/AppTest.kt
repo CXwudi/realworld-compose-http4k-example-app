@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.koin.test.junit5.KoinTestExtension
+import kotlin.test.assertTrue
 
 /**
  * This is just a test to make sure the koin modules setup correctly
@@ -23,6 +24,6 @@ class AppTest : KoinTest {
   fun `koin modules should load successfully`() {
     // if we get here without exception, the test passes
     // and verify bootstrap is injected
-    assert(bootstrap != null)
+    assertTrue { bootstrap is Bootstrap }
   }
 }
