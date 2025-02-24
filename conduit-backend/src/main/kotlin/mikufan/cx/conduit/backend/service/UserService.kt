@@ -29,7 +29,7 @@ class UserService(
 
     // Generate JWT token
     val token = JWT.create()
-      .withSubject(newUser.id.toString())
+      .withSubject(newUser.id.value.toString())
       .withClaim("email", newUser.email)
       .withClaim("username", newUser.username)
       .withIssuedAt(Instant.now())

@@ -26,6 +26,7 @@ class UserServiceTest : ShouldSpec({
         every { insert(any()) } answers {
           val dto = firstArg<UserRegisterDto>()
           mockk<User> {
+            every { id } returns mockk { every { value } returns 1 }
             every { email } returns dto.email
             every { username } returns dto.username
             every { password } returns dto.password
