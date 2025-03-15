@@ -6,9 +6,14 @@ import com.arkivanov.decompose.router.panels.ChildPanels
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 import com.arkivanov.decompose.router.panels.Panels
 import com.arkivanov.decompose.router.panels.PanelsNavigation
-import com.arkivanov.decompose.router.panels.setMode
+import com.arkivanov.decompose.router.panels.navigate
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.custom.customChildPanels
@@ -25,7 +30,9 @@ import mikufan.cx.conduit.frontend.logic.component.custom.customChildPanels
  */
 @OptIn(ExperimentalDecomposeApi::class)
 interface ArticlesListDetailNavComponent {
-  val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList, *, ArticlesListDetailNavComponentChild.ArticleDetail, Unit, Unit>>
+  val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList,
+      *, ArticlesListDetailNavComponentChild.ArticleDetail,
+      Nothing, Nothing>>
 
   fun setWidestAllowedMode(mode: ChildPanelsMode)
 }
@@ -40,39 +47,67 @@ class DefaultArticlesListDetailNavComponent(
   componentContext: ComponentContext,
 ) : ArticlesListDetailNavComponent, ComponentContext by componentContext {
 
-  private val panelNavigation = PanelsNavigation<Config.ArticlesList, Config.ArticleDetail, Nothing>()
-  private var widestMode: ChildPanelsMode = ChildPanelsMode.SINGLE
+  private val panelNavigation =
+    PanelsNavigation<Config.ArticlesList, Config.ArticleDetail, Nothing>()
+  private val _widestAllowedMode: MutableStateFlow<ChildPanelsMode> =
+    MutableStateFlow(ChildPanelsMode.SINGLE)
+  val widestAllowedMode: StateFlow<ChildPanelsMode> = _widestAllowedMode
+
+  init {
+    coroutineScope().launch {
+      expandToWidestAllowedMode()
+    }
+  }
+
+  private suspend fun expandToWidestAllowedMode() {
+    widestAllowedMode.collectLatest { widestMode ->
+      // Using navigate function so that the transformation is happened in sequence, no race condition
+      panelNavigation.navigate { oldPanels ->
+        if (oldPanels.mode == widestMode) return@navigate oldPanels
+        when {
+          widestMode == ChildPanelsMode.SINGLE -> oldPanels.copy(mode = ChildPanelsMode.SINGLE)
+          widestMode == ChildPanelsMode.DUAL && oldPanels.details != null -> oldPanels.copy(mode = ChildPanelsMode.DUAL)
+          else -> {
+            if (widestMode == ChildPanelsMode.TRIPLE) {
+              log.warn { "Triple mode is not supported in this ArticlesListDetailNavComponent" }
+            }
+            oldPanels
+          }
+        }
+      }
+    }
+  }
 
   @OptIn(ExperimentalSerializationApi::class)
-  override val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList, *, ArticlesListDetailNavComponentChild.ArticleDetail, Unit, Unit>> =
+  override val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList,
+      *, ArticlesListDetailNavComponentChild.ArticleDetail,
+      Nothing, Nothing>> =
     customChildPanels(
       source = panelNavigation,
       key = "ArticlesListDetailPanel",
       serializers = Config.ArticlesList.serializer() to Config.ArticleDetail.serializer(),
-      initialPanels = { Panels(Config.ArticlesList) },
+      initialPanels = { Panels(Config.ArticlesList, Config.ArticleDetail) },
       handleBackButton = true,
       mainFactory = ::mainComponent,
       detailsFactory = ::detailComponent,
     )
 
   override fun setWidestAllowedMode(mode: ChildPanelsMode) {
-    // TODO: untested
-    log.debug { "setWidestAllowedMode: $mode" }
-    widestMode = mode
-    val panel = panels.value
-    val currentMode = panel.mode
-    val hasDetails = panel.details != null
-
-    if (hasDetails && currentMode != mode) {
-      panelNavigation.setMode(mode)
-    }
+    log.debug { "Try to set widest mode to $mode" }
+    _widestAllowedMode.value = mode
   }
 
-  private fun mainComponent(config: Config.ArticlesList, componentContext: ComponentContext): ArticlesListDetailNavComponentChild.ArticlesList {
+  private fun mainComponent(
+    config: Config.ArticlesList,
+    componentContext: ComponentContext
+  ): ArticlesListDetailNavComponentChild.ArticlesList {
     return ArticlesListDetailNavComponentChild.ArticlesList
   }
 
-  private fun detailComponent(config: Config.ArticleDetail, componentContext: ComponentContext): ArticlesListDetailNavComponentChild.ArticleDetail {
+  private fun detailComponent(
+    config: Config.ArticleDetail,
+    componentContext: ComponentContext
+  ): ArticlesListDetailNavComponentChild.ArticleDetail {
     return ArticlesListDetailNavComponentChild.ArticleDetail
   }
 
@@ -81,6 +116,7 @@ class DefaultArticlesListDetailNavComponent(
   sealed interface Config {
     @Serializable
     data object ArticlesList : Config
+
     @Serializable
     data object ArticleDetail : Config
   }

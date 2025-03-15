@@ -23,9 +23,9 @@ import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 @ExperimentalDecomposeApi
 val fakeArticlesListDetailComponent = object : ArticlesListDetailNavComponent {
-  override val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList, *, ArticlesListDetailNavComponentChild.ArticleDetail, Unit, Unit>> =
+  override val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList, *, ArticlesListDetailNavComponentChild.ArticleDetail, Nothing, Nothing>> =
     MutableValue(
-      ChildPanels<Unit, ArticlesListDetailNavComponentChild.ArticlesList, Unit, ArticlesListDetailNavComponentChild.ArticleDetail, Unit, Unit>(
+      ChildPanels<Unit, ArticlesListDetailNavComponentChild.ArticlesList, Unit, ArticlesListDetailNavComponentChild.ArticleDetail, Nothing , Nothing>(
         Child.Created(
           configuration = Unit,
           ArticlesListDetailNavComponentChild.ArticlesList
