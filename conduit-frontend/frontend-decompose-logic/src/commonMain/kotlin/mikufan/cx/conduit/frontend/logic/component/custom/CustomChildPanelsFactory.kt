@@ -22,7 +22,7 @@ import kotlinx.serialization.builtins.NothingSerializer
 
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
- * (https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
+ * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
  * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
  *
  * Initializes and manages a set of up to two child components (panels): Main (required) and
@@ -73,7 +73,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
 
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
- * (https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
+ * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
  * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
  *
  * Initializes and manages a set of up to two child components (panels): Main (required) and
@@ -128,7 +128,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
 
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
- * (https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
+ * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
  * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
  *
  * Initializes and manages a set of up to three child components (panels): Main (required),
@@ -190,7 +190,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
 
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
- * (https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
+ * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
  * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
  *
  * Initializes and manages a set of up to three child components (panels): Main (required),
