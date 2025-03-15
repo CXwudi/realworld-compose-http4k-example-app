@@ -41,7 +41,6 @@ fun ArticlesListDetailPanel(component: ArticlesListDetailNavComponent) {
 fun rememberPanelMode(): ChildPanelsMode {
   val windowAdaptiveInfo = currentWindowAdaptiveInfo()
   val windowWidthSizeClass by remember(windowAdaptiveInfo) { derivedStateOf { windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass } }
-//  val windowWidthSizeClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
   val mode by remember(windowWidthSizeClass) {
     derivedStateOf {
       when (windowWidthSizeClass) {
