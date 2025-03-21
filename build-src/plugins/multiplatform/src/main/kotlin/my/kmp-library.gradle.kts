@@ -30,6 +30,8 @@ kotlin {
         }
       }
     }
+    // added for experimenting js export, not needed for consuming in other modules
+    binaries.executable()
   }
   @OptIn(ExperimentalWasmDsl::class)
   wasmJs {
@@ -47,6 +49,7 @@ kotlin {
         }
       }
     }
+    binaries.executable()
   }
 
   listOf(
