@@ -6,13 +6,26 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesSearchFilte
 import mikufan.cx.conduit.frontend.logic.repo.api.ArticleApi
 import mikufan.cx.conduit.frontend.logic.repo.api.util.getOrThrow
 
-class ArticlesListService(
-  private val articleApi: ArticleApi,
-) {
-
+interface ArticlesListService {
+  /**
+   * Get articles with the given filter, page size and offset.
+   */
   suspend fun getArticles(
     searchFilter: ArticlesSearchFilter,
     pageSize: Int = 10,
+    offset: Int,
+  ): List<ArticleInfo>
+
+  suspend fun getInitialArticles(searchFilter: ArticlesSearchFilter): List<ArticleInfo>
+}
+
+class DefaultArticlesListService(
+  private val articleApi: ArticleApi,
+) : ArticlesListService {
+
+  override suspend fun getArticles(
+    searchFilter: ArticlesSearchFilter,
+    pageSize: Int,
     offset: Int,
   ): List<ArticleInfo> {
     val articlesRsp = articleApi.getArticles(
@@ -27,7 +40,7 @@ class ArticlesListService(
     return articlesDto.articles.map { it.toInfo() }
   }
 
-  suspend fun getInitialArticles(searchFilter: ArticlesSearchFilter) =
+  override suspend fun getInitialArticles(searchFilter: ArticlesSearchFilter) =
     getArticles(searchFilter, offset = 0)
 }
 

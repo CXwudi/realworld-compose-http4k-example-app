@@ -51,13 +51,14 @@ class ArticlesListStoreFactory(
     }
   }
 
-  fun create(searchFilter: ArticlesSearchFilter) =
+  fun create(searchFilter: ArticlesSearchFilter, autoInit: Boolean = true) =
     storeFactory.create(
       name = "ArticlesListStore-${searchFilter.serializedName}",
       initialState = ArticlesListState.Loading,
       bootstrapper = createBootstrapper(),
       executorFactory = createExecutor(searchFilter),
-      reducer = createReducer()
+      reducer = createReducer(),
+      autoInit = autoInit
     )
 
   private sealed interface Msg {
