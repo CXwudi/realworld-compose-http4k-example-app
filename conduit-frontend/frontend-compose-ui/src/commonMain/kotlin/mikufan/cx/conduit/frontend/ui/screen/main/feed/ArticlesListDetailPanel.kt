@@ -29,7 +29,7 @@ fun ArticlesListDetailPanel(component: ArticlesListDetailNavComponent) {
 
   ChildPanels(
     panels = component.panels,
-    mainChild = { ArticlesList() },
+    mainChild = { ArticlesList(it.instance.component) },
     detailsChild = { ArticleContent() },
     layout = remember { CustomHorizontalChildPanelsLayout(250.dp, 250.dp to 250.dp) },
     animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
