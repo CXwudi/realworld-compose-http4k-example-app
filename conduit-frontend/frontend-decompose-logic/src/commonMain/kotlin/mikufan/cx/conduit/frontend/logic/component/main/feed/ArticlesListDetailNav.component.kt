@@ -37,18 +37,16 @@ interface ArticlesListDetailNavComponent {
   fun setWidestAllowedMode(mode: ChildPanelsMode)
 }
 
-sealed interface ArticlesListDetailNavComponentChild {
-  data object ArticlesList : ArticlesListDetailNavComponentChild
-  data object ArticleDetail : ArticlesListDetailNavComponentChild
-}
-
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultArticlesListDetailNavComponent(
   componentContext: ComponentContext,
+  private val searchFilter: ArticlesSearchFilter,
+  private val articlesListComponentFactory: ArticlesListComponentFactory,
 ) : ArticlesListDetailNavComponent, ComponentContext by componentContext {
 
   private val panelNavigation =
     PanelsNavigation<Config.ArticlesList, Config.ArticleDetail, Nothing>()
+
   private val _widestAllowedMode: MutableStateFlow<ChildPanelsMode> =
     MutableStateFlow(ChildPanelsMode.SINGLE)
   val widestAllowedMode: StateFlow<ChildPanelsMode> = _widestAllowedMode
@@ -101,7 +99,9 @@ class DefaultArticlesListDetailNavComponent(
     config: Config.ArticlesList,
     componentContext: ComponentContext
   ): ArticlesListDetailNavComponentChild.ArticlesList {
-    return ArticlesListDetailNavComponentChild.ArticlesList
+    return ArticlesListDetailNavComponentChild.ArticlesList(
+      articlesListComponentFactory.create(componentContext, searchFilter)
+    )
   }
 
   private fun detailComponent(
@@ -124,10 +124,15 @@ class DefaultArticlesListDetailNavComponent(
 
 
 class ArticlesPanelNavComponentFactory(
-
+  private val articlesListComponentFactory: ArticlesListComponentFactory,
 ) {
-  fun create(componentContext: ComponentContext) = DefaultArticlesListDetailNavComponent(
+  fun create(
+    componentContext: ComponentContext,
+    searchFilter: ArticlesSearchFilter = ArticlesSearchFilter()
+  ) = DefaultArticlesListDetailNavComponent(
     componentContext = componentContext,
+    searchFilter = searchFilter,
+    articlesListComponentFactory = articlesListComponentFactory,
   )
 }
 

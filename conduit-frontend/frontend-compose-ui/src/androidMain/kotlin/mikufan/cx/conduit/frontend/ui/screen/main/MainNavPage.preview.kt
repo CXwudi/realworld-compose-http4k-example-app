@@ -9,17 +9,31 @@ import com.arkivanov.decompose.router.panels.ChildPanelsMode
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavState
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponentChild
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListState
 import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
+@ExperimentalDecomposeApi
+val fakeArticlesListComponent = object : ArticlesListComponent {
+  override val state: StateFlow<ArticlesListState> = MutableStateFlow(ArticlesListState.Loading)
+  override val labels: Flow<ArticlesListLabel> = flow {}
+
+  override fun send(intent: ArticlesListIntent) {}
+
+}
 
 @ExperimentalDecomposeApi
 val fakeArticlesListDetailComponent = object : ArticlesListDetailNavComponent {
@@ -28,7 +42,7 @@ val fakeArticlesListDetailComponent = object : ArticlesListDetailNavComponent {
       ChildPanels<Unit, ArticlesListDetailNavComponentChild.ArticlesList, Unit, ArticlesListDetailNavComponentChild.ArticleDetail, Nothing , Nothing>(
         Child.Created(
           configuration = Unit,
-          ArticlesListDetailNavComponentChild.ArticlesList
+          ArticlesListDetailNavComponentChild.ArticlesList(fakeArticlesListComponent)
         ),
         null,
         null,
