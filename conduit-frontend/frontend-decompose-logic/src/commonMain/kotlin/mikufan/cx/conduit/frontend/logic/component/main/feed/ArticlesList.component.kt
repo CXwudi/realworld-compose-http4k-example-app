@@ -9,11 +9,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import mikufan.cx.conduit.frontend.logic.component.util.LabelEmitter
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 
-interface ArticlesListComponent : MviComponent<ArticlesListIntent, ArticlesListState> {
-  val labels: Flow<ArticlesListLabel>
-}
+interface ArticlesListComponent :
+  MviComponent<ArticlesListIntent, ArticlesListState>,
+  LabelEmitter<ArticlesListLabel>
 
 class DefaultArticlesListComponent(
   componentContext: ComponentContext,
@@ -44,7 +45,10 @@ class DefaultArticlesListComponent(
 class ArticlesListComponentFactory(
   private val articlesListStoreFactory: ArticlesListStoreFactory,
 ) {
-  fun create(componentContext: ComponentContext, searchFilter: ArticlesSearchFilter) = DefaultArticlesListComponent(
+  fun create(
+    componentContext: ComponentContext,
+    searchFilter: ArticlesSearchFilter
+  ) = DefaultArticlesListComponent(
     componentContext = componentContext,
     searchFilter = searchFilter,
     articlesListStoreFactory = articlesListStoreFactory,

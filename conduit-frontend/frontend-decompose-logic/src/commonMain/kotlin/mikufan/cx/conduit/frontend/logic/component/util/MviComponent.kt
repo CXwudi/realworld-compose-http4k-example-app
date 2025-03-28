@@ -1,6 +1,7 @@
 package mikufan.cx.conduit.frontend.logic.component.util
 
 import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -25,4 +26,8 @@ interface MviComponent<in Intent : Any, out State : Any> {
    */
   val state: StateFlow<State>
   fun send(intent: Intent)
+}
+
+interface LabelEmitter<out Label : Any>  {
+  val labels: Flow<Label>
 }
