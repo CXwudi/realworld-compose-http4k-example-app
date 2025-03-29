@@ -6,6 +6,6 @@ html, body {
     overflow: hidden;
 }
 
-canvas {
+#ConduitCanvas {
     outline: none;
 }

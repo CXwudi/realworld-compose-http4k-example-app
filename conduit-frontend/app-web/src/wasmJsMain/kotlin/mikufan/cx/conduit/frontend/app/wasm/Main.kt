@@ -1,7 +1,7 @@
 package mikufan.cx.conduit.frontend.app.wasm
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.ComposeViewport
+import androidx.compose.ui.window.CanvasBasedWindow
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
@@ -34,9 +34,9 @@ fun main(args: Array<String>) {
 
     log.info { "Starting" }
 
-    setupBrowserUI("Conduit Web")
+    setupBrowserUI()
 
-    ComposeViewport(document.body!!) {
+    CanvasBasedWindow(title = "Conduit Web", canvasElementId = "ConduitCanvas") {
       setupAndStartMainUI(koin, rootComponent)
     }
   }
