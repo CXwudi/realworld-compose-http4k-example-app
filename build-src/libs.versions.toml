@@ -55,6 +55,7 @@ dev-frontend-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.
 dev-frontend-coil-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 dev-frontend-coil-cacheControl = { module = "io.coil-kt.coil3:coil-network-cache-control", version.ref = "coil" }
 dev-frontend-coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil" }
+dev-frontend-alertKmp = { module = "io.github.khubaibkhan4:alert-kmp", version = "2.0.0" }
 
 dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.17-0" # can't make kotlin-logging's android native log works for debug level, slf4j-android still works the best
 

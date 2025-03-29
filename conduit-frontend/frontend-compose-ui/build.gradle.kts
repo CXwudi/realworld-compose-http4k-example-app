@@ -37,6 +37,7 @@ kotlin {
       implementation(libs.dev.frontend.coil.ktor3)
       implementation(libs.dev.frontend.coil.cacheControl)
       implementation(libs.dev.frontend.coil.svg)
+      implementation(libs.dev.frontend.alertKmp)
 
 
     }
