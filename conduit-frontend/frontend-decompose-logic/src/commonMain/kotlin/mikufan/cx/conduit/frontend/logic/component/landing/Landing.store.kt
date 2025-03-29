@@ -8,23 +8,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
 import mikufan.cx.conduit.frontend.logic.service.landing.LandingService
 
-
-sealed interface LandingPageIntent {
-  data class TextChanged(val text: String) : LandingPageIntent
-  data object CheckAndMoveToMainPage : LandingPageIntent
-}
-
-data object LandingPageToNextPageLabel
-
-@Serializable
-data class LandingPageState(
-  val url: String,
-  val errorMsg: String,
-)
 
 class LandingPageStoreFactory(
   private val storeFactory: StoreFactory,
