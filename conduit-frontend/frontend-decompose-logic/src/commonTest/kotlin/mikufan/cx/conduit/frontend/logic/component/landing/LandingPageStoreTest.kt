@@ -31,7 +31,7 @@ class LandingPageStoreTest {
   private val testDispatcher = StandardTestDispatcher()
 
   lateinit var landingService: LandingService
-  lateinit var landingPageStore: Store<LandingPageIntent, LandingPageState, LandingPageToNextPageLabel>
+  lateinit var landingPageStore: Store<LandingPageIntent, LandingPageState, LandingPageLabel>
 
   @BeforeTest
   fun setUp() {
@@ -50,7 +50,7 @@ class LandingPageStoreTest {
 
   @Test
   fun testNormalFlowWithManualChannel() = runTest(testDispatcher) {
-    val channel = Channel<LandingPageToNextPageLabel>()
+    val channel = Channel<LandingPageLabel>()
 
     landingPageStore.labels(observer(
       onComplete = { channel.close() },
@@ -67,7 +67,7 @@ class LandingPageStoreTest {
     landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
 
     val label = channel.receive()
-    assertEquals(label, LandingPageToNextPageLabel)
+    assertEquals(label, LandingPageLabel.ToNextPage)
     verifySuspend(exactly(1)) {
       landingService.checkAccessibilityAndSetUrl("a change")
     }
@@ -89,7 +89,7 @@ class LandingPageStoreTest {
 
     val label = labelsChannel.receive()
     log.debug { "Received label" }
-    assertEquals(label, LandingPageToNextPageLabel)
+    assertEquals(label, LandingPageLabel.ToNextPage)
     verifySuspend(exactly(1)) {
       landingService.checkAccessibilityAndSetUrl("a change")
     }
@@ -106,7 +106,7 @@ class LandingPageStoreTest {
     launch {
       landingPageStore.labels.collect {
         log.debug { "Received $it" }
-        assertEquals(LandingPageToNextPageLabel, it)
+        assertEquals(LandingPageLabel.ToNextPage, it)
         verifySuspend(exactly(1)) {
           landingService.checkAccessibilityAndSetUrl("a change")
         }

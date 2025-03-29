@@ -25,7 +25,7 @@ class LandingPageStoreFactory(
   }
 
   private val executor =
-    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageToNextPageLabel>(
+    coroutineExecutorFactory<LandingPageIntent, Nothing, LandingPageState, Msg, LandingPageLabel>(
       mainDispatcher
     ) {
       onIntent<LandingPageIntent.TextChanged> {
@@ -44,7 +44,7 @@ class LandingPageStoreFactory(
               landingService.checkAccessibilityAndSetUrl(url)
             }
             log.debug { "Set url = $url" }
-            publish(LandingPageToNextPageLabel)
+            publish(LandingPageLabel.ToNextPage)
           } catch (e: Throwable) {
             rethrowIfShouldNotBeHandled(e) {
               log.debug { "Failed with exception $e" }

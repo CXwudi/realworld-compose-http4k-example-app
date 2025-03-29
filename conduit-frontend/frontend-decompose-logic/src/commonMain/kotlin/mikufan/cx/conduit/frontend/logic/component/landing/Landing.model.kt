@@ -7,7 +7,9 @@ sealed interface LandingPageIntent {
   data object CheckAndMoveToMainPage : LandingPageIntent
 }
 
-data object LandingPageToNextPageLabel
+sealed interface LandingPageLabel {
+  data object ToNextPage : LandingPageLabel
+}
 
 @Serializable
 data class LandingPageState(
