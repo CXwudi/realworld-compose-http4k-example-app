@@ -39,5 +39,8 @@ kotlin {
     jsMain.dependencies {
       implementation("org.jetbrains.kotlin-wrappers:kotlin-browser")
     }
+    wasmJsMain.dependencies {
+      implementation(libs.dev.frontend.browserWasm)
+    }
   }
 }

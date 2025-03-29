@@ -64,7 +64,7 @@ kotlin {
     }
 
     wasmJsMain.dependencies {
-      implementation(libs.dev.frontend.browserWasm)
+      implementation(libs.dev.frontend.browserWasm) // needed by kstore
     }
 
     iosMain.dependencies {
