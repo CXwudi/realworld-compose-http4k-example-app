@@ -10,9 +10,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.setupAndStartMainUI
 import org.koin.androix.startup.KoinInitializer
+import org.koin.core.annotation.KoinExperimentalAPI
 
 
 class MainActivity : AppCompatActivity() {
+  @OptIn(KoinExperimentalAPI::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     log.info { "onCreate" }
