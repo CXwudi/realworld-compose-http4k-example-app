@@ -9,10 +9,10 @@ sealed interface LandingPageIntent {
 
 sealed interface LandingPageLabel {
   data object ToNextPage : LandingPageLabel
+  data class Failure(val message: String) : LandingPageLabel
 }
 
 @Serializable
 data class LandingPageState(
   val url: String,
-  val errorMsg: String,
 )

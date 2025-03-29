@@ -1,6 +1,5 @@
 package mikufan.cx.conduit.frontend.ui.screen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
@@ -35,8 +35,10 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 
   val state by component.state.collectAsState()
   val urlText = remember { derivedStateOf { state.url } }
-  val errMsg = remember { derivedStateOf { state.errorMsg } }
-  val showError = remember { derivedStateOf { state.errorMsg.isNotBlank() } }
+
+  val scope = rememberCoroutineScope()
+  component.labels
+
 
   Box(
     contentAlignment = Alignment.Center,
@@ -52,11 +54,11 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
         onValueChange = { component.send(LandingPageIntent.TextChanged(it)) },
         singleLine = true,
       )
-      AnimatedVisibility(
-        visible = showError.value,
-      ) {
-        ErrorMessage(errMsg) // TODO: consider refactor to use https://github.com/KhubaibKhan4/Alert-KMP
-      }
+//      AnimatedVisibility(
+//        visible = showError.value,
+//      ) {
+//        ErrorMessage(errMsg) // TODO: consider refactor to use https://github.com/KhubaibKhan4/Alert-KMP
+//      }
       Button(onClick = { component.send(LandingPageIntent.CheckAndMoveToMainPage) }) {
         Text("Connect")
       }

@@ -25,6 +25,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class LandingPageStoreTest {
 
@@ -125,24 +126,29 @@ class LandingPageStoreTest {
   fun testErrorFlow1() = runTest(testDispatcher) {
     everySuspend { landingService.checkAccessibilityAndSetUrl(any()) } throws Exception("some error")
 
-    val channel = Channel<LandingPageState>()
+    val stateChannel = Channel<LandingPageState>()
     landingPageStore.states(observer {
       this.launch {
-        channel.send(it)
+        stateChannel.send(it)
         log.debug { "Received $it" }
       }
     })
 
+    val testScope = TestScope(testDispatcher)
+    val labelChannel = landingPageStore.labelsChannel(testScope)
+
     landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
 
-    channel.receive() // ignore the first initial state
-    val newState = channel.receive()
+    stateChannel.receive() // ignore the first initial state
+    val newLabel = labelChannel.receive()
 
-    assertEquals("some error", newState.errorMsg)
+    assertIs<LandingPageLabel.Failure>(newLabel)
+    assertEquals("some error", newLabel.message)
     verifySuspend(exactly(1)) {
       landingService.checkAccessibilityAndSetUrl("")
     }
-    channel.close()
+    stateChannel.close()
+    testScope.cancel()
   }
 }
 

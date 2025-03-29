@@ -16,7 +16,7 @@ fun LandingPagePreview() {
 
   SetupPreviewUI {
     val mockComponent = object : LandingPageComponent {
-      override val state: StateFlow<LandingPageState> = MutableStateFlow(LandingPageState("bla bla URL", "bla error"))
+      override val state: StateFlow<LandingPageState> = MutableStateFlow(LandingPageState("bla bla URL"))
 
       override fun send(intent: LandingPageIntent) {
       }

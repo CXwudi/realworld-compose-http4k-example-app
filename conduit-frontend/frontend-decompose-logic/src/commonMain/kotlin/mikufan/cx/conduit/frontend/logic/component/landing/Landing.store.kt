@@ -21,7 +21,6 @@ class LandingPageStoreFactory(
 
   internal sealed interface Msg {
     data class TextChanged(val text: String) : Msg
-    data class ErrorMsgChanged(val errorMsg: String) : Msg
   }
 
   private val executor =
@@ -30,9 +29,6 @@ class LandingPageStoreFactory(
     ) {
       onIntent<LandingPageIntent.TextChanged> {
         dispatch(Msg.TextChanged(it.text))
-        if (state().errorMsg.isNotBlank()) {
-          dispatch(Msg.ErrorMsgChanged(""))
-        }
       }
       onIntent<LandingPageIntent.CheckAndMoveToMainPage> {
 
@@ -48,7 +44,7 @@ class LandingPageStoreFactory(
           } catch (e: Throwable) {
             rethrowIfShouldNotBeHandled(e) {
               log.debug { "Failed with exception $e" }
-              dispatch(Msg.ErrorMsgChanged(e.message ?: "Unknown error"))
+              publish(LandingPageLabel.Failure(e.message ?: "Unknown error happened while checking URL accessibility"))
             }
           }
         }
@@ -59,13 +55,12 @@ class LandingPageStoreFactory(
   private val reducer = Reducer<LandingPageState, Msg> { msg ->
     when (msg) {
       is Msg.TextChanged -> copy(url = msg.text)
-      is Msg.ErrorMsgChanged -> copy(errorMsg = msg.errorMsg)
     }
   }
 
   fun createStore() = storeFactory.create(
     name = "LandingPageStore",
-    initialState = LandingPageState("", ""),
+    initialState = LandingPageState(""),
     executorFactory = executor,
     reducer = reducer
   )
