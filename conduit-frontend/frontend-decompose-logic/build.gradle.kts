@@ -39,9 +39,6 @@ kotlin {
       implementation("io.ktor:ktor-client-logging")
       implementation(libs.dev.frontend.ktorfitLibLight)
       implementation(libs.dev.frontend.ktorfitConverter)
-      // workaround for JS from https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700,
-      // but for some reason I still need it even I removed sqldelight
-      implementation("co.touchlab:stately-common:2.1.0")
     }
 
     // and platform specific dependencies only used in this module
