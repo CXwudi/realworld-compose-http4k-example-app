@@ -102,52 +102,38 @@ class ArticlesListStoreFactory(
     }
 
   private fun createReducer() = Reducer<ArticlesListState, Msg> { msg ->
-    when (msg) {
-      is Msg.LoadedInitialArticles -> ArticlesListState.Loaded(
+    when {
+      // Initial article loading doesn't depend on current state
+      msg is Msg.LoadedInitialArticles -> ArticlesListState.Loaded(
         msg.articleInfos,
         isLoadingMore = false
       )
-
-      is Msg.SetToLoadingMore -> {
-        when (this) {
-          is ArticlesListState.Loaded -> ArticlesListState.Loaded(
-            this.collectedThumbInfos,
-            isLoadingMore = true
-          )
-
-          is ArticlesListState.Loading -> {
-            log.warn { "Setting to loading more when state is not loaded, should not happen and discarding" }
-            this
-          }
+      
+      // For all other cases, we need to check the current state
+      this is ArticlesListState.Loaded && msg is Msg.SetToLoadingMore -> ArticlesListState.Loaded(
+        this.collectedThumbInfos,
+        isLoadingMore = true
+      )
+      
+      this is ArticlesListState.Loaded && msg is Msg.AddMoreArticles -> ArticlesListState.Loaded(
+        this.collectedThumbInfos + msg.articleInfos,
+        isLoadingMore = false
+      )
+      
+      this is ArticlesListState.Loaded && msg is Msg.LoadingMoreAborted -> ArticlesListState.Loaded(
+        this.collectedThumbInfos,
+        isLoadingMore = false
+      )
+      
+      // Single else branch for all invalid state transitions
+      else -> {
+        when (msg) {
+          is Msg.SetToLoadingMore -> log.warn { "Setting to loading more when state is not loaded, should not happen and discarding" }
+          is Msg.AddMoreArticles -> log.warn { "Adding more articles when state is not loaded, should not happen" }
+          is Msg.LoadingMoreAborted -> log.warn { "Aborting loading more when state is not loaded, should not happen" }
+          else -> { /* No need to log for other messages */ }
         }
-      }
-
-      is Msg.AddMoreArticles -> {
-        when (this) {
-          is ArticlesListState.Loaded -> ArticlesListState.Loaded(
-            this.collectedThumbInfos + msg.articleInfos,
-            isLoadingMore = false
-          )
-
-          is ArticlesListState.Loading -> {
-            log.warn { "Adding more articles when state is not loaded, should not happen" }
-            this
-          }
-        }
-      }
-
-      is Msg.LoadingMoreAborted -> {
-        when (this) {
-          is ArticlesListState.Loaded -> ArticlesListState.Loaded(
-            this.collectedThumbInfos,
-            isLoadingMore = false
-          )
-
-          is ArticlesListState.Loading -> {
-            log.warn { "Aborting loading more when state is not loaded, should not happen" }
-            this
-          }
-        }
+        this // Return the current state unchanged for invalid transitions
       }
     }
   }

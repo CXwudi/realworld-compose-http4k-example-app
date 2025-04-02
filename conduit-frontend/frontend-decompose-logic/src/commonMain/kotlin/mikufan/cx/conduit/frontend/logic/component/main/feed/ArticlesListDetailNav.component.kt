@@ -84,7 +84,7 @@ class DefaultArticlesListDetailNavComponent(
       source = panelNavigation,
       key = "ArticlesListDetailPanel",
       serializers = Config.ArticlesList.serializer() to Config.ArticleDetail.serializer(),
-      initialPanels = { Panels(Config.ArticlesList, Config.ArticleDetail) },
+      initialPanels = { Panels(Config.ArticlesList) },
       handleBackButton = true,
       mainFactory = ::mainComponent,
       detailsFactory = ::detailComponent,
