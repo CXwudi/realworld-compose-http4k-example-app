@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="9">
     <diagram name="Landing" id="x6D8E37I-bTPpWvTAXMf">
-        <mxGraphModel dx="537" dy="576" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="422" dy="468" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -664,7 +664,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="L7PetBoPFdqtIkbRr6CD" name="Article List Detail Panel">
-        <mxGraphModel dx="1134" dy="576" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1001" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -681,13 +681,13 @@
                     <mxGeometry x="120" y="550" width="330" height="396" as="geometry"/>
                 </mxCell>
                 <mxCell id="KudaR8-eB2qhM823jq_Q-4" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="620" y="570" width="170" height="150" as="geometry"/>
+                    <mxGeometry x="620" y="570" width="240" height="150" as="geometry"/>
                 </mxCell>
                 <mxCell id="KudaR8-eB2qhM823jq_Q-5" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="810" y="570" width="170" height="150" as="geometry"/>
+                    <mxGeometry x="880" y="570" width="240" height="150" as="geometry"/>
                 </mxCell>
                 <mxCell id="KudaR8-eB2qhM823jq_Q-6" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="1000" y="570" width="170" height="150" as="geometry"/>
+                    <mxGeometry x="620" y="740" width="240" height="150" as="geometry"/>
                 </mxCell>
                 <mxCell id="KudaR8-eB2qhM823jq_Q-7" value="&lt;div style=&quot;color: #000000;background-color: #ffffff;font-family: IBMPlexMono, &#39;Courier New&#39;, monospace, Consolas, &#39;Courier New&#39;, monospace;font-weight: normal;font-size: 12px;line-height: 18px;white-space: pre;&quot;&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;{&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;author&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: {&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;bio&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;irure reprehenderit eu dolor&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;following&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;font-weight: bold;&quot;&gt;true&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;image&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;sunt veniam&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;username&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;eiusmod ut dolore&quot;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; },&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;body&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;aute cupidatat ut dolore&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;createdAt&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;1953-11-27T17:30:47.953Z&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;description&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;pariatur cillum&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;favorited&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;font-weight: bold;&quot;&gt;true&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;favoritesCount&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #098658;&quot;&gt;95165395&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;slug&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;et consectetur anim&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;tagList&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: [&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;officia nulla do elit commodo&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;culpa labo&quot;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; ],&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;title&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;ullamco culpa cillum nulla&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;span style=&quot;color: #a31515;&quot;&gt;&quot;updatedAt&quot;&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;: &lt;/span&gt;&lt;span style=&quot;color: #0451a5;&quot;&gt;&quot;1957-01-23T04:15:32.415Z&quot;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&amp;nbsp; &amp;nbsp; },&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="620" y="170" width="360" height="380" as="geometry"/>
@@ -698,41 +698,44 @@
                 <mxCell id="KudaR8-eB2qhM823jq_Q-9" value="&lt;font&gt;Authror&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="660" y="580" width="60" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="KudaR8-eB2qhM823jq_Q-10" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;Article Title&lt;br&gt;Title&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="631" y="604" width="100" height="50" as="geometry"/>
+                <mxCell id="KudaR8-eB2qhM823jq_Q-10" value="&lt;font&gt;&lt;b&gt;Article Title Title Title Title&lt;br&gt;Title&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="631" y="604" width="200" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="KudaR8-eB2qhM823jq_Q-11" value="Description bla bla bla bla&lt;br&gt;2nd bla bla&lt;div&gt;3rd bla bla&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="630" y="640" width="160" height="60" as="geometry"/>
+                <mxCell id="KudaR8-eB2qhM823jq_Q-11" value="Description bla bla bla bla bla bla bla bla&lt;br&gt;2nd bla bla&lt;div&gt;3rd bla bla&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="640" width="240" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="KudaR8-eB2qhM823jq_Q-12" value="&lt;font style=&quot;color: rgb(153, 153, 153);&quot;&gt;MM, DD&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="620" y="690" width="70" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Or7F5YHVxl3C31cftbjE-1" value="&lt;font&gt;Text&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;" vertex="1" parent="1">
+                    <mxGeometry x="935" y="798" width="50" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="rbv_uJ6BMfmxnwhg3wdE" name="Article List">
-        <mxGraphModel dx="1134" dy="843" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1001" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-6" style="edgeStyle=none;html=1;" edge="1" parent="1" source="zyl3dc770NE5Wnp8VCpW-4" target="zyl3dc770NE5Wnp8VCpW-5">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-6" style="edgeStyle=none;html=1;" parent="1" source="zyl3dc770NE5Wnp8VCpW-4" target="zyl3dc770NE5Wnp8VCpW-5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-4" value="" style="ellipse;fillColor=strokeColor;html=1;" vertex="1" parent="1">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-4" value="" style="ellipse;fillColor=strokeColor;html=1;" parent="1" vertex="1">
                     <mxGeometry x="130" y="300" width="30" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-8" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="zyl3dc770NE5Wnp8VCpW-5" target="zyl3dc770NE5Wnp8VCpW-7">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-8" value="" style="edgeStyle=none;html=1;" parent="1" source="zyl3dc770NE5Wnp8VCpW-5" target="zyl3dc770NE5Wnp8VCpW-7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-9" value="&lt;p&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Load First Data&lt;/font&gt;&lt;/p&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" vertex="1" connectable="0" parent="zyl3dc770NE5Wnp8VCpW-8">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-9" value="&lt;p&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Load First Data&lt;/font&gt;&lt;/p&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="zyl3dc770NE5Wnp8VCpW-8" vertex="1" connectable="0">
                     <mxGeometry x="-0.3362" y="-1" relative="1" as="geometry">
                         <mxPoint x="51" y="10" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-5" value="Loading" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-5" value="Loading" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="250" y="270" width="160" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-10" style="edgeStyle=none;html=1;" edge="1" parent="1" source="zyl3dc770NE5Wnp8VCpW-7" target="zyl3dc770NE5Wnp8VCpW-7">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-10" style="edgeStyle=none;html=1;" parent="1" source="zyl3dc770NE5Wnp8VCpW-7" target="zyl3dc770NE5Wnp8VCpW-7" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="400" y="710" as="targetPoint"/>
                         <Array as="points">
@@ -740,25 +743,25 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-11" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Load more data when scrolling to end&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zyl3dc770NE5Wnp8VCpW-10">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-11" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Load more data when scrolling to end&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="zyl3dc770NE5Wnp8VCpW-10" vertex="1" connectable="0">
                     <mxGeometry x="-0.1176" y="-2" relative="1" as="geometry">
                         <mxPoint x="72" y="36" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-12" style="edgeStyle=none;html=1;" edge="1" parent="1" source="zyl3dc770NE5Wnp8VCpW-7" target="zyl3dc770NE5Wnp8VCpW-15">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-12" style="edgeStyle=none;html=1;" parent="1" source="zyl3dc770NE5Wnp8VCpW-7" target="zyl3dc770NE5Wnp8VCpW-15" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="410" y="710" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-14" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;When clicked one article&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zyl3dc770NE5Wnp8VCpW-12">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-14" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;When clicked one article&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="zyl3dc770NE5Wnp8VCpW-12" vertex="1" connectable="0">
                     <mxGeometry x="-0.066" y="1" relative="1" as="geometry">
                         <mxPoint x="79" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-7" value="List Data" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-7" value="List Data" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="330" y="490" width="160" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="zyl3dc770NE5Wnp8VCpW-15" value="Tell List Detail nav to open article in detail page" style="fontStyle=0;dashed=1;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                <mxCell id="zyl3dc770NE5Wnp8VCpW-15" value="Tell List Detail nav to open article in detail page" style="fontStyle=0;dashed=1;html=1;whiteSpace=wrap;" parent="1" vertex="1">
                     <mxGeometry x="340" y="710" width="140" height="30" as="geometry"/>
                 </mxCell>
             </root>
