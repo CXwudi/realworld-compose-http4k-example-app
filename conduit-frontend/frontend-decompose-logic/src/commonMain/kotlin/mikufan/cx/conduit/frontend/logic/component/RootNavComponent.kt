@@ -47,6 +47,7 @@ class DefaultRootNavComponent(
 
   override val childStack: Value<ChildStack<*, RootComponentChild>> =
     childStack(
+      key = "RootNavigation",
       source = stackNavigation,
       initialConfiguration = Config.Loading,
       serializer = Config.serializer(),
