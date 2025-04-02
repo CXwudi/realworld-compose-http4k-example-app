@@ -19,6 +19,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesPanelNavComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesSearchFilter
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
@@ -36,8 +37,8 @@ interface MainNavComponent : MviComponent<MainNavIntent, MainNavState> {
 sealed interface MainNavComponentChild {
 
   // TODO: each class need a component class, e.g. LandingPageComponent
-  data class MainFeed(val testComponent: ArticlesListDetailNavComponent) : MainNavComponentChild
-  data object Favourite : MainNavComponentChild
+  data class MainFeed(val component: ArticlesListDetailNavComponent) : MainNavComponentChild
+  data class Favourite(val component: ArticlesListDetailNavComponent) : MainNavComponentChild
   data class Me(val component: MeNavComponent) : MainNavComponentChild
   data class SignInUp(val component: AuthPageComponent) : MainNavComponentChild
 
@@ -88,7 +89,13 @@ class DefaultMainNavComponent(
     Config.MainFeed -> MainNavComponentChild.MainFeed(
       articleListDetailComponentFactory.create(componentContext)
     )
-    Config.Favourite -> MainNavComponentChild.Favourite
+    Config.Favourite -> {
+      // TODO: how to not hardcode this username
+      val searchFilter = ArticlesSearchFilter(favoritedByUsername = "CXwudi")
+      MainNavComponentChild.Favourite(
+        articleListDetailComponentFactory.create(componentContext, searchFilter)
+      )
+    }
     Config.Me -> MainNavComponentChild.Me(
       meNavComponentFactory.create(componentContext)
     )

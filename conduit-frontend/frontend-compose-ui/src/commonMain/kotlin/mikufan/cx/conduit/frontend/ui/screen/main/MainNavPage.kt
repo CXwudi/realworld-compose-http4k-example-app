@@ -62,8 +62,8 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
       animation = stackAnimation(fade() + slide())
     ) {
       when (val child = it.instance) {
-        is MainNavComponentChild.MainFeed -> ArticlesListDetailPanel(child.testComponent)
-        is MainNavComponentChild.Favourite -> Text("Favourite")
+        is MainNavComponentChild.MainFeed -> ArticlesListDetailPanel(child.component)
+        is MainNavComponentChild.Favourite -> ArticlesListDetailPanel(child.component)
         is MainNavComponentChild.Me -> MeNavPage(child.component)
         is MainNavComponentChild.SignInUp -> AuthPage(child.component)
       }
