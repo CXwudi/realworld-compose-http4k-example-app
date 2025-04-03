@@ -11,7 +11,7 @@ This document describes the tech stack used in this project, so that LLM can und
 ## Backend
 
 - [Http4k](https://www.http4k.org/) - Functional toolkit for Kotlin HTTP applications
-- [Exposed](https://www.jetbrains.com/exposed/) - Kotlin SQL Framework by JetBrains
+- [Exposed](https://www.jetbrains.com/exposed/) - Kotlin SQL Library by JetBrains
 - [PostgreSQL](https://www.postgresql.org/) - Advanced open source database
 - [Flyway](https://www.red-gate.com/products/flyway/) - Database migration tool
 - [JUnit 5](https://junit.org/junit5/) - Modern testing framework for Java and JVM
@@ -32,10 +32,13 @@ This document describes the tech stack used in this project, so that LLM can und
 ## Dev
 
 - [VSCode](https://code.visualstudio.com/) - for AI coding (VSCode doesn't properly configured Kotlin support so ignore any Kotlin import-related errors)
-  - [Augment Code](https://www.augmentcode.com/): AI-powered coding platform for professional software engineers
-  - [Cline](https://cline.bot/): Autonomous coding agent right in your IDE
 - [IntelliJ](https://www.jetbrains.com/idea/) - for backend development
 - [Android Studio](https://developer.android.com/studio) - for frontend development
 - [Docker](https://www.docker.com/) - for backend services
 - [GitHub](https://github.com/) - git and CI
 - [draw.io](https://www.drawio.com/) - for diagrams
+
+### AI Tools
+
+- [Cline](https://cline.bot/): Autonomous coding agent right in your IDE
+- [Augment Code](https://www.augmentcode.com/): AI-powered coding platform for professional software engineers
