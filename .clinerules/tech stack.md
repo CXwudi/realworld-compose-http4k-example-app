@@ -4,7 +4,7 @@ This document describes the tech stack used in this project, so that LLM can und
 
 ## Common
 
-- [Kotlin](https://kotlinlang.org/) - Modern programming language for the JVM
+- [Kotlin](https://kotlinlang.org/) - Modern programming language for the JVM/Android/iOS/Js/Wasm
 - [kotlinx.serialization](https://kotlinlang.org/docs/serialization.html) - Library for serializing Kotlin objects
 - [Gradle](https://gradle.org/) - Build tool, used for both Frontend and Backend
 
