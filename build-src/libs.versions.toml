@@ -93,7 +93,7 @@ pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization"
 pluginDep-mockkery = "dev.mokkery:mokkery-gradle:2.7.2"
 
 # setting plugin dep
-settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:3.19.2"
+settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.0"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.9.0"
 
 [plugins]
