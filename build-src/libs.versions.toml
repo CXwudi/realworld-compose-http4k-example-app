@@ -67,7 +67,7 @@ dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", vers
 dev-frontend-browserWasm = "org.jetbrains.kotlinx:kotlinx-browser:0.3" # see https://kotlinlang.org/docs/wasm-js-interop.html#web-related-browser-apis
 
 # android
-dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.15.0"
+dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.16.0"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
 dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.7"
 dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.10.1"
