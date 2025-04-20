@@ -4,8 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
@@ -30,18 +32,29 @@ fun ArticlesListLoaded(
     EmptyScreen()
     return
   }
-  LazyColumn(
+
+  val gridState = rememberLazyGridState()
+
+  LazyVerticalGrid(
+    state = gridState,
+    columns =  GridCells.Adaptive(minSize = 200.dp),
+    horizontalArrangement = Arrangement.spacedBy(LocalSpace.current.horizontal.spacing),
     verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing)
   ) {
     items(
-      items = collectedThumbInfosState.value,
-      key = { it.slug }
-      ) {
-      Text("slug: ${it.slug}")
-      Text("author: ${it.authorUsername}")
-      Text("title: ${it.title}")
-      Text("description: ${it.description}")
-      Text("createdAt: ${it.createdAt}")
+      count = collectedThumbInfosState.value.size,
+      key = { collectedThumbInfosState.value[it].slug },
+      contentType = { collectedThumbInfosState.value[it] }
+    ) {
+      val item = collectedThumbInfosState.value[it]
+      Column {
+        Text("slug: ${item.slug}")
+        Text("author: ${item.authorUsername}")
+        Text("title: ${item.title}")
+        Text("description: ${item.description}")
+        Text("createdAt: ${item.createdAt}")
+      }
+
     }
   }
 }
