@@ -1,14 +1,20 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.feed
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
@@ -42,5 +48,22 @@ fun ArticlesListLoaded(
 
 @Composable
 private fun EmptyScreen() {
-  Text("EmptyScreen")
+  Box(
+    modifier = Modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center
+  ) {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing * 2)
+    ) {
+      Text(
+        text = ">_<",
+        style = MaterialTheme.typography.headlineLarge
+      )
+      Text(
+        text = "No articles yet",
+        style = MaterialTheme.typography.bodyLarge
+      )
+    }
+  }
 }
