@@ -110,20 +110,14 @@ class ArticlesListStoreFactory(
       )
       
       // For all other cases, we need to check the current state
-      this is ArticlesListState.Loaded && msg is Msg.SetToLoadingMore -> ArticlesListState.Loaded(
-        this.collectedThumbInfos,
-        isLoadingMore = true
-      )
+      this is ArticlesListState.Loaded && msg is Msg.SetToLoadingMore -> this.copy(isLoadingMore = true)
       
       this is ArticlesListState.Loaded && msg is Msg.AddMoreArticles -> ArticlesListState.Loaded(
         this.collectedThumbInfos + msg.articleInfos,
         isLoadingMore = false
       )
       
-      this is ArticlesListState.Loaded && msg is Msg.LoadingMoreAborted -> ArticlesListState.Loaded(
-        this.collectedThumbInfos,
-        isLoadingMore = false
-      )
+      this is ArticlesListState.Loaded && msg is Msg.LoadingMoreAborted -> this.copy(isLoadingMore = false)
       
       // Single else branch for all invalid state transitions
       else -> {
