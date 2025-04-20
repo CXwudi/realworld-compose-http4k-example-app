@@ -90,7 +90,7 @@ class DefaultMainNavComponent(
       articleListDetailComponentFactory.create(componentContext)
     )
     Config.Favourite -> {
-      // TODO: how to not hardcode this username
+      // TODO: need to depend on the user config, just like in root nav component
       val searchFilter = ArticlesSearchFilter(favoritedByUsername = "CXwudi")
       MainNavComponentChild.Favourite(
         articleListDetailComponentFactory.create(componentContext, searchFilter)
