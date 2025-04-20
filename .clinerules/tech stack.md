@@ -2,7 +2,7 @@
 
 This document describes the tech stack used in this project, so that LLM can understand what libraries to use when generating codes.
 
-When doing tasks, LLM should try to read the documentation to get the latest version of APIs and provide precise answers. To do so, try to use any tools available to you that can search, read, crawl the document.
+When doing tasks, LLM should try to read the documentation to get the latest version of APIs and provide precise answers. To do so, try to use any tools available to you to search, read, crawl the document from the following URLs.
 
 ## Common
 
