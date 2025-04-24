@@ -57,6 +57,8 @@ class ArticlesListStoreFactory(
                 offset = state.collectedThumbInfos.size
               )
             }
+            // TODO: need to add one more state called AllLoaded, means no more articles to load
+            // this can be determined by checking the total count, or if the returned list is empty
             dispatch(Msg.AddMoreArticles(moreInfo))
           },
           onFailure = { t ->
