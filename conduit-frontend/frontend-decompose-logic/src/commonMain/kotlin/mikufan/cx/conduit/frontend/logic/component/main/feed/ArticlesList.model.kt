@@ -5,13 +5,12 @@ sealed interface ArticlesListIntent {
   data object LoadMore : ArticlesListIntent
 }
 
-sealed interface ArticlesListState {
-  data object Loading : ArticlesListState
-  data class Loaded(
-    val collectedThumbInfos: List<ArticleInfo>,
-    val isLoadingMore: Boolean,
-  ) : ArticlesListState
-}
+data class ArticlesListState(
+  val collectedThumbInfos: List<ArticleInfo> = emptyList(),
+  val loadMoreState: LoadMoreState = LoadMoreState.Loaded
+)
+
+enum class LoadMoreState { Loading, Loaded }
 
 data class ArticleInfo(
   val authorThumbnail: String?,
@@ -22,10 +21,6 @@ data class ArticleInfo(
   val createdAt: String,
   val slug: String,
 )
-
-sealed interface ArticlesListAction {
-  data object LoadInitialArticles : ArticlesListAction
-}
 
 sealed interface ArticlesListLabel {
   data class Failure(

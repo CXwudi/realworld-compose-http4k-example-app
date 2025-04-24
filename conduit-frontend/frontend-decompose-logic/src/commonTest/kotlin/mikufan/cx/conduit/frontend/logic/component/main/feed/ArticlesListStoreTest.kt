@@ -59,7 +59,7 @@ class ArticlesListStoreTest {
       LoggingStoreFactory(DefaultStoreFactory()),
       articlesListService,
       testDispatcher,
-    ).create(defaultSearchFilter, autoInit = false)
+    ).create(defaultSearchFilter)
   }
 
   @AfterTest
@@ -68,63 +68,91 @@ class ArticlesListStoreTest {
   }
 
   @Test
-  fun testInitialStateIsLoading() = runTest(testDispatcher) {
-    // the initial state should be Loading
-    assertTrue(articlesListStore.state is ArticlesListState.Loading)
+  fun testInitialState() = runTest(testDispatcher) {
+    // the initial state should have empty list and LoadMoreState.Loaded
+    assertEquals(emptyList<ArticleInfo>(), articlesListStore.state.collectedThumbInfos)
+    assertEquals(LoadMoreState.Loaded, articlesListStore.state.loadMoreState)
   }
 
   @Test
-  fun testLoadInitialArticlesSuccess() = runTest(testDispatcher) {
+  fun testLoadMoreSuccess() = runTest(testDispatcher) {
     val stateChannel = Channel<ArticlesListState>()
-
+    
     // Given
     everySuspend {
-      articlesListService.getInitialArticles(defaultSearchFilter)
+      articlesListService.getArticles(defaultSearchFilter, offset = 0)
     } returns testArticles
 
     // When
     val disposable = articlesListStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    articlesListStore.init()
+    
+    // Initial state
+    val initialState = stateChannel.receive()
+    assertEquals(emptyList<ArticleInfo>(), initialState.collectedThumbInfos)
+    assertEquals(LoadMoreState.Loaded, initialState.loadMoreState)
+    
+    // Send LoadMore intent
+    articlesListStore.accept(ArticlesListIntent.LoadMore)
 
-    // Then
-    stateChannel.receive() // Ignore initial Loading state
-    val loadedState = stateChannel.receive() as ArticlesListState.Loaded
+    // Then - should transition to loading state
+    val loadingState = stateChannel.receive()
+    assertEquals(emptyList<ArticleInfo>(), loadingState.collectedThumbInfos)
+    assertEquals(LoadMoreState.Loading, loadingState.loadMoreState)
 
-    // Verify state transitions
+    // Then - should transition to loaded state with articles
+    val loadedState = stateChannel.receive()
     assertEquals(testArticles, loadedState.collectedThumbInfos)
-    assertEquals(false, loadedState.isLoadingMore)
+    assertEquals(LoadMoreState.Loaded, loadedState.loadMoreState)
 
     // Verify service called correctly
-    verifySuspend(exactly(1)) { articlesListService.getInitialArticles(defaultSearchFilter) }
+    verifySuspend(exactly(1)) { articlesListService.getArticles(defaultSearchFilter, offset = 0) }
 
     disposable.dispose()
   }
 
   @Test
-  fun testLoadInitialArticlesFailure() = runTest(testDispatcher) {
+  fun testLoadMoreFailure() = runTest(testDispatcher) {
+    val stateChannel = Channel<ArticlesListState>()
     val testScope = TestScope(testDispatcher)
     val labelChannel = articlesListStore.labelsChannel(testScope)
 
     // Given
     val errorMessage = "Failed to load articles"
     everySuspend {
-      articlesListService.getInitialArticles(any())
+      articlesListService.getArticles(any(), offset = any())
     } throws RuntimeException(errorMessage)
 
-    // When - init the store to trigger the loading of articles
-    articlesListStore.init()
+    // When
+    val disposable = articlesListStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    
+    // Initial state
+    stateChannel.receive()
+    
+    // Send LoadMore intent
+    articlesListStore.accept(ArticlesListIntent.LoadMore)
 
-    // Then - should emit a failure label with the error message
-    val label = labelChannel.receive() as ArticlesListLabel.Failure
-    assertEquals(errorMessage, label.message)
-    assertTrue(label.exception is RuntimeException)
+    // Then - should transition to loading state
+    val loadingState = stateChannel.receive()
+    assertEquals(LoadMoreState.Loading, loadingState.loadMoreState)
+
+    // Then - should transition back to loaded state with empty list
+    val finalState = stateChannel.receive()
+    assertEquals(emptyList<ArticleInfo>(), finalState.collectedThumbInfos)
+    assertEquals(LoadMoreState.Loaded, finalState.loadMoreState)
+
+    // Should emit a failure label
+    val failureLabel = labelChannel.receive() as ArticlesListLabel.Failure
+    assertEquals(errorMessage, failureLabel.message)
+    assertTrue(failureLabel.exception is RuntimeException)
 
     // Verify service called
-    verifySuspend(exactly(1)) { articlesListService.getInitialArticles(any()) }
+    verifySuspend(exactly(1)) { articlesListService.getArticles(any(), offset = any()) }
+
+    disposable.dispose()
   }
 
   @Test
-  fun testLoadMoreSuccess() = runTest(testDispatcher) {
+  fun testLoadMoreWithExistingArticles() = runTest(testDispatcher) {
     val stateChannel = Channel<ArticlesListState>()
     val moreArticles = listOf(
       ArticleInfo(
@@ -138,9 +166,9 @@ class ArticlesListStoreTest {
       )
     )
 
-    // Given - store already loaded with initial articles
+    // Given
     everySuspend {
-      articlesListService.getInitialArticles(defaultSearchFilter)
+      articlesListService.getArticles(defaultSearchFilter, offset = 0)
     } returns testArticles
 
     everySuspend {
@@ -149,81 +177,36 @@ class ArticlesListStoreTest {
 
     // When
     val disposable = articlesListStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    articlesListStore.init()
-
-    // Wait for initial loading to complete
+    
+    // Initial state
+    stateChannel.receive()
+    
+    // First load
+    articlesListStore.accept(ArticlesListIntent.LoadMore)
     stateChannel.receive() // Loading state
-    stateChannel.receive() // Loaded state with initial articles
+    val firstLoadedState = stateChannel.receive() 
+    assertEquals(testArticles, firstLoadedState.collectedThumbInfos)
+    assertEquals(LoadMoreState.Loaded, firstLoadedState.loadMoreState)
 
-    // Send LoadMore intent
+    // Second load
     articlesListStore.accept(ArticlesListIntent.LoadMore)
 
-    // Then - should transition to loading more state
-    val loadingMoreState = stateChannel.receive() as ArticlesListState.Loaded
-    assertEquals(true, loadingMoreState.isLoadingMore)
+    // Then - should transition to loading state
+    val loadingMoreState = stateChannel.receive()
+    assertEquals(LoadMoreState.Loading, loadingMoreState.loadMoreState)
     assertEquals(testArticles, loadingMoreState.collectedThumbInfos)
 
     // Then - should transition to loaded state with more articles
-    val finalState = stateChannel.receive() as ArticlesListState.Loaded
-    assertEquals(false, finalState.isLoadingMore)
+    val finalState = stateChannel.receive()
+    assertEquals(LoadMoreState.Loaded, finalState.loadMoreState)
     assertEquals(testArticles + moreArticles, finalState.collectedThumbInfos)
 
     // Verify service calls
-    verifySuspend(exactly(1)) { articlesListService.getInitialArticles(defaultSearchFilter) }
+    verifySuspend(exactly(1)) { articlesListService.getArticles(defaultSearchFilter, offset = 0) }
     verifySuspend(exactly(1)) {
       articlesListService.getArticles(defaultSearchFilter, offset = testArticles.size)
     }
 
     disposable.dispose()
   }
-
-  @Test
-  fun testLoadMoreFailure() = runTest(testDispatcher) {
-    val stateChannel = Channel<ArticlesListState>()
-    val testScope = TestScope(testDispatcher)
-    val labelChannel = articlesListStore.labelsChannel(testScope)
-
-    // Given - store already loaded with initial articles
-    everySuspend {
-      articlesListService.getInitialArticles(defaultSearchFilter)
-    } returns testArticles
-
-    val errorMessage = "Failed to load more articles"
-    everySuspend {
-      articlesListService.getArticles(defaultSearchFilter, offset = testArticles.size)
-    } throws RuntimeException(errorMessage)
-
-    // When
-    val disposable = articlesListStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    articlesListStore.init()
-
-    // Then - Wait for initial loading to complete
-    stateChannel.receive() // Loading state
-    stateChannel.receive() // Loaded state with initial articles
-
-    // When - Send LoadMore intent
-    articlesListStore.accept(ArticlesListIntent.LoadMore)
-
-    // Then - should transition to loading more state
-    val loadingMoreState = stateChannel.receive() as ArticlesListState.Loaded
-    assertEquals(true, loadingMoreState.isLoadingMore)
-
-    // Then - should transition back to loaded state with original articles
-    val finalState = stateChannel.receive() as ArticlesListState.Loaded
-    assertEquals(false, finalState.isLoadingMore)
-    assertEquals(testArticles, finalState.collectedThumbInfos)
-
-    // Should emit a failure label
-    val failureLabel = labelChannel.receive() as ArticlesListLabel.Failure
-    assertEquals(errorMessage, failureLabel.message)
-
-    // Verify service calls
-    verifySuspend(exactly(1)) { articlesListService.getInitialArticles(defaultSearchFilter) }
-    verifySuspend(exactly(1)) {
-      articlesListService.getArticles(defaultSearchFilter, offset = testArticles.size)
-    }
-
-    disposable.dispose()
-  }
-
 }
