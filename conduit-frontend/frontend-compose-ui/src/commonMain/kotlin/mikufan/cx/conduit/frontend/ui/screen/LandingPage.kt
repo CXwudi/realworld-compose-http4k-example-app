@@ -59,7 +59,11 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
     }
   }
 
-  showErrorAlert(showErrorAlert, errorMsgState)
+  showErrorAlert(
+    showErrorAlert = showErrorAlert,
+    errorMessage = errorMsgState.value,
+    onDismiss = { errorMsgState.value = "" }
+  )
 
   Box(
     contentAlignment = Alignment.Center,
@@ -84,12 +88,12 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 }
 
 @Composable
-fun showErrorAlert(showErrorAlert: Boolean, errorMsgState: MutableState<String>) {
+fun showErrorAlert(showErrorAlert: Boolean, errorMessage: String, onDismiss: () -> Unit) {
   // almost not possible to animate it, as dialog are drawn outside of current tree
   // see https://github.com/JetBrains/compose-multiplatform/issues/4431
   if (showErrorAlert) {
     AlertDialog(
-      onDismissRequest = { errorMsgState.value = "" },
+      onDismissRequest = onDismiss,
       shape = MaterialTheme.shapes.large,
       tonalElevation = LocalSpace.current.vertical.spacingLarge,
       icon = {
@@ -111,7 +115,7 @@ fun showErrorAlert(showErrorAlert: Boolean, errorMsgState: MutableState<String>)
       text = {
         val scrollState = rememberScrollState()
         Text(
-          text = errorMsgState.value,
+          text = errorMessage,
           style = MaterialTheme.typography.bodyMedium,
           modifier = Modifier
             .heightIn(max = 600.dp)
@@ -120,7 +124,7 @@ fun showErrorAlert(showErrorAlert: Boolean, errorMsgState: MutableState<String>)
       },
       confirmButton = {
         TextButton(
-          onClick = { errorMsgState.value = "" }
+          onClick = onDismiss
         ) {
           Text("OK")
         }

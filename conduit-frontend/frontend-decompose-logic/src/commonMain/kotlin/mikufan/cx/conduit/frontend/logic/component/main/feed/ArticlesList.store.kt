@@ -33,7 +33,6 @@ class ArticlesListStoreFactory(
     } catch (t: Throwable) {
       rethrowIfShouldNotBeHandled(t) {
         onFailure(t)
-
       }
     }
   }

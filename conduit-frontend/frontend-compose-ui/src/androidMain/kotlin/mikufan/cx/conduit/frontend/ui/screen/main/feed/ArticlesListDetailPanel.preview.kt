@@ -20,7 +20,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListState
 import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 val fakeLoadingArticleListComponent = object : ArticlesListComponent {
-  override val state: StateFlow<ArticlesListState> = MutableStateFlow(ArticlesListState.Loading)
+  override val state: StateFlow<ArticlesListState> = MutableStateFlow(ArticlesListState())
 
   override fun send(intent: ArticlesListIntent) {}
 

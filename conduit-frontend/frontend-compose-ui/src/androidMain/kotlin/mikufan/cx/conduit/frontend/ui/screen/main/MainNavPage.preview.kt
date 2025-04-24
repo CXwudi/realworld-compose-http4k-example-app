@@ -28,7 +28,7 @@ import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 @ExperimentalDecomposeApi
 val fakeArticlesListComponent = object : ArticlesListComponent {
-  override val state: StateFlow<ArticlesListState> = MutableStateFlow(ArticlesListState.Loading)
+  override val state: StateFlow<ArticlesListState> = MutableStateFlow(ArticlesListState())
   override val labels: Flow<ArticlesListLabel> = flow {}
 
   override fun send(intent: ArticlesListIntent) {}

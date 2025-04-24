@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
 import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
@@ -28,30 +30,40 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 @Composable
 fun ArticlesList(component: ArticlesListComponent) {
   val articlesListState = component.state.collectAsState()
-  val collectedThumbInfos = articlesListState.value.collectedThumbInfos
-  val isLoadingMore by remember { derivedStateOf { articlesListState.value.loadMoreState == LoadMoreState.Loading } }
+  val collectedThumbInfos by remember { derivedStateOf { articlesListState.value.collectedThumbInfos } }
+  val loadState by remember { derivedStateOf { articlesListState.value.loadMoreState } }
   val size by remember { derivedStateOf { collectedThumbInfos.size } }
-  val isEmpty by remember { derivedStateOf { size == 0 } }
-  
-  if (isEmpty) {
-    EmptyScreen()
-    return
-  }
 
   val gridState = rememberLazyGridState()
   // need completely rework
-  // val reachLoadMoreThreshold by remember {
-  //   derivedStateOf {
-  //     gridState.layoutInfo.visibleItemsInfo.isNotEmpty()
-  //     && gridState.layoutInfo.visibleItemsInfo.last().index > collectedThumbInfos.lastIndex - 5
-  //   }
-  // }
+  val reachLoadMoreThreshold by remember {
+    derivedStateOf {
+      val visibleItemsInfo = gridState.layoutInfo.visibleItemsInfo
+      visibleItemsInfo.isEmpty() || visibleItemsInfo.last().index > collectedThumbInfos.lastIndex - 5
+    }
+  }
 
-  // LaunchedEffect(reachLoadMoreThreshold, isLoadingMore) {
-  //   if (reachLoadMoreThreshold && !isLoadingMore) {
-  //     component.send(ArticlesListIntent.LoadMore)
-  //   }
-  // }
+  // start loading upon the first visit
+  LaunchedEffect(Unit) {
+    component.send(ArticlesListIntent.LoadMore)
+  }
+
+  // launch effect for loading more
+  // use reachLoadMoreThreshold and if statement with reachLoadMoreThreshold
+  // to check if the user is about to reach the end of the list, so that we can start loading more.
+  // use size to check if loading once is not enough, and we still reachLoadMoreThreshold,
+  // so that we can start loading more.
+  LaunchedEffect(reachLoadMoreThreshold, size) {
+    // guarding with gridState.layoutInfo.visibleItemsInfo.isNotEmpty()
+    // so that the first launch effect will do the initial load.
+    // although we could merge two launch effects by simply removing this guard.
+    if (loadState == LoadMoreState.Loaded && reachLoadMoreThreshold && gridState.layoutInfo.visibleItemsInfo.isNotEmpty()) {
+      // must make sure that when this function finished,
+      // the state is already not ArticlesListIntent.Loaded
+      component.send(ArticlesListIntent.LoadMore)
+    }
+  }
+
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -67,7 +79,7 @@ fun ArticlesList(component: ArticlesListComponent) {
     ) {
       items(
         items = collectedThumbInfos,
-        key = { it.slug }
+        key = { "${it.slug}${it.createdAt}" }
       ) { item ->
         Column {
           Text("slug: ${item.slug}")
@@ -78,7 +90,7 @@ fun ArticlesList(component: ArticlesListComponent) {
         }
       }
     }
-    AnimatedVisibility(isLoadingMore) {
+    AnimatedVisibility(loadState == LoadMoreState.Loading) {
       BouncingDotsLoading()
     }
   }
