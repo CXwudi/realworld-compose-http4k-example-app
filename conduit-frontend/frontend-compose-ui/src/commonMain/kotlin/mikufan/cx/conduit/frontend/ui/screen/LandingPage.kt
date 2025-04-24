@@ -21,7 +21,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -31,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageIntent
@@ -43,27 +43,7 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
   val state by component.state.collectAsState()
   val urlText = remember { derivedStateOf { state.url } }
 
-  val errorMsgState = remember { mutableStateOf("") }
-  val showErrorAlert by remember { derivedStateOf { errorMsgState.value.isNotBlank() } }
-
-  val scope = rememberCoroutineScope()
-  scope.launch {
-    component.labels.collect { label ->
-      when (label) {
-        is LandingPageLabel.Failure -> {
-          errorMsgState.value = label.message
-        }
-        // Handle other labels if necessary
-        else -> {}
-      }
-    }
-  }
-
-  showErrorAlert(
-    showErrorAlert = showErrorAlert,
-    errorMessage = errorMsgState.value,
-    onDismiss = { errorMsgState.value = "" }
-  )
+  showErrorAlert(labels = component.labels)
 
   Box(
     contentAlignment = Alignment.Center,
@@ -88,12 +68,29 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
 }
 
 @Composable
-fun showErrorAlert(showErrorAlert: Boolean, errorMessage: String, onDismiss: () -> Unit) {
+private fun showErrorAlert(labels: Flow<LandingPageLabel>) {
   // almost not possible to animate it, as dialog are drawn outside of current tree
   // see https://github.com/JetBrains/compose-multiplatform/issues/4431
+  
+  val errorMsgState = remember { mutableStateOf("") }
+  val showErrorAlert by remember { derivedStateOf { errorMsgState.value.isNotBlank() } }
+  
+  val scope = rememberCoroutineScope()
+  scope.launch {
+    labels.collect { label ->
+      when (label) {
+        is LandingPageLabel.Failure -> {
+          errorMsgState.value = label.message
+        }
+        // Handle other labels if necessary
+        else -> {}
+      }
+    }
+  }
+  
   if (showErrorAlert) {
     AlertDialog(
-      onDismissRequest = onDismiss,
+      onDismissRequest = { errorMsgState.value = "" },
       shape = MaterialTheme.shapes.large,
       tonalElevation = LocalSpace.current.vertical.spacingLarge,
       icon = {
@@ -115,7 +112,7 @@ fun showErrorAlert(showErrorAlert: Boolean, errorMessage: String, onDismiss: () 
       text = {
         val scrollState = rememberScrollState()
         Text(
-          text = errorMessage,
+          text = errorMsgState.value,
           style = MaterialTheme.typography.bodyMedium,
           modifier = Modifier
             .heightIn(max = 600.dp)
@@ -124,7 +121,7 @@ fun showErrorAlert(showErrorAlert: Boolean, errorMessage: String, onDismiss: () 
       },
       confirmButton = {
         TextButton(
-          onClick = onDismiss
+          onClick = { errorMsgState.value = "" }
         ) {
           Text("OK")
         }
