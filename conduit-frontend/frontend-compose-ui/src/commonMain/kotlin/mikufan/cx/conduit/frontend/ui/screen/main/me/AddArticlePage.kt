@@ -4,20 +4,18 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleIntent
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
@@ -47,25 +44,29 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
 
   Box(
     modifier = modifier
-      .fillMaxSize(),
+      .fillMaxSize()
+      .padding(horizontal = LocalSpace.current.horizontal.padding),
     contentAlignment = Alignment.Center
   ) {
+    val space = LocalSpace.current
+    val verticalPadding by remember { derivedStateOf { PaddingValues(vertical = space.vertical.padding) } }
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
       modifier = modifier
-        .widthIn(max = 600.dp)
+        .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
         .fillMaxHeight()
-        .padding(LocalSpace.current.horizontal.padding)
+        .padding(verticalPadding)
         .verticalScroll(rememberScrollState())
+        .imePadding()
+        .systemBarsPadding()
+        .consumeWindowInsets(verticalPadding)
     ) {
       val title by remember { derivedStateOf { model.title } }
       val description by remember { derivedStateOf { model.description } }
       val body by remember { derivedStateOf { model.body } }
       val tagList by remember { derivedStateOf { model.tagList.joinToString(",") } }
       val errorMsgState = remember { derivedStateOf { model.errorMsg } }
-
-      Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.systemBars))
 
       IconButton(
         onClick = { addArticleComponent.send(AddArticleIntent.BackWithoutPublish) },
@@ -85,8 +86,6 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
-
       OutlinedTextField(
         value = description,
         onValueChange = { addArticleComponent.send(AddArticleIntent.DescriptionChanged(it)) },
@@ -95,7 +94,6 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
 
       OutlinedTextField(
         value = body,
@@ -105,8 +103,6 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
-
       OutlinedTextField(
         value = tagList,
         onValueChange = { addArticleComponent.send(AddArticleIntent.TagListChanged(it)) },
@@ -115,15 +111,11 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
-
       Button(
         onClick = { addArticleComponent.send(AddArticleIntent.Publish) },
       ) {
         Text("Publish")
       }
-
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
 
       val showErrorMsg = remember { derivedStateOf { model.errorMsg.isNotBlank() } }
       AnimatedVisibility(
@@ -132,7 +124,6 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         ErrorMessage(errorMsgState)
       }
 
-      Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
   }
 }

@@ -4,16 +4,20 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
@@ -49,25 +53,29 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
   Box(
     modifier = modifier
       // fill max size on the outer box
-      .fillMaxSize(),
+      .fillMaxSize()
+      .padding(horizontal = LocalSpace.current.horizontal.padding),
     contentAlignment = Alignment.Center
   ) {
+    val space = LocalSpace.current
+    val verticalPadding by remember { derivedStateOf { PaddingValues(vertical = space.vertical.padding) } }
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
       modifier = modifier
-        .widthIn(max = 600.dp)
+        .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
         .fillMaxHeight()
-        .padding(LocalSpace.current.horizontal.padding)
+        .padding(verticalPadding)
         .verticalScroll(rememberScrollState())
+        .imePadding()
+        .systemBarsPadding()
+        .consumeWindowInsets(verticalPadding)
     ) {
       val username by remember { derivedStateOf { model.username } }
       val bio by remember { derivedStateOf { model.bio } }
       val imageUrl by remember { derivedStateOf { model.imageUrl } }
       val passwordState = remember { derivedStateOf { model.password } }
       val errorMsgState = remember { derivedStateOf { model.errorMsg } }
-
-      Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.systemBars))
 
       IconButton(
         onClick = { editProfileComponent.send(EditProfileIntent.BackWithoutSave) },
@@ -87,16 +95,12 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
-
       OutlinedTextField(
         value = bio,
         onValueChange = { editProfileComponent.send(EditProfileIntent.BioChanged(it)) },
         label = { Text("Bio") },
         modifier = Modifier.fillMaxWidth(),
       )
-
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
 
       OutlinedTextField(
         value = imageUrl,
@@ -106,15 +110,11 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
-
       PasswordTextField(
         passwordProvider = passwordState,
         onPasswordChanged = { editProfileComponent.send(EditProfileIntent.PasswordChanged(it)) },
         modifier = Modifier.fillMaxWidth(),
       )
-
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
 
       Button(
         onClick = { editProfileComponent.send(EditProfileIntent.Save) },
@@ -122,16 +122,12 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
         Text("Save")
       }
 
-      Spacer(modifier = Modifier.height(0.dp).windowInsetsBottomHeight(WindowInsets.ime))
-
       val showErrorMsg = remember { derivedStateOf { model.errorMsg.isNotBlank() } }
       AnimatedVisibility(
         visible = showErrorMsg.value,
       ) {
-        ErrorMessage(errorMsgState) // TODO: consider refactor to use https://github.com/KhubaibKhan4/Alert-KMP
+        ErrorMessage(errorMsgState)
       }
-
-      Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
   }
 }
