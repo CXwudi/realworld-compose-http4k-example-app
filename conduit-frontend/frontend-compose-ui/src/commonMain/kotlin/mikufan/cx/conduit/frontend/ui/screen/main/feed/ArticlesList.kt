@@ -35,7 +35,7 @@ fun ArticlesList(component: ArticlesListComponent) {
   val size by remember { derivedStateOf { collectedThumbInfos.size } }
 
   val gridState = rememberLazyGridState()
-  // need completely rework
+
   val reachLoadMoreThreshold by remember {
     derivedStateOf {
       val visibleItemsInfo = gridState.layoutInfo.visibleItemsInfo
