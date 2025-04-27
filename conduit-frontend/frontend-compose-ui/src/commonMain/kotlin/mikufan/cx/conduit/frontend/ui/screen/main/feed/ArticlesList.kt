@@ -7,10 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -34,8 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
@@ -99,10 +106,14 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   val isLoadingMore by remember { derivedStateOf { loadState == LoadMoreState.Loading } }
 
   val space = LocalSpace.current
+  val safeDrawingPadding = WindowInsets.safeDrawing.asPaddingValues()
+  val layoutDirection = LocalLayoutDirection.current
   val lazyGridPadding by remember { derivedStateOf {
     PaddingValues(
-      horizontal = space.horizontal.padding,
-      vertical = space.vertical.padding
+      top = max(space.vertical.padding, safeDrawingPadding.calculateTopPadding()),
+      bottom = max(space.vertical.padding, safeDrawingPadding.calculateBottomPadding()),
+      start = max(space.horizontal.padding, safeDrawingPadding.calculateStartPadding(layoutDirection)),
+      end = max(space.horizontal.padding, safeDrawingPadding.calculateEndPadding(layoutDirection))
     )
   } }
   LazyVerticalGrid(
@@ -110,10 +121,7 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
     columns = GridCells.Adaptive(minSize = space.horizontal.maxContentSpace / 3),
     horizontalArrangement = Arrangement.spacedBy(space.horizontal.spacing),
     verticalArrangement = Arrangement.spacedBy(space.vertical.spacing),
-//    contentPadding = lazyGridPadding,
-    modifier = Modifier
-      .safeDrawingPadding()
-      .consumeWindowInsets(lazyGridPadding)
+    contentPadding = lazyGridPadding,
   ) {
     items(
       items = collectedThumbInfos,
