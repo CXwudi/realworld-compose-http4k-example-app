@@ -7,17 +7,17 @@ import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -128,24 +128,27 @@ private fun MePageContent(
       .verticalScroll(rememberScrollState())
       .padding(bottom = paddingValues.calculateBottomPadding())
   ) {
-    Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars))
-    when (model) {
-      is MePageState.Loading -> {
-        CircularProgressIndicator()
-      }
+    Box(
+      modifier = modifier.safeDrawingPadding().consumeWindowInsets(paddingValues)
+    ) {
+      when (model) {
+        is MePageState.Loading -> {
+          CircularProgressIndicator()
+        }
 
-      is MePageState.Error -> {
-        val errMsg = (model as MePageState.Error).errorMsg
-        Text(text = "Failed to load user: $errMsg")
-      }
+        is MePageState.Error -> {
+          val errMsg = (model as MePageState.Error).errorMsg
+          Text(text = "Failed to load user: $errMsg")
+        }
 
-      is MePageState.Loaded -> {
-        val model = (model as MePageState.Loaded)
-        Profile(
-          username = model.username,
-          bio = model.bio,
-          imageUrl = model.imageUrl
-        )
+        is MePageState.Loaded -> {
+          val model = (model as MePageState.Loaded)
+          Profile(
+            username = model.username,
+            bio = model.bio,
+            imageUrl = model.imageUrl
+          )
+        }
       }
     }
 
@@ -155,19 +158,25 @@ private fun MePageContent(
 
     val editProfileButtonEnabled by remember { derivedStateOf { model is MePageState.Loaded } }
 
-    Button(
-      onClick = { mePageComponent.send(MePageIntent.EditProfile) },
-      enabled = editProfileButtonEnabled
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
+      modifier = modifier.safeDrawingPadding().consumeWindowInsets(paddingValues)
     ) {
-      Text("Edit Profile")
-    }
+      Button(
+        onClick = { mePageComponent.send(MePageIntent.EditProfile) },
+        enabled = editProfileButtonEnabled
+      ) {
+        Text("Edit Profile")
+      }
 
-    Button(onClick = { mePageComponent.send(MePageIntent.Logout) }) {
-      Text("Logout")
-    }
+      Button(onClick = { mePageComponent.send(MePageIntent.Logout) }) {
+        Text("Logout")
+      }
 
-    Button(onClick = { mePageComponent.send(MePageIntent.SwitchServer) }) {
-      Text("Switch Server")
+      Button(onClick = { mePageComponent.send(MePageIntent.SwitchServer) }) {
+        Text("Switch Server")
+      }
     }
   }
 }
