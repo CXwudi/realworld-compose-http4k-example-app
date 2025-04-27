@@ -1,31 +1,30 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.me
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentChild
-import mikufan.cx.conduit.frontend.ui.util.fadeInAndOut
 
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun MeNavPage(meNavComponent: MeNavComponent, modifier: Modifier = Modifier) {
 
-  val childStack by meNavComponent.childStack.subscribeAsState()
-
-  AnimatedContent(
-    targetState = childStack.active.instance,
+  ChildStack(
+    stack = meNavComponent.childStack,
     modifier = modifier,
-    transitionSpec = { fadeInAndOut() },
-    content = { child ->
-      when (child) {
-        is MeNavComponentChild.MePage -> MePage(child.mePageComponent)
-        is MeNavComponentChild.EditProfile -> EditProfilePage(child.editProfileComponent)
-        is MeNavComponentChild.AddArticle -> AddArticlePage(child.addArticleComponent)
-      }
+    animation = stackAnimation(fade() + scale())
+  ) {
+    when (val child = it.instance) {
+      is MeNavComponentChild.MePage -> MePage(child.mePageComponent)
+      is MeNavComponentChild.EditProfile -> EditProfilePage(child.editProfileComponent)
+      is MeNavComponentChild.AddArticle -> AddArticlePage(child.addArticleComponent)
     }
-  )
-
+  }
 }
