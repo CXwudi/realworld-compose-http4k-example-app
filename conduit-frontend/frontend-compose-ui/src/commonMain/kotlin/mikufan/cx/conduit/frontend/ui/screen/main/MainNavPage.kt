@@ -16,9 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
-import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
-import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
@@ -59,7 +56,7 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   ) {
     ChildStack(
       stack = component.childStack,
-      animation = stackAnimation(fade() + slide())
+      animation = stackAnimation()
     ) {
       when (val child = it.instance) {
         is MainNavComponentChild.MainFeed -> ArticlesListDetailPanel(child.component)
