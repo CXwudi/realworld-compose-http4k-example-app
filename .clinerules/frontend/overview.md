@@ -13,3 +13,26 @@ The [`conduit-frontend`](../../conduit-frontend) module is further divided into 
 - [`app-android`](../../conduit-frontend/app-android): The Android app implementation.
 - [`app-desktop`](../../conduit-frontend/app-desktop): The Desktop app implementation.
 - [`app-web`](../../conduit-frontend/app-web): The Web app implementation.
+
+## Architecture Diagram
+
+```plantuml
+@startuml Frontend Architecture
+!theme plain
+
+rectangle "Web/Js+Wasm" as web
+rectangle "Desktop/JVM" as desktop
+rectangle "Android/JVM" as android
+rectangle "iOS/Native" as ios
+
+rectangle "frontend-compose-ui" as ui
+rectangle "frontend-decompose-logic" as logic
+
+web --> ui
+desktop --> ui
+android --> ui
+ios --> ui : configured but not supported
+
+ui --> logic
+@enduml
+```
