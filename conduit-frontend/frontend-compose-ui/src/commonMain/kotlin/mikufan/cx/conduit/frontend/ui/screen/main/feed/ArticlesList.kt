@@ -1,6 +1,7 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.feed
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
@@ -28,7 +28,7 @@ import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 @Composable
-fun ArticlesList(component: ArticlesListComponent) {
+fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   val articlesListState = component.state.collectAsState()
   val collectedThumbInfos by remember { derivedStateOf { articlesListState.value.collectedThumbInfos } }
   val loadState by remember { derivedStateOf { articlesListState.value.loadMoreState } }
@@ -72,7 +72,7 @@ fun ArticlesList(component: ArticlesListComponent) {
   ) {
     LazyVerticalGrid(
       state = gridState,
-      columns = GridCells.Adaptive(minSize = 200.dp),
+      columns = GridCells.Adaptive(minSize = LocalSpace.current.horizontal.maxContentSpace / 3),
       horizontalArrangement = Arrangement.spacedBy(LocalSpace.current.horizontal.spacing),
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
       modifier = Modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
