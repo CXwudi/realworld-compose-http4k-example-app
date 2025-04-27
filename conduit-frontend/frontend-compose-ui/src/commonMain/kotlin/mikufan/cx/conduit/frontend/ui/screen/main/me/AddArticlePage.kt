@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -48,19 +48,16 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
       .padding(horizontal = LocalSpace.current.horizontal.padding),
     contentAlignment = Alignment.Center
   ) {
-    val space = LocalSpace.current
-    val verticalPadding by remember { derivedStateOf { PaddingValues(vertical = space.vertical.padding) } }
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
       modifier = modifier
         .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
         .fillMaxHeight()
-        .padding(verticalPadding)
         .verticalScroll(rememberScrollState())
         .imePadding()
-        .systemBarsPadding()
-        .consumeWindowInsets(verticalPadding)
+        .safeDrawingPadding()
+        .consumeWindowInsets(PaddingValues(horizontal = LocalSpace.current.horizontal.padding))
     ) {
       val title by remember { derivedStateOf { model.title } }
       val description by remember { derivedStateOf { model.description } }

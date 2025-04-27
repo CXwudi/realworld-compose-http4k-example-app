@@ -7,21 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -40,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileIntent
 import mikufan.cx.conduit.frontend.ui.common.PasswordTextField
@@ -57,19 +50,16 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
       .padding(horizontal = LocalSpace.current.horizontal.padding),
     contentAlignment = Alignment.Center
   ) {
-    val space = LocalSpace.current
-    val verticalPadding by remember { derivedStateOf { PaddingValues(vertical = space.vertical.padding) } }
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
       modifier = modifier
         .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
         .fillMaxHeight()
-        .padding(verticalPadding)
         .verticalScroll(rememberScrollState())
         .imePadding()
-        .systemBarsPadding()
-        .consumeWindowInsets(verticalPadding)
+        .safeDrawingPadding()
+        .consumeWindowInsets(PaddingValues(horizontal = LocalSpace.current.horizontal.padding))
     ) {
       val username by remember { derivedStateOf { model.username } }
       val bio by remember { derivedStateOf { model.bio } }
