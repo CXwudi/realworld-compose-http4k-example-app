@@ -16,23 +16,24 @@ The [`conduit-frontend`](../../conduit-frontend) module is further divided into 
 
 ## Architecture Diagram
 
-```plantuml
-@startuml Frontend Architecture
-!theme plain
-
-rectangle "Web/Js+Wasm" as web
-rectangle "Desktop/JVM" as desktop
-rectangle "Android/JVM" as android
-rectangle "iOS/Native" as ios
-
-rectangle "frontend-compose-ui" as ui
-rectangle "frontend-decompose-logic" as logic
-
-web --> ui
-desktop --> ui
-android --> ui
-ios --> ui : configured but not supported
-
-ui --> logic
-@enduml
+```mermaid
+flowchart TD
+    web["Web/Js+Wasm"]
+    desktop["Desktop/JVM"]
+    android["Android/JVM"]
+    ios["iOS/Native (configured but not supported)"]
+    
+    ui["frontend-compose-ui"]
+    logic["frontend-decompose-logic"]
+    
+    web --> ui
+    desktop --> ui
+    android --> ui
+    ios -.-> ui
+    
+    ui --> logic
+    
+    %% iOS style to indicate not fully supported
+    classDef iosStyle stroke-dasharray: 5 5;
+    ios:::iosStyle
 ```
