@@ -1,17 +1,20 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.feed
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -92,30 +95,43 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
 
   // TODO: handle loaded all articles: add loaded all state enum
 
-  Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
-    modifier = Modifier.padding(vertical = LocalSpace.current.vertical.padding)
+
+  val isLoadingMore by remember { derivedStateOf { loadState == LoadMoreState.Loading } }
+
+  val space = LocalSpace.current
+  val lazyGridPadding by remember { derivedStateOf {
+    PaddingValues(
+      horizontal = space.horizontal.padding,
+      vertical = space.vertical.padding
+    )
+  } }
+  LazyVerticalGrid(
+    state = gridState,
+    columns = GridCells.Adaptive(minSize = space.horizontal.maxContentSpace / 3),
+    horizontalArrangement = Arrangement.spacedBy(space.horizontal.spacing),
+    verticalArrangement = Arrangement.spacedBy(space.vertical.spacing),
+//    contentPadding = lazyGridPadding,
+    modifier = Modifier
+      .safeDrawingPadding()
+      .consumeWindowInsets(lazyGridPadding)
   ) {
-    LazyVerticalGrid(
-      state = gridState,
-      columns = GridCells.Adaptive(minSize = LocalSpace.current.horizontal.maxContentSpace / 3),
-      horizontalArrangement = Arrangement.spacedBy(LocalSpace.current.horizontal.spacing),
-      verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
-      modifier = Modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
-    ) {
-      items(
-        items = collectedThumbInfos,
-        key = { "${it.slug}${it.createdAt}" }
-      ) { item ->
-        ArticleCard(article = item)
+    items(
+      items = collectedThumbInfos,
+      key = { "${it.slug}${it.createdAt}" }
+    ) { item ->
+      ArticleCard(article = item)
+    }
+    if (isLoadingMore){
+      item(
+        key = "loading-more",
+        span = { GridItemSpan(maxLineSpan) }
+      ) {
+        BouncingDotsLoading()
       }
     }
-    val isLoadingMore by remember { derivedStateOf { loadState == LoadMoreState.Loading } }
-    AnimatedVisibility(isLoadingMore) {
-      BouncingDotsLoading()
-    }
+
   }
+
 }
 
 @Composable
@@ -147,7 +163,7 @@ private fun ArticleCard(article: ArticleInfo) {
           style = MaterialTheme.typography.bodySmall
         )
       }
-      
+
       // Article title - max 2 lines
       Text(
         text = article.title,
@@ -155,7 +171,7 @@ private fun ArticleCard(article: ArticleInfo) {
         maxLines = 2,
         overflow = TextOverflow.Ellipsis
       )
-      
+
       // Article description - max 3 lines
       Text(
         text = article.description,
@@ -166,7 +182,7 @@ private fun ArticleCard(article: ArticleInfo) {
 
       // Spacer to push the date to the bottom
       Spacer(modifier = Modifier.weight(1f))
-      
+
       // Date at the bottom
       Text(
         text = article.createdAt,
