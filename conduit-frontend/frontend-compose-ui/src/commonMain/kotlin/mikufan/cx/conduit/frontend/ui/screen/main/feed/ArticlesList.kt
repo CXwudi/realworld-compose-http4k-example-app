@@ -117,14 +117,16 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   ) {
     items(
       items = collectedThumbInfos,
-      key = { "${it.slug}${it.createdAt}" }
+      key = { "${it.slug}${it.createdAt}" },
+      contentType = { "article" }
     ) { item ->
       ArticleCard(article = item)
     }
     if (isLoadingMore){
       item(
         key = "loading-more",
-        span = { GridItemSpan(maxLineSpan) }
+        span = { GridItemSpan(maxLineSpan) },
+        contentType = "loading-more"
       ) {
         BouncingDotsLoading()
       }
@@ -139,7 +141,7 @@ private fun ArticleCard(article: ArticleInfo) {
   Card(
     modifier = Modifier
       .fillMaxWidth()
-      .height(180.dp),
+      .height(LocalSpace.current.horizontal.maxContentSpace / 3.33f),
   ) {
     Column(
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacingSmall),
@@ -207,6 +209,8 @@ private fun ProfileImage(
   username: String,
   modifier: Modifier = Modifier,
 ) {
+  // TODO: if image is null, show a default image
+  // save modification goes to the me page
   val sizeResolver = rememberConstraintsSizeResolver()
   val painter = rememberAsyncImagePainter(
     model = ImageRequest.Builder(LocalPlatformContext.current)
