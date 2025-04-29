@@ -76,7 +76,7 @@ dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.10
 dev-backend-http4kBom = { module = "org.http4k:http4k-bom", version.ref = "http4k" }
 dev-backend-exposedBom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exposed" }
 dev-backend-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
-dev-backend-mockk = "io.mockk:mockk:1.14.0"
+dev-backend-mockk = "io.mockk:mockk:1.14.2"
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
 dev-backend-postgresql = "org.postgresql:postgresql:42.7.5"
 dev-backend-hikari = "com.zaxxer:HikariCP:6.3.0"
