@@ -61,6 +61,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.me.MePageState
 import mikufan.cx.conduit.frontend.ui.resources.Res
 import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
 import mikufan.cx.conduit.frontend.ui.resources.outlined_hide_image
+import mikufan.cx.conduit.frontend.ui.resources.user_default_avater
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 import org.jetbrains.compose.resources.painterResource
 
@@ -340,11 +341,25 @@ private fun ProfileImage(
   username: String,
   modifier: Modifier = Modifier,
 ) {
+  // If imageUrl is null or blank, directly use the default avatar
+  if (imageUrl.isBlank()) {
+    Image(
+      painter = painterResource(Res.drawable.user_default_avater),
+      contentDescription = "Default profile picture for $username",
+      contentScale = ContentScale.Crop,
+      modifier = modifier.clip(CircleShape)
+    )
+    return
+  }
+
+  // Only use Coil for non-blank URLs
   val sizeResolver = rememberConstraintsSizeResolver()
   val painter = rememberAsyncImagePainter(
     model = ImageRequest.Builder(LocalPlatformContext.current)
       .data(imageUrl)
       .size(sizeResolver)
+      .diskCacheKey(username)
+      .memoryCacheKey(username)
       .build(),
   )
 

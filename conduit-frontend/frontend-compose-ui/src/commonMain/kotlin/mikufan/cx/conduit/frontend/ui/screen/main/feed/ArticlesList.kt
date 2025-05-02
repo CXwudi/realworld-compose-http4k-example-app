@@ -11,12 +11,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -56,6 +54,7 @@ import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
 import mikufan.cx.conduit.frontend.ui.resources.Res
 import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
 import mikufan.cx.conduit.frontend.ui.resources.outlined_hide_image
+import mikufan.cx.conduit.frontend.ui.resources.user_default_avater
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 import org.jetbrains.compose.resources.painterResource
 
@@ -217,13 +216,25 @@ private fun ProfileImage(
   username: String,
   modifier: Modifier = Modifier,
 ) {
-  // TODO: if image is null, show a default image
-  // save modification goes to the me page
+  // If imageUrl is null or blank, directly use the default avatar
+  if (imageUrl.isNullOrBlank()) {
+    Image(
+      painter = painterResource(Res.drawable.user_default_avater),
+      contentDescription = "Default profile picture for $username",
+      contentScale = ContentScale.Crop,
+      modifier = modifier.clip(CircleShape)
+    )
+    return
+  }
+
+  // Only use Coil for non-blank URLs
   val sizeResolver = rememberConstraintsSizeResolver()
   val painter = rememberAsyncImagePainter(
     model = ImageRequest.Builder(LocalPlatformContext.current)
       .data(imageUrl)
       .size(sizeResolver)
+      .diskCacheKey(username)
+      .memoryCacheKey(username)
       .build(),
   )
 
