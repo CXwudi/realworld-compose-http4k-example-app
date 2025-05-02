@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowWidthSizeClass
@@ -221,11 +222,6 @@ private fun Profile(
           bio = bio,
           style = MaterialTheme.typography.bodyLarge,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
-          maxLength = when (widthClass) {
-            WindowWidthSizeClass.EXPANDED -> 300
-            WindowWidthSizeClass.MEDIUM -> 200
-            else -> 100
-          }
         )
       }
     }
@@ -245,11 +241,6 @@ private fun Profile(
         bio = bio,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        maxLength = when (widthClass) {
-          WindowWidthSizeClass.EXPANDED -> 300
-          WindowWidthSizeClass.MEDIUM -> 200
-          else -> 100
-        }
       )
     }
   }
@@ -257,15 +248,15 @@ private fun Profile(
 
 /**
  * A text component that displays bio text with expand/collapse functionality.
- * Shows truncated text with a "Show more" button when the text exceeds [maxLength],
+ * Shows truncated text with a "Show more" button when the text exceeds the available space,
  * and provides smooth spring animation when expanding/collapsing.
  *
  * @param bio The biography text to display
  * @param style The text style to apply
  * @param color The text color
  * @param modifier Optional modifier for customizing the layout
- * @param textAlign Optional text alignment
- * @param maxLength Maximum number of characters to show before truncating
+ * @param textButtonPadding Padding to apply to the expand/collapse button
+ * @param collapsedMaxLines Maximum number of lines to show when collapsed (default: 3)
  */
 @Composable
 private fun ExpandableBioText(
@@ -274,19 +265,10 @@ private fun ExpandableBioText(
   color: Color,
   modifier: Modifier = Modifier,
   textButtonPadding: PaddingValues = PaddingValues(0.dp),
-  maxLength: Int
+  collapsedMaxLines: Int = 3
 ) {
   var isExpanded by remember { mutableStateOf(false) }
-  val shouldTruncate by remember { derivedStateOf { bio.length > maxLength } }
-  val displayText by remember(maxLength) {
-    derivedStateOf {
-      if (shouldTruncate && !isExpanded) {
-        bio.trim().take(maxLength).trimEnd() + "..."
-      } else {
-        bio.trim()
-      }
-    }
-  }
+  var isOverflowing by remember { mutableStateOf(false) }
   val textButtonText by remember { derivedStateOf { if (isExpanded) "Collapse" else "Show more" } }
 
   Column(
@@ -295,7 +277,7 @@ private fun ExpandableBioText(
     modifier = modifier
   ) {
     Text(
-      text = displayText,
+      text = bio,
       style = style,
       color = color,
       modifier = Modifier.animateContentSize(
@@ -303,9 +285,18 @@ private fun ExpandableBioText(
           stiffness = Spring.StiffnessMedium,
           visibilityThreshold = IntSize.VisibilityThreshold,
         )
-      )
+      ),
+      maxLines = if (isExpanded) Int.MAX_VALUE else collapsedMaxLines,
+      overflow = TextOverflow.Ellipsis,
+      onTextLayout = { layoutResult ->
+        // Only update overflow state when collapsed to prevent it from becoming false on expand
+        if (!isExpanded) {
+          isOverflowing = layoutResult.didOverflowHeight
+        }
+      }
     )
-    if (shouldTruncate) {
+    // Show the button if the text is known to overflow (even when expanded)
+    if (isOverflowing) {
       TextButton(
         onClick = { isExpanded = !isExpanded },
         contentPadding = textButtonPadding,
