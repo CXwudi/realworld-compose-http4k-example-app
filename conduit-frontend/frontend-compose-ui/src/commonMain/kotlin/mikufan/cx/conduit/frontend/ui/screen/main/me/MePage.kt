@@ -1,6 +1,7 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.me
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -60,7 +61,6 @@ import mikufan.cx.conduit.frontend.logic.component.main.me.MePageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageState
 import mikufan.cx.conduit.frontend.ui.resources.Res
 import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
-import mikufan.cx.conduit.frontend.ui.resources.outlined_hide_image
 import mikufan.cx.conduit.frontend.ui.resources.user_default_avater
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 import org.jetbrains.compose.resources.painterResource
@@ -365,49 +365,39 @@ private fun ProfileImage(
 
   val painterState by painter.state.collectAsState()
 
-  when (painterState) {
-    is AsyncImagePainter.State.Empty -> {
-      Image(
-        painter = painterResource(Res.drawable.outlined_hide_image),
-        contentDescription = "No profile picture for $username",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-          .then(sizeResolver)
-          .size(120.dp)
-          .clip(CircleShape)
-      )
-    }
+  Crossfade(painterState) {
+    when (painterState) {
+      is AsyncImagePainter.State.Loading, is AsyncImagePainter.State.Empty -> {
+        CircularProgressIndicator(
+          modifier = modifier
+            .then(sizeResolver)
+            .size(120.dp)
+            .clip(CircleShape)
+        )
+      }
 
-    is AsyncImagePainter.State.Loading -> {
-      CircularProgressIndicator(
-        modifier = modifier
-          .then(sizeResolver)
-          .size(120.dp)
-          .clip(CircleShape)
-      )
-    }
+      is AsyncImagePainter.State.Success -> {
+        Image(
+          painter = painter,
+          contentDescription = "Profile picture of $username",
+          contentScale = ContentScale.Crop,
+          modifier = modifier
+            .then(sizeResolver)
+            .size(120.dp)
+            .clip(CircleShape)
+        )
+      }
 
-    is AsyncImagePainter.State.Success -> {
-      Image(
-        painter = painter,
-        contentDescription = "Profile picture of $username",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-          .then(sizeResolver)
-          .size(120.dp)
-          .clip(CircleShape)
-      )
-    }
-
-    is AsyncImagePainter.State.Error -> {
-      Icon(
-        painter = painterResource(Res.drawable.outlined_broken_image),
-        contentDescription = "Broken profile picture of $username",
-        modifier = modifier
-          .then(sizeResolver)
-          .size(120.dp)
-          .clip(CircleShape)
-      )
+      is AsyncImagePainter.State.Error -> {
+        Icon(
+          painter = painterResource(Res.drawable.outlined_broken_image),
+          contentDescription = "Broken profile picture of $username",
+          modifier = modifier
+            .then(sizeResolver)
+            .size(120.dp)
+            .clip(CircleShape)
+        )
+      }
     }
   }
 
