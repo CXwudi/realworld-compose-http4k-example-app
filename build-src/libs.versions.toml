@@ -12,7 +12,7 @@
 kotlin = "2.1.10"
 ksp = "2.1.10-1.0.30"
 java = "21"
-agp = "8.9.2" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
+agp = "8.10.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 compose = "1.7.3"
 compose-adaptive = "1.0.1"
 coil = "3.1.0"
@@ -22,11 +22,11 @@ decompose = "3.3.0"
 mvikotlin = "4.3.0"
 koin = "4.0.4"
 kstore = "0.9.1"
-ktor = "3.1.2"
+ktor = "3.1.3"
 ktorfit = "2.5.1"
 
 junit = "5.12.2"
-http4k = "6.7.0.0"
+http4k = "6.8.0.0"
 exposed = "0.61.0"
 
 [libraries]
@@ -69,7 +69,7 @@ dev-frontend-browserWasm = "org.jetbrains.kotlinx:kotlinx-browser:0.3" # see htt
 # android
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.16.0"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
-dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.7"
+dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.9.0"
 dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.10.1"
 
 # backend
@@ -107,4 +107,4 @@ kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kot
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 # a plugin used by gradle files for precompiled script plugin
-buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.6.4" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.6.5" }
