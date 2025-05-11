@@ -34,7 +34,7 @@ exposed = "0.61.0"
 # multiplatform
 dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"
 dev-kotlinLogging = "io.github.oshai:kotlin-logging:7.0.7"
-dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0"
+dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.1"
 dev-koinBom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 
 # frontend
@@ -90,7 +90,7 @@ pluginDep-kotlinCompose = { module = "org.jetbrains.kotlin:compose-compiler-grad
 pluginDep-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 pluginDep-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
 pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
-pluginDep-mockkery = "dev.mokkery:mokkery-gradle:2.7.2"
+pluginDep-mokkery = "dev.mokkery:mokkery-gradle:2.7.2"
 
 # setting plugin dep
 settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.0.1"
