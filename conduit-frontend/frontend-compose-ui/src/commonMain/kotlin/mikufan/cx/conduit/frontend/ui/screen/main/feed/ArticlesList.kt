@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -30,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -61,22 +63,55 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   val articlesListState = component.state.collectAsState()
-  val collectedThumbInfos by remember { derivedStateOf { articlesListState.value.collectedThumbInfos } }
-  val loadState by remember { derivedStateOf { articlesListState.value.loadMoreState } }
-  val size by remember { derivedStateOf { collectedThumbInfos.size } }
+  val collectedThumbInfosState = remember {
+    derivedStateOf { articlesListState.value.collectedThumbInfos }
+  }
+  val loadMoreStateState = remember {
+    derivedStateOf { articlesListState.value.loadMoreState }
+  }
+  val isLoadingMoreState = remember {
+    derivedStateOf { loadMoreStateState.value == LoadMoreState.Loading }
+  }
+  val onLoadMore: () -> Unit = { component.send(ArticlesListIntent.LoadMore) }
 
   val gridState = rememberLazyGridState()
 
-  val reachLoadMoreThreshold by remember {
+  // TODO: handle error label: label and show error message as pop up
+  // TODO: handle navigation: it needs to go through store
+  // TODO: handle loaded all articles: add loaded all state enum
+
+  ArticlesListLoadEffect(
+    onLoadMore = onLoadMore,
+    itemsState = collectedThumbInfosState,
+    loadStateState = loadMoreStateState,
+    gridState = gridState
+  )
+  ArticlesListGrid(
+    itemsState = collectedThumbInfosState,
+    isLoadingState = isLoadingMoreState,
+    gridState = gridState
+  )
+
+}
+
+@Composable
+private fun ArticlesListLoadEffect(
+  onLoadMore: () -> Unit,
+  itemsState: State<List<ArticleInfo>>,
+  loadStateState: State<LoadMoreState>,
+  gridState: LazyGridState
+) {
+  val reachLoadThresholdState = remember {
     derivedStateOf {
-      val visibleItemsInfo = gridState.layoutInfo.visibleItemsInfo
-      visibleItemsInfo.isEmpty() || visibleItemsInfo.last().index > collectedThumbInfos.lastIndex - 5
+      val info = gridState.layoutInfo.visibleItemsInfo
+      // use itemsState.value.lastIndex instead of itemsState.value.size -1 to avoid IndexOutOfBoundsException when list is empty
+      info.isEmpty() || (itemsState.value.isNotEmpty() && info.last().index > itemsState.value.lastIndex - 5)
     }
   }
 
   // start loading upon the first visit
   LaunchedEffect(Unit) {
-    component.send(ArticlesListIntent.LoadMore)
+    onLoadMore()
   }
 
   // launch effect for loading more
@@ -84,52 +119,60 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   // to check if the user is about to reach the end of the list, so that we can start loading more.
   // use size to check if loading once is not enough, and we still reachLoadMoreThreshold,
   // so that we can start loading more.
-  LaunchedEffect(reachLoadMoreThreshold, size) {
+  LaunchedEffect(
+    reachLoadThresholdState.value,
+    itemsState.value.size // Use size here as a trigger for re-evaluation when new items are loaded
+  ) {
     // guarding with gridState.layoutInfo.visibleItemsInfo.isNotEmpty()
     // so that the first launch effect will do the initial load.
     // although we could merge two launch effects by simply removing this guard.
-    if (loadState == LoadMoreState.Loaded && reachLoadMoreThreshold && gridState.layoutInfo.visibleItemsInfo.isNotEmpty()) {
+    if (loadStateState.value == LoadMoreState.Loaded
+      && reachLoadThresholdState.value
+      && gridState.layoutInfo.visibleItemsInfo.isNotEmpty()
+    ) {
       // must make sure that when this function finished,
       // the state is already not ArticlesListIntent.Loaded
-      component.send(ArticlesListIntent.LoadMore)
+      onLoadMore()
+    }
+  }
+}
+
+@Composable
+private fun AnimatedVisibilityScope.ArticlesListGrid(
+  itemsState: State<List<ArticleInfo>>,
+  isLoadingState: State<Boolean>,
+  gridState: LazyGridState
+) {
+  val space = LocalSpace.current
+  val safePadding = WindowInsets.safeDrawing.asPaddingValues()
+  val layoutDir = LocalLayoutDirection.current
+
+  val contentPaddingState = remember {
+    derivedStateOf {
+      PaddingValues(
+        top = max(space.vertical.padding, safePadding.calculateTopPadding()),
+        bottom = max(space.vertical.padding, safePadding.calculateBottomPadding()),
+        start = max(space.horizontal.padding, safePadding.calculateStartPadding(layoutDir)),
+        end = max(space.horizontal.padding, safePadding.calculateEndPadding(layoutDir))
+      )
     }
   }
 
-  // TODO: handle error label: label and show error message as pop up
-
-  // TODO: handle navigation: it needs to go through store
-
-  // TODO: handle loaded all articles: add loaded all state enum
-
-
-  val isLoadingMore by remember { derivedStateOf { loadState == LoadMoreState.Loading } }
-
-  val space = LocalSpace.current
-  val safeDrawingPadding = WindowInsets.safeDrawing.asPaddingValues()
-  val layoutDirection = LocalLayoutDirection.current
-  val lazyGridPadding by remember { derivedStateOf {
-    PaddingValues(
-      top = max(space.vertical.padding, safeDrawingPadding.calculateTopPadding()),
-      bottom = max(space.vertical.padding, safeDrawingPadding.calculateBottomPadding()),
-      start = max(space.horizontal.padding, safeDrawingPadding.calculateStartPadding(layoutDirection)),
-      end = max(space.horizontal.padding, safeDrawingPadding.calculateEndPadding(layoutDirection))
-    )
-  } }
   LazyVerticalGrid(
     state = gridState,
-    columns = GridCells.Adaptive(minSize = space.horizontal.maxContentSpace / 3),
+    columns = GridCells.Adaptive(minSize = space.horizontal.maxContentSpace / 2),
     horizontalArrangement = Arrangement.spacedBy(space.horizontal.spacing),
     verticalArrangement = Arrangement.spacedBy(space.vertical.spacing),
-    contentPadding = lazyGridPadding,
+    contentPadding = contentPaddingState.value
   ) {
     items(
-      items = collectedThumbInfos,
+      items = itemsState.value,
       key = { "${it.slug}${it.createdAt}" },
       contentType = { "article" }
     ) { item ->
       ArticleCard(article = item)
     }
-    if (isLoadingMore){
+    if (isLoadingState.value) {
       item(
         key = "loading-more",
         span = { GridItemSpan(maxLineSpan) },
@@ -138,9 +181,7 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
         BouncingDotsLoading()
       }
     }
-
   }
-
 }
 
 @Composable
