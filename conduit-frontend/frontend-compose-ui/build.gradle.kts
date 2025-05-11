@@ -26,6 +26,7 @@ kotlin {
       implementation(libs.dev.frontend.compose.adaptive)
       implementation(libs.dev.frontend.compose.adaptiveLayout)
       implementation(libs.dev.frontend.compose.adaptiveNavigation)
+      implementation(libs.dev.frontend.compose.materialIconsCore)
       implementation(compose.components.resources)
       implementation(compose.components.uiToolingPreview)
 

@@ -51,6 +51,7 @@ dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:
 dev-frontend-compose-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-adaptive" }
 dev-frontend-compose-adaptiveLayout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-adaptive" }
 dev-frontend-compose-adaptiveNavigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "compose-adaptive" }
+dev-frontend-compose-materialIconsCore = "org.jetbrains.compose.material:material-icons-core:1.7.3" # required since compose 1.8.0
 dev-frontend-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 dev-frontend-coil-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 dev-frontend-coil-cacheControl = { module = "io.coil-kt.coil3:coil-network-cache-control", version.ref = "coil" }
