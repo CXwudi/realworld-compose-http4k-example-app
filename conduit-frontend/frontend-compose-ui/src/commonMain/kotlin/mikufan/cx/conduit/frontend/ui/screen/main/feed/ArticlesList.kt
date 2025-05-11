@@ -72,10 +72,6 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
 
   val gridState = rememberLazyGridState()
 
-  // TODO: handle error label: label and show error message as pop up
-  // TODO: handle navigation: it needs to go through store
-  // TODO: handle loaded all articles: add loaded all state enum
-
   ArticlesListLoadEffect(
     onLoadMore = { component.send(ArticlesListIntent.LoadMore) },
     itemsState = collectedThumbInfosState,
@@ -83,10 +79,17 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
     gridState = gridState
   )
   ArticlesListGrid(
+    // TODO: handle navigation: it needs to go through store
+    // define new param: onClick: (String) -> Unit where string is the slug/url
     itemsState = collectedThumbInfosState,
     loadStateState = loadMoreStateState,
     gridState = gridState
   )
+
+  // TODO: handle error label: label and show error message as pop up
+  // create new composable here
+
+
 
 }
 
@@ -104,6 +107,12 @@ private fun ArticlesListLoadEffect(
       info.isEmpty() || (itemsState.value.isNotEmpty() && info.last().index > itemsState.value.lastIndex - 5)
     }
   }
+
+  // TODO: handle loaded all articles: add loaded all state enum
+  // this requires changes in store where if the returned list is empty,
+  // set to a new state, LoadedAll
+  // LoadedAll != Loaded so it effectively stop the LaunchedEffect
+
 
   // start loading upon the first visit
   LaunchedEffect(Unit) {
