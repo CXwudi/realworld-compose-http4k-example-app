@@ -69,10 +69,6 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   val loadMoreStateState = remember {
     derivedStateOf { articlesListState.value.loadMoreState }
   }
-  val isLoadingMoreState = remember {
-    derivedStateOf { loadMoreStateState.value == LoadMoreState.Loading }
-  }
-  val onLoadMore: () -> Unit = { component.send(ArticlesListIntent.LoadMore) }
 
   val gridState = rememberLazyGridState()
 
@@ -81,14 +77,14 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   // TODO: handle loaded all articles: add loaded all state enum
 
   ArticlesListLoadEffect(
-    onLoadMore = onLoadMore,
+    onLoadMore = { component.send(ArticlesListIntent.LoadMore) },
     itemsState = collectedThumbInfosState,
     loadStateState = loadMoreStateState,
     gridState = gridState
   )
   ArticlesListGrid(
     itemsState = collectedThumbInfosState,
-    isLoadingState = isLoadingMoreState,
+    loadStateState = loadMoreStateState,
     gridState = gridState
   )
 
@@ -118,7 +114,9 @@ private fun ArticlesListLoadEffect(
   // use reachLoadMoreThreshold and if statement with reachLoadMoreThreshold
   // to check if the user is about to reach the end of the list, so that we can start loading more.
   // use size to check if loading once is not enough, and we still reachLoadMoreThreshold,
-  // so that we can start loading more.
+  // so that we can start loading more again.
+  // until reachLoadMoreThreshold becomes false
+  // or loading more returns 0 items, meaning we loaded all items
   LaunchedEffect(
     reachLoadThresholdState.value,
     itemsState.value.size // Use size here as a trigger for re-evaluation when new items are loaded
@@ -130,7 +128,7 @@ private fun ArticlesListLoadEffect(
       && reachLoadThresholdState.value
       && gridState.layoutInfo.visibleItemsInfo.isNotEmpty()
     ) {
-      // must make sure that when this function finished,
+      // must make sure that when this function returned,
       // the state is already not ArticlesListIntent.Loaded
       onLoadMore()
     }
@@ -140,12 +138,16 @@ private fun ArticlesListLoadEffect(
 @Composable
 private fun AnimatedVisibilityScope.ArticlesListGrid(
   itemsState: State<List<ArticleInfo>>,
-  isLoadingState: State<Boolean>,
+  loadStateState: State<LoadMoreState>,
   gridState: LazyGridState
 ) {
   val space = LocalSpace.current
   val safePadding = WindowInsets.safeDrawing.asPaddingValues()
   val layoutDir = LocalLayoutDirection.current
+
+  val isLoadingState = remember {
+    derivedStateOf { loadStateState.value == LoadMoreState.Loading }
+  }
 
   val contentPaddingState = remember {
     derivedStateOf {
