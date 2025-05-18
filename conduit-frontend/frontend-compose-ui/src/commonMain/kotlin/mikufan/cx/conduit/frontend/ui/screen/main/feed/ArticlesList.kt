@@ -49,9 +49,11 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
+import kotlinx.coroutines.flow.Flow
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
 import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
 import mikufan.cx.conduit.frontend.ui.resources.Res
@@ -59,10 +61,21 @@ import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
 import mikufan.cx.conduit.frontend.ui.resources.user_default_avater
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   val articlesListState = component.state.collectAsState()
+  val articlesListLabel = component.labels
   val collectedThumbInfosState = remember {
     derivedStateOf { articlesListState.value.collectedThumbInfos }
   }
@@ -86,10 +99,8 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
     gridState = gridState
   )
 
-  // TODO: handle error label: label and show error message as pop up
-  // create new composable here
-
-
+  // Handle error label: label and show error message as pop up
+  ArticlesListErrorAlert(articlesListLabel)
 
 }
 
@@ -324,5 +335,64 @@ private fun ProfileImage(
       }
     }
 
+  }
+}
+
+@Composable
+fun ArticlesListErrorAlert(articlesListLabelFlow: Flow<ArticlesListLabel>) {
+  val errorMsgState = remember { mutableStateOf("") }
+  val showErrorAlert by remember { derivedStateOf { errorMsgState.value.isNotBlank() } }
+
+  val scope = rememberCoroutineScope()
+  scope.launch {
+    articlesListLabelFlow.collect { label ->
+      when (label) {
+        is ArticlesListLabel.Failure -> {
+          errorMsgState.value = label.message
+        }
+        else -> {}
+      }
+    }
+  }
+
+  if (showErrorAlert) {
+    AlertDialog(
+      onDismissRequest = { errorMsgState.value = "" },
+      shape = MaterialTheme.shapes.large,
+      tonalElevation = LocalSpace.current.vertical.spacingLarge,
+      icon = {
+        Icon(
+          imageVector = Icons.Filled.Warning,
+          contentDescription = "Error Icon",
+          tint = MaterialTheme.colorScheme.error,
+          modifier = Modifier.size(LocalSpace.current.vertical.spacingLarge * 4)
+        )
+      },
+      title = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Text(
+            text = "Error",
+            style = MaterialTheme.typography.headlineSmall
+          )
+        }
+      },
+      text = {
+        val scrollState = rememberScrollState()
+        Text(
+          text = errorMsgState.value,
+          style = MaterialTheme.typography.bodyMedium,
+          modifier = Modifier
+            .heightIn(max = 600.dp)
+            .verticalScroll(scrollState)
+        )
+      },
+      confirmButton = {
+        TextButton(
+          onClick = { errorMsgState.value = "" }
+        ) {
+          Text("OK")
+        }
+      },
+    )
   }
 }
