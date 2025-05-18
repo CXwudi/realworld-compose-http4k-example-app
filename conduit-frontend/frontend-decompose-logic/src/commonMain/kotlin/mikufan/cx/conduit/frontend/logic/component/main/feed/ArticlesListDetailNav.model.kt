@@ -6,7 +6,9 @@ sealed interface ArticlesListDetailNavComponentChild {
   data class ArticlesList(
     val component: ArticlesListComponent,
   ) : ArticlesListDetailNavComponentChild
-  data object ArticleDetail : ArticlesListDetailNavComponentChild
+  data class ArticleDetail(
+    val component: ArticleDetailComponent,
+  ) : ArticlesListDetailNavComponentChild
 }
 
 @Serializable

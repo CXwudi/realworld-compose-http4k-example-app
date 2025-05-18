@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.logic.component.main.feed
 
 sealed interface ArticlesListIntent {
   data object LoadMore : ArticlesListIntent
+  data class SelectArticle(val slug: String) : ArticlesListIntent
 }
 
 data class ArticlesListState(
@@ -27,4 +28,5 @@ sealed interface ArticlesListLabel {
     val exception: Exception?,
     val message: String,
   ) : ArticlesListLabel
+  data class OpenArticle(val slug: String) : ArticlesListLabel
 }

@@ -72,6 +72,10 @@ class ArticlesListStoreFactory(
           }
         )
       }
+      
+      onIntent<ArticlesListIntent.SelectArticle> { intent ->
+        publish(ArticlesListLabel.OpenArticle(intent.slug))
+      }
     }
 
   private fun createReducer() = Reducer<ArticlesListState, Msg> { msg ->

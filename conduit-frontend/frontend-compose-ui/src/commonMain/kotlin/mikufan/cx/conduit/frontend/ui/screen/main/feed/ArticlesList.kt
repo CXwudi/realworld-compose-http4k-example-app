@@ -3,6 +3,7 @@ package mikufan.cx.conduit.frontend.ui.screen.main.feed
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -92,11 +93,10 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
     gridState = gridState
   )
   ArticlesListGrid(
-    // TODO: handle navigation: it needs to go through store
-    // define new param: onClick: (String) -> Unit where string is the slug/url
     itemsState = collectedThumbInfosState,
     loadStateState = loadMoreStateState,
-    gridState = gridState
+    gridState = gridState,
+    onItemClick = { slug -> component.send(ArticlesListIntent.SelectArticle(slug)) }
   )
 
   // Handle error label: label and show error message as pop up
@@ -159,7 +159,8 @@ private fun ArticlesListLoadEffect(
 private fun AnimatedVisibilityScope.ArticlesListGrid(
   itemsState: State<List<ArticleInfo>>,
   loadStateState: State<LoadMoreState>,
-  gridState: LazyGridState
+  gridState: LazyGridState,
+  onItemClick: (String) -> Unit
 ) {
   val space = LocalSpace.current
   val safePadding = WindowInsets.safeDrawing.asPaddingValues()
@@ -192,7 +193,10 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
       key = { "${it.slug}${it.createdAt}" },
       contentType = { "article" }
     ) { item ->
-      ArticleCard(article = item)
+      ArticleCard(
+        article = item,
+        modifier = Modifier.clickable { onItemClick(item.slug) }
+      )
     }
     if (isLoadingState.value) {
       item(
@@ -207,9 +211,12 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
 }
 
 @Composable
-private fun ArticleCard(article: ArticleInfo) {
+private fun ArticleCard(
+  article: ArticleInfo,
+  modifier: Modifier = Modifier
+) {
   Card(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .height(LocalSpace.current.horizontal.maxContentSpace / 3.33f),
   ) {

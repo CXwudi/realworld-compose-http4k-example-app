@@ -42,6 +42,7 @@ class DefaultArticlesListDetailNavComponent(
   componentContext: ComponentContext,
   private val searchFilter: ArticlesSearchFilter,
   private val articlesListComponentFactory: ArticlesListComponentFactory,
+  private val articleDetailComponentFactory: ArticleDetailComponentFactory,
 ) : ArticlesListDetailNavComponent, ComponentContext by componentContext {
 
   private val panelNavigation =
@@ -99,16 +100,31 @@ class DefaultArticlesListDetailNavComponent(
     config: Config.ArticlesList,
     componentContext: ComponentContext
   ): ArticlesListDetailNavComponentChild.ArticlesList {
-    return ArticlesListDetailNavComponentChild.ArticlesList(
-      articlesListComponentFactory.create(componentContext, searchFilter)
+    val listComponent = articlesListComponentFactory.create(
+      componentContext = componentContext, 
+      searchFilter = searchFilter,
+      onOpenArticle = { slug ->
+        panelNavigation.navigate { panels ->
+          // Set mode to DUAL if widest allowed mode is at least DUAL
+          val newMode = if (_widestAllowedMode.value >= ChildPanelsMode.DUAL) {
+            ChildPanelsMode.DUAL
+          } else {
+            panels.mode
+          }
+          panels.copy(details = Config.ArticleDetail(slug), mode = newMode)
+        }
+      }
     )
+    
+    return ArticlesListDetailNavComponentChild.ArticlesList(listComponent)
   }
 
   private fun detailComponent(
     config: Config.ArticleDetail,
     componentContext: ComponentContext
   ): ArticlesListDetailNavComponentChild.ArticleDetail {
-    return ArticlesListDetailNavComponentChild.ArticleDetail
+    val detailComponent = articleDetailComponentFactory.create(componentContext, config.slug)
+    return ArticlesListDetailNavComponentChild.ArticleDetail(detailComponent)
   }
 
 
@@ -118,13 +134,14 @@ class DefaultArticlesListDetailNavComponent(
     data object ArticlesList : Config
 
     @Serializable
-    data object ArticleDetail : Config
+    data class ArticleDetail(val slug: String) : Config
   }
 }
 
 
 class ArticlesPanelNavComponentFactory(
   private val articlesListComponentFactory: ArticlesListComponentFactory,
+  private val articleDetailComponentFactory: ArticleDetailComponentFactory,
 ) {
   fun create(
     componentContext: ComponentContext,
@@ -133,6 +150,7 @@ class ArticlesPanelNavComponentFactory(
     componentContext = componentContext,
     searchFilter = searchFilter,
     articlesListComponentFactory = articlesListComponentFactory,
+    articleDetailComponentFactory = articleDetailComponentFactory,
   )
 }
 

@@ -30,7 +30,7 @@ fun ArticlesListDetailPanel(component: ArticlesListDetailNavComponent) {
   ChildPanels(
     panels = component.panels,
     mainChild = { ArticlesList(it.instance.component) },
-    detailsChild = { ArticleContent() },
+    detailsChild = { detail -> ArticleContent(detail.instance.component) },
     layout = remember { CustomHorizontalChildPanelsLayout(250.dp, 250.dp to 250.dp) },
     animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
   )
