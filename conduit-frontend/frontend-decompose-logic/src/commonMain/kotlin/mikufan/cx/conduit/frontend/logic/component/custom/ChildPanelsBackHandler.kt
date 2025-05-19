@@ -22,10 +22,10 @@ fun interface ChildPanelsBackHandler<MC : Any, DC : Any, EC : Any> {
    * Handle back button press for the given panels state.
    *
    * @param panels Current panels state
-   * @return The modified panels state after handling the back button press, or null if
+   * @return The callback of the modified panels state after handling the back button press, or null if
    * the back button press should be ignored or handled by parent components.
    */
-  fun handle(panels: Panels<MC, DC, EC>): Panels<MC, DC, EC>?
+  fun handle(panels: Panels<MC, DC, EC>): (() -> Panels<MC, DC, EC>)?
 }
 
 /**
@@ -39,16 +39,16 @@ fun interface ChildPanelsBackHandler<MC : Any, DC : Any, EC : Any> {
  */
 @OptIn(ExperimentalDecomposeApi::class)
 class SingleModeChildPanelsBackHandler<MC : Any, DC : Any, EC : Any> : ChildPanelsBackHandler<MC, DC, EC> {
-  override fun handle(panels: Panels<MC, DC, EC>): Panels<MC, DC, EC>? = when {
+  override fun handle(panels: Panels<MC, DC, EC>): (() -> Panels<MC, DC, EC>)? = when {
     (panels.mode == ChildPanelsMode.SINGLE) && (panels.extra != null) -> {
-      panels.copy(extra = null)
+      { panels.copy(extra = null) }
     }
 
     (panels.mode == ChildPanelsMode.SINGLE) && (panels.details != null) -> {
-      panels.copy(details = null)
+      { panels.copy(details = null) }
     }
 
-    else -> null
+    else ->  null
   }
 }
 
@@ -63,23 +63,23 @@ class SingleModeChildPanelsBackHandler<MC : Any, DC : Any, EC : Any> : ChildPane
  */
 @OptIn(ExperimentalDecomposeApi::class)
 class MultiModeChildPanelsBackHandler<MC : Any, DC : Any, EC : Any> : ChildPanelsBackHandler<MC, DC, EC> {
-  override fun handle(panels: Panels<MC, DC, EC>): Panels<MC, DC, EC>? =
+  override fun handle(panels: Panels<MC, DC, EC>): (() -> Panels<MC, DC, EC>)? =
     when {
       (panels.mode == ChildPanelsMode.SINGLE) && (panels.extra != null) -> {
-        panels.copy(extra = null)
+        { panels.copy(extra = null) }
       }
 
       (panels.mode == ChildPanelsMode.SINGLE) && (panels.details != null) -> {
-        panels.copy(details = null)
+        { panels.copy(details = null) }
       }
 
       // Added two more customizations for back button handling, where in the wide screen, going back will close the right-most panel
       (panels.mode == ChildPanelsMode.TRIPLE) && (panels.extra != null) -> {
-        panels.copy(extra = null, mode = ChildPanelsMode.DUAL)
+        { panels.copy(extra = null, mode = ChildPanelsMode.DUAL) }
       }
 
       (panels.mode == ChildPanelsMode.DUAL) && (panels.details != null) -> {
-        panels.copy(details = null, mode = ChildPanelsMode.SINGLE)
+        { panels.copy(details = null, mode = ChildPanelsMode.SINGLE) }
       }
 
       // no handling, let the other back handler do its job

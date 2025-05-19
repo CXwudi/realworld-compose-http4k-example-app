@@ -276,8 +276,8 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
     backTransformer = { state ->
       if (!handleBackButton) return@children null
 
-      val newPanel: Panels<MC, DC, EC>? = backHandler.handle(state.panels)
-      newPanel?.let { panels -> { state.copy(panels = panels) } }
+      val newPanelHandler: (() -> Panels<MC, DC, EC>)? = backHandler.handle(state.panels)
+      newPanelHandler?.let { handler -> { state.copy(panels = handler()) } }
     },
     childFactory = { config, ctx ->
       when (config) {
