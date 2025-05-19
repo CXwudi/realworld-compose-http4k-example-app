@@ -4,6 +4,7 @@ import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
+import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 import mikufan.cx.conduit.common.ArticleRsp
 import mikufan.cx.conduit.common.ArticlesRsp
@@ -25,5 +26,11 @@ interface ArticleApi {
   @Headers("Content-Type: application/json")
   suspend fun createArticle(
     @Body body: CreateArticleReq
+  ) : ConduitResponse<ArticleRsp>
+
+  @GET("articles/{slug}")
+  @Headers("Content-Type: application/json")
+  suspend fun getArticle(
+    @Path("slug") slug: String
   ) : ConduitResponse<ArticleRsp>
 }

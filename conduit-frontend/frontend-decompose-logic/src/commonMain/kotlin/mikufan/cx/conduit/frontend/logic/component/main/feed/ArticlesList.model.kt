@@ -1,9 +1,11 @@
 package mikufan.cx.conduit.frontend.logic.component.main.feed
 
+import kotlinx.serialization.Serializable
+
 
 sealed interface ArticlesListIntent {
   data object LoadMore : ArticlesListIntent
-  data class SelectArticle(val slug: String) : ArticlesListIntent
+  data class SelectArticle(val articleInfo: ArticleInfo) : ArticlesListIntent
 }
 
 data class ArticlesListState(
@@ -13,6 +15,7 @@ data class ArticlesListState(
 
 enum class LoadMoreState { Loading, Loaded }
 
+@Serializable
 data class ArticleInfo(
   val authorThumbnail: String?,
   val authorUsername: String,
@@ -28,5 +31,5 @@ sealed interface ArticlesListLabel {
     val exception: Exception?,
     val message: String,
   ) : ArticlesListLabel
-  data class OpenArticle(val slug: String) : ArticlesListLabel
+  data class OpenArticle(val articleInfo: ArticleInfo) : ArticlesListLabel
 }

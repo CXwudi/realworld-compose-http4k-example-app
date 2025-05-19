@@ -13,6 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailIntent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailLabel
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailState
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponentChild
@@ -32,8 +36,26 @@ val fakeLoadingArticleListComponent = object : ArticlesListComponent {
   }
 }
 
+val sampleArticleInfo = ArticleInfo(
+  authorThumbnail = "https://example.com/avatar.png",
+  authorUsername = "testuser",
+  title = "Test Article",
+  description = "Test Description",
+  tags = listOf("test", "kotlin"),
+  createdAt = "2023-01-01T12:00:00Z",
+  slug = "test-article"
+)
+
 val fakeArticleDetailComponent = object : ArticleDetailComponent {
-  override val slug: String = "my slug"
+  override val state: StateFlow<ArticleDetailState> = MutableStateFlow(
+    ArticleDetailState(sampleArticleInfo)
+  )
+
+  override fun send(intent: ArticleDetailIntent) {}
+
+  override val labels: Flow<ArticleDetailLabel> = flow {
+    emit(ArticleDetailLabel.Failure(null, ""))
+  }
 }
 
 @OptIn(ExperimentalDecomposeApi::class)

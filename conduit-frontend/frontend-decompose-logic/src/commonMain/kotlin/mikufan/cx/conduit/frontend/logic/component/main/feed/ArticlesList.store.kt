@@ -74,7 +74,7 @@ class ArticlesListStoreFactory(
       }
       
       onIntent<ArticlesListIntent.SelectArticle> { intent ->
-        publish(ArticlesListLabel.OpenArticle(intent.slug))
+        publish(ArticlesListLabel.OpenArticle(intent.articleInfo))
       }
     }
 

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -24,19 +25,27 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +60,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
@@ -62,16 +72,6 @@ import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
 import mikufan.cx.conduit.frontend.ui.resources.user_default_avater
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 import org.jetbrains.compose.resources.painterResource
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
@@ -96,7 +96,7 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
     itemsState = collectedThumbInfosState,
     loadStateState = loadMoreStateState,
     gridState = gridState,
-    onItemClick = { slug -> component.send(ArticlesListIntent.SelectArticle(slug)) }
+    onItemClick = { detail -> component.send(ArticlesListIntent.SelectArticle(detail)) }
   )
 
   // Handle error label: label and show error message as pop up
@@ -160,7 +160,7 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
   itemsState: State<List<ArticleInfo>>,
   loadStateState: State<LoadMoreState>,
   gridState: LazyGridState,
-  onItemClick: (String) -> Unit
+  onItemClick: (ArticleInfo) -> Unit
 ) {
   val space = LocalSpace.current
   val safePadding = WindowInsets.safeDrawing.asPaddingValues()
@@ -195,7 +195,7 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
     ) { item ->
       ArticleCard(
         article = item,
-        modifier = Modifier.clickable { onItemClick(item.slug) }
+        modifier = Modifier.clickable { onItemClick(item) }
       )
     }
     if (isLoadingState.value) {

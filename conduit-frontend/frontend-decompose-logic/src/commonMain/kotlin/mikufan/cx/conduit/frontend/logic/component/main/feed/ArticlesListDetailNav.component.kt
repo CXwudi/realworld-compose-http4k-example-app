@@ -60,7 +60,7 @@ class DefaultArticlesListDetailNavComponent(
 
   private suspend fun expandToWidestAllowedMode() {
     widestAllowedMode.collectLatest { widestMode ->
-      // Using navigate function so that the transformation is happened in sequence, no race condition
+      // Using the navigate function so that the transformation is happened in sequence, no race condition
       panelNavigation.navigate { oldPanels ->
         if (oldPanels.mode == widestMode) return@navigate oldPanels
         when {
@@ -123,7 +123,7 @@ class DefaultArticlesListDetailNavComponent(
     config: Config.ArticleDetail,
     componentContext: ComponentContext
   ): ArticlesListDetailNavComponentChild.ArticleDetail {
-    val detailComponent = articleDetailComponentFactory.create(componentContext, config.slug)
+    val detailComponent = articleDetailComponentFactory.create(componentContext, config.articleInfo)
     return ArticlesListDetailNavComponentChild.ArticleDetail(detailComponent)
   }
 
@@ -134,7 +134,7 @@ class DefaultArticlesListDetailNavComponent(
     data object ArticlesList : Config
 
     @Serializable
-    data class ArticleDetail(val slug: String) : Config
+    data class ArticleDetail(val articleInfo: ArticleInfo) : Config
   }
 }
 
