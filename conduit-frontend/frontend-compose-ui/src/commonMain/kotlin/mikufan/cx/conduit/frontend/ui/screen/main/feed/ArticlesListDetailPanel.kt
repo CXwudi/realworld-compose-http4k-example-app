@@ -14,6 +14,7 @@ import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanel
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.slide
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
 import mikufan.cx.conduit.frontend.ui.common.CustomHorizontalChildPanelsLayout
@@ -32,7 +33,9 @@ fun ArticlesListDetailPanel(component: ArticlesListDetailNavComponent) {
     mainChild = { ArticlesList(it.instance.component) },
     detailsChild = { detail -> ArticleContent(detail.instance.component) },
     layout = remember { CustomHorizontalChildPanelsLayout(250.dp, 250.dp to 250.dp) },
-    animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
+    // unfortunately, it would be really hard to do animation for mode switching.
+    // as it requires custom measuring the dp value changing in the ChildPanelsLayout
+    animators = ChildPanelsAnimators(single = fade() + slide(), dual = (fade() + scale()) to (fade() + slide())),
   )
 }
 
