@@ -11,6 +11,8 @@ import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponentChild
@@ -24,9 +26,14 @@ val fakeLoadingArticleListComponent = object : ArticlesListComponent {
 
   override fun send(intent: ArticlesListIntent) {}
 
-  override val labels: Flow<ArticlesListLabel> =
-    MutableStateFlow(ArticlesListLabel.Failure(null, "some error"))
+  override val labels: Flow<ArticlesListLabel> = flow {
+    // no failure
+    emit(ArticlesListLabel.Failure(null, ""))
+  }
+}
 
+val fakeArticleDetailComponent = object : ArticleDetailComponent {
+  override val slug: String = "my slug"
 }
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -69,7 +76,7 @@ fun ArticlesListDetailPanelPreviewSomeContent() {
         Unit,
         ArticlesListDetailNavComponentChild.ArticlesList(fakeLoadingArticleListComponent)
       ),
-      details = Child.Created(Unit, ArticlesListDetailNavComponentChild.ArticleDetail),
+      details = Child.Created(Unit, ArticlesListDetailNavComponentChild.ArticleDetail(fakeArticleDetailComponent)),
       extra = null,
       mode = ChildPanelsMode.SINGLE
     )
