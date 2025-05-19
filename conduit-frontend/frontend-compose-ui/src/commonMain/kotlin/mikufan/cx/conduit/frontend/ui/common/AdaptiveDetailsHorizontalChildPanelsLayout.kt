@@ -53,7 +53,7 @@ import com.arkivanov.decompose.router.panels.ChildPanelsMode
  * @param tripleWidths Pair of fixed widths for (Main panel, Extra panel) in TRIPLE mode
  */
 @ExperimentalDecomposeApi
-class CustomHorizontalChildPanelsLayout(
+class AdaptiveDetailsHorizontalChildPanelsLayout(
   private val dualMainWidth: Dp,
   private val tripleWidths: Pair<Dp, Dp>,
 ) : ChildPanelsLayout {
