@@ -24,7 +24,14 @@ data class ArticleInfo(
   val tags: List<String>,
   val createdAt: String,
   val slug: String,
-)
+) {
+  fun toPreloadedInfo(): PreloadedArticleInfo = PreloadedArticleInfo(
+    authorThumbnail = authorThumbnail,
+    authorUsername = authorUsername,
+    title = title,
+    slug = slug,
+  )
+}
 
 sealed interface ArticlesListLabel {
   data class Failure(
