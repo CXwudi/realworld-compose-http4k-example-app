@@ -95,7 +95,7 @@ pluginDep-mokkery = "dev.mokkery:mokkery-gradle:2.7.2"
 
 # setting plugin dep
 settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.0.1"
-settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.10.0"
+settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:1.0.0"
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
