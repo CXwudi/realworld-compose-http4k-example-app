@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailState
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 /**
@@ -31,9 +32,12 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent) {
       ),
     contentAlignment = Alignment.Center
   ) {
-    Text(
-      text = "Viewing article: ${state.info.title}",
-      style = MaterialTheme.typography.headlineSmall
-    )
+    if (state is ArticleDetailState.Preloaded) {
+      Text(
+        text = "Viewing article: ${(state as ArticleDetailState.Preloaded).info.title}",
+        style = MaterialTheme.typography.headlineSmall
+      )
+    }
+
   }
 }

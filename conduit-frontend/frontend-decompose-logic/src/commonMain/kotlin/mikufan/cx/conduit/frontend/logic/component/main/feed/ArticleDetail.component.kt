@@ -16,12 +16,12 @@ interface ArticleDetailComponent : MviComponent<ArticleDetailIntent, ArticleDeta
 
 class DefaultArticleDetailComponent(
   componentContext: ComponentContext,
-  articleInfo: ArticleInfo,
+  preloadedArticleInfo: PreloadedArticleInfo,
 ) : ArticleDetailComponent, ComponentContext by componentContext {
   // TODO: Add store, using slug from param
 
   override val state: StateFlow<ArticleDetailState> =
-    MutableStateFlow(ArticleDetailState.OnWaitingBody(preloadedDetail))
+    MutableStateFlow(ArticleDetailState.Preloaded(preloadedArticleInfo))
 
   override fun send(intent: ArticleDetailIntent) {
     TODO("Not yet implemented")
@@ -33,6 +33,6 @@ class DefaultArticleDetailComponent(
 }
 
 class ArticleDetailComponentFactory {
-  fun create(componentContext: ComponentContext, articleInfo: ArticleInfo) =
-    DefaultArticleDetailComponent(componentContext, preloadedDetail)
+  fun create(componentContext: ComponentContext, preloadedArticleInfo: PreloadedArticleInfo) =
+    DefaultArticleDetailComponent(componentContext, preloadedArticleInfo)
 }

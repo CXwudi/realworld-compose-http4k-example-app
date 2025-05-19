@@ -123,7 +123,7 @@ class DefaultArticlesListDetailNavComponent(
     config: Config.ArticleDetail,
     componentContext: ComponentContext
   ): ArticlesListDetailNavComponentChild.ArticleDetail {
-    val detailComponent = articleDetailComponentFactory.create(componentContext, config.articleInfo)
+    val detailComponent = articleDetailComponentFactory.create(componentContext, config.preloadedInfo)
     return ArticlesListDetailNavComponentChild.ArticleDetail(detailComponent)
   }
 
@@ -134,7 +134,7 @@ class DefaultArticlesListDetailNavComponent(
     data object ArticlesList : Config
 
     @Serializable
-    data class ArticleDetail(val articleInfo: ArticleInfo) : Config
+    data class ArticleDetail(val preloadedInfo: PreloadedArticleInfo) : Config
   }
 }
 

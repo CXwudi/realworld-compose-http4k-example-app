@@ -66,6 +66,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListCompone
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
+import mikufan.cx.conduit.frontend.logic.component.main.feed.PreloadedArticleInfo
 import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
 import mikufan.cx.conduit.frontend.ui.resources.Res
 import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
@@ -160,7 +161,7 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
   itemsState: State<List<ArticleInfo>>,
   loadStateState: State<LoadMoreState>,
   gridState: LazyGridState,
-  onItemClick: (ArticleInfo) -> Unit
+  onItemClick: (PreloadedArticleInfo) -> Unit
 ) {
   val space = LocalSpace.current
   val safePadding = WindowInsets.safeDrawing.asPaddingValues()
@@ -195,7 +196,7 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
     ) { item ->
       ArticleCard(
         article = item,
-        modifier = Modifier.clickable { onItemClick(item) }
+        modifier = Modifier.clickable { onItemClick(item.toPreloadedInfo()) }
       )
     }
     if (isLoadingState.value) {

@@ -9,8 +9,16 @@ sealed interface ArticleDetailIntent {
 }
 
 sealed interface ArticleDetailState {
-  data class Preloaded(val info: PreloadedArticleInfo): ArticleDetailState
-  data class Loaded(val info: FullArticleInfo): ArticleDetailState
+
+  data class Preloaded(
+    // we don't use the same ArticleInfo from list modeling
+    // because we want better separation of concepts
+    val info: PreloadedArticleInfo
+  ): ArticleDetailState
+
+  data class Loaded(
+    val info: FullArticleInfo
+  ): ArticleDetailState
 }
 
 @Serializable

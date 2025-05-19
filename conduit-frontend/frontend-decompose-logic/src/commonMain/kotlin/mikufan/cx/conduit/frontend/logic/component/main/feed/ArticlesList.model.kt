@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 sealed interface ArticlesListIntent {
   data object LoadMore : ArticlesListIntent
-  data class SelectArticle(val articleInfo: ArticleInfo) : ArticlesListIntent
+  data class SelectArticle(val preloadedInfo: PreloadedArticleInfo) : ArticlesListIntent
 }
 
 data class ArticlesListState(
@@ -38,5 +38,5 @@ sealed interface ArticlesListLabel {
     val exception: Exception?,
     val message: String,
   ) : ArticlesListLabel
-  data class OpenArticle(val articleInfo: ArticleInfo) : ArticlesListLabel
+  data class OpenArticle(val preloadedInfo: PreloadedArticleInfo) : ArticlesListLabel
 }

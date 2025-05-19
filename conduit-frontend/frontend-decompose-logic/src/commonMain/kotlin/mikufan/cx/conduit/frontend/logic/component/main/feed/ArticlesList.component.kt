@@ -20,7 +20,7 @@ class DefaultArticlesListComponent(
   componentContext: ComponentContext,
   searchFilter: ArticlesSearchFilter,
   articlesListStoreFactory: ArticlesListStoreFactory,
-  private val onOpenArticle: (ArticleInfo) -> Unit,
+  private val onOpenArticle: (PreloadedArticleInfo) -> Unit,
 ) : ArticlesListComponent, ComponentContext by componentContext {
 
   private val store = instanceKeeper.getStore { articlesListStoreFactory.create(searchFilter) }
@@ -39,7 +39,7 @@ class DefaultArticlesListComponent(
   private suspend fun listenToNavigationLabel() {
     store.labels.collectLatest { label ->
       when (label) {
-        is ArticlesListLabel.OpenArticle -> onOpenArticle(label.articleInfo)
+        is ArticlesListLabel.OpenArticle -> onOpenArticle(label.preloadedInfo)
         else -> Unit // Ignore other labels
       }
     }
@@ -52,7 +52,7 @@ class ArticlesListComponentFactory(
   fun create(
     componentContext: ComponentContext,
     searchFilter: ArticlesSearchFilter,
-    onOpenArticle: (ArticleInfo) -> Unit,
+    onOpenArticle: (PreloadedArticleInfo) -> Unit,
   ) = DefaultArticlesListComponent(
     componentContext = componentContext,
     searchFilter = searchFilter,

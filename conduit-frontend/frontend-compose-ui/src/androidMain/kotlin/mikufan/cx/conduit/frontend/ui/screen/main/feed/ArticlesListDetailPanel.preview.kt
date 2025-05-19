@@ -16,13 +16,13 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailCompon
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailLabel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailState
-import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListState
+import mikufan.cx.conduit.frontend.logic.component.main.feed.PreloadedArticleInfo
 import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 val fakeLoadingArticleListComponent = object : ArticlesListComponent {
@@ -36,19 +36,16 @@ val fakeLoadingArticleListComponent = object : ArticlesListComponent {
   }
 }
 
-val sampleArticleInfo = ArticleInfo(
+val samplePreloadedArticleInfo = PreloadedArticleInfo(
   authorThumbnail = "https://example.com/avatar.png",
   authorUsername = "testuser",
   title = "Test Article",
-  description = "Test Description",
-  tags = listOf("test", "kotlin"),
-  createdAt = "2023-01-01T12:00:00Z",
   slug = "test-article"
 )
 
 val fakeArticleDetailComponent = object : ArticleDetailComponent {
   override val state: StateFlow<ArticleDetailState> = MutableStateFlow(
-    ArticleDetailState(sampleArticleInfo)
+    ArticleDetailState.Preloaded(samplePreloadedArticleInfo)
   )
 
   override fun send(intent: ArticleDetailIntent) {}
