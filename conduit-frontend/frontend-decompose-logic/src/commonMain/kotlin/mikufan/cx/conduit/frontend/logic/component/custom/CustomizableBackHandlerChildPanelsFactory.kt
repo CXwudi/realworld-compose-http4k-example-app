@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalDecomposeApi::class)
+
 package mikufan.cx.conduit.frontend.logic.component.custom
 
 import com.arkivanov.decompose.Child
@@ -23,7 +24,7 @@ import kotlinx.serialization.builtins.NothingSerializer
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
  * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
- * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
+ * This version enhances back-button handling: it’s now customizable. Defaulting to [SingleModeChildPanelsBackHandler], can also use [MultiModeChildPanelsBackHandler] or provide your own implementation.
  *
  * Initializes and manages a set of up to two child components (panels): Main (required) and
  * Details (optional). The Extra component is unused. See [ChildPanelsMode] for documentation about
@@ -40,32 +41,36 @@ import kotlinx.serialization.builtins.NothingSerializer
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param handleBackButton determines whether the backHandler should be registered.
+ * @param backHandler a custom back handler that determines how to handle back button presses.
+ * By default, uses [SingleModeChildPanelsBackHandler],
+ * matching the original Decompose library behavior, but can be overridden.
+ * This is only used if handleBackButton is true.
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @return an observable [Value] of [ChildPanels].
  */
 @ExperimentalSerializationApi
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any> Ctx.customChildPanels(
+fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any> Ctx.customizableBackHandlerChildPanels(
   source: NavigationSource<Event<MC, DC, Nothing>>,
   serializers: Pair<KSerializer<MC>, KSerializer<DC>>?,
   initialPanels: () -> Panels<MC, DC, Nothing>,
   key: String = "DefaultChildPanels",
   onStateChanged: (newState: Panels<MC, DC, Nothing>, oldState: Panels<MC, DC, Nothing>?) -> Unit = { _, _ -> },
   handleBackButton: Boolean = false,
+  backHandler: ChildPanelsBackHandler<MC, DC, Nothing> = SingleModeChildPanelsBackHandler(),
   mainFactory: (configuration: MC, Ctx) -> MT,
   detailsFactory: (configuration: DC, Ctx) -> DT,
 ): Value<ChildPanels<MC, MT, DC, DT, Nothing, Nothing>> =
-  customChildPanels(
+  customizableBackHandlerChildPanels(
     source = source,
     initialPanels = initialPanels,
     serializers = serializers?.let { Triple(it.first, it.second, NothingSerializer()) },
     key = key,
     onStateChanged = onStateChanged,
     handleBackButton = handleBackButton,
+    backHandler = backHandler,
     mainFactory = mainFactory,
     detailsFactory = detailsFactory,
     extraFactory = { _, _ -> error("Can't instantiate Nothing") },
@@ -74,7 +79,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
  * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
- * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
+ * This version enhances back-button handling: it’s now customizable. Defaulting to [SingleModeChildPanelsBackHandler], can also use [MultiModeChildPanelsBackHandler] or provide your own implementation.
  *
  * Initializes and manages a set of up to two child components (panels): Main (required) and
  * Details (optional). The Extra component is unused. See [ChildPanelsMode] for documentation about
@@ -94,15 +99,16 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param handleBackButton determines whether the backHandler should be registered.
+ * @param backHandler a custom back handler that determines how to handle back button presses.
+ * By default, uses [SingleModeChildPanelsBackHandler],
+ * matching the original Decompose library behavior, but can be overridden.
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @return an observable [Value] of [ChildPanels].
  */
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> Ctx.customChildPanels(
+fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> Ctx.customizableBackHandlerChildPanels(
   source: NavigationSource<Event<MC, DC, EC>>,
   initialPanels: () -> Panels<MC, DC, EC>,
   savePanels: (Panels<MC, DC, EC>) -> SerializableContainer?,
@@ -110,10 +116,11 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
   key: String = "DefaultChildPanels",
   onStateChanged: (newState: Panels<MC, DC, EC>, oldState: Panels<MC, DC, EC>?) -> Unit = { _, _ -> },
   handleBackButton: Boolean = false,
+  backHandler: ChildPanelsBackHandler<MC, DC, EC> = SingleModeChildPanelsBackHandler(),
   mainFactory: (configuration: MC, Ctx) -> MT,
   detailsFactory: (configuration: DC, Ctx) -> DT,
 ): Value<ChildPanels<MC, MT, DC, DT, EC, ET>> =
-  customChildPanels(
+  customizableBackHandlerChildPanels(
     source = source,
     initialPanels = initialPanels,
     savePanels = savePanels,
@@ -121,6 +128,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
     key = key,
     onStateChanged = onStateChanged,
     handleBackButton = handleBackButton,
+    backHandler = backHandler,
     mainFactory = mainFactory,
     detailsFactory = detailsFactory,
     extraFactory = { _, _ -> error("Can't instantiate Nothing") },
@@ -129,7 +137,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
  * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
- * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
+ * This version enhances back-button handling: it’s now customizable. Defaulting to [SingleModeChildPanelsBackHandler], can also use [MultiModeChildPanelsBackHandler] or provide your own implementation.
  *
  * Initializes and manages a set of up to three child components (panels): Main (required),
  * Details (optional) and Extra (optional). See [ChildPanelsMode] for documentation about
@@ -146,43 +154,48 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param handleBackButton determines whether the backHandler should be registered.
+ * @param backHandler a custom back handler that determines how to handle back button presses.
+ * By default, uses [SingleModeChildPanelsBackHandler],
+ * matching the original Decompose library behavior, but can be overridden.
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @param extraFactory a factory function that creates new instances of the Extra component.
  * @return an observable [Value] of [ChildPanels].
  */
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> Ctx.customChildPanels(
+fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> Ctx.customizableBackHandlerChildPanels(
   source: NavigationSource<Event<MC, DC, EC>>,
   serializers: Triple<KSerializer<MC>, KSerializer<DC>, KSerializer<EC>>?,
   initialPanels: () -> Panels<MC, DC, EC>,
   key: String = "DefaultChildPanels",
   onStateChanged: (newState: Panels<MC, DC, EC>, oldState: Panels<MC, DC, EC>?) -> Unit = { _, _ -> },
   handleBackButton: Boolean = false,
+  backHandler: ChildPanelsBackHandler<MC, DC, EC> = SingleModeChildPanelsBackHandler(),
   mainFactory: (configuration: MC, Ctx) -> MT,
   detailsFactory: (configuration: DC, Ctx) -> DT,
   extraFactory: (configuration: EC, Ctx) -> ET,
 ): Value<ChildPanels<MC, MT, DC, DT, EC, ET>> =
-  customChildPanels(
+  customizableBackHandlerChildPanels(
     source = source,
     initialPanels = initialPanels,
     savePanels = savePanels@{ panels ->
-      val (mainSerializer, detailsSerializer, extraSerializer) = serializers ?: return@savePanels null
+      val (mainSerializer, detailsSerializer, extraSerializer) = serializers
+        ?: return@savePanels null
       SerializableContainer(
         value = panels,
         strategy = Panels.serializer(mainSerializer, detailsSerializer, extraSerializer),
       )
     },
     restorePanels = restorePanels@{ container ->
-      val (mainSerializer, detailsSerializer, extraSerializer) = serializers ?: return@restorePanels null
+      val (mainSerializer, detailsSerializer, extraSerializer) = serializers
+        ?: return@restorePanels null
       container.consume(Panels.serializer(mainSerializer, detailsSerializer, extraSerializer))
     },
     key = key,
     onStateChanged = onStateChanged,
     handleBackButton = handleBackButton,
+    backHandler = backHandler,
     mainFactory = mainFactory,
     detailsFactory = detailsFactory,
     extraFactory = extraFactory,
@@ -191,7 +204,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
 /**
  * This is a modified version of the original ChildPanels from the Decompose library
  * at [ChildPanelsFactory.kt](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanelsFactory.kt).
- * The main customization is the enhanced back button handling for wide screens, where pressing back will close the right-most panel.
+ * This version enhances back-button handling: it’s now customizable. Defaulting to [SingleModeChildPanelsBackHandler], can also use [MultiModeChildPanelsBackHandler] or provide your own implementation.
  *
  * Initializes and manages a set of up to three child components (panels): Main (required),
  * Details (optional) and Extra (optional). See [ChildPanelsMode] for documentation about
@@ -211,16 +224,17 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param handleBackButton determines whether the backHandler should be registered.
+ * @param backHandler a custom back handler that determines how to handle back button presses.
+ * By default, uses [SingleModeChildPanelsBackHandler],
+ * matching the original Decompose library behavior, but can be overridden.
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @param extraFactory a factory function that creates new instances of the Extra component.
  * @return an observable [Value] of [ChildPanels].
  */
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> Ctx.customChildPanels(
+fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> Ctx.customizableBackHandlerChildPanels(
   source: NavigationSource<Event<MC, DC, EC>>,
   initialPanels: () -> Panels<MC, DC, EC>,
   savePanels: (Panels<MC, DC, EC>) -> SerializableContainer?,
@@ -228,6 +242,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
   key: String = "DefaultChildPanels",
   onStateChanged: (newState: Panels<MC, DC, EC>, oldState: Panels<MC, DC, EC>?) -> Unit = { _, _ -> },
   handleBackButton: Boolean = false,
+  backHandler: ChildPanelsBackHandler<MC, DC, EC> = SingleModeChildPanelsBackHandler(),
   mainFactory: (configuration: MC, Ctx) -> MT,
   detailsFactory: (configuration: DC, Ctx) -> DT,
   extraFactory: (configuration: EC, Ctx) -> ET,
@@ -252,32 +267,17 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
       )
     },
     onStateChanged = { newState, oldState -> onStateChanged(newState.panels, oldState?.panels) },
-    onEventComplete = { event, newState, oldState -> event.onComplete(newState.panels, oldState.panels) },
+    onEventComplete = { event, newState, oldState ->
+      event.onComplete(
+        newState.panels,
+        oldState.panels
+      )
+    },
     backTransformer = { state ->
-      val panels = state.panels
+      if (!handleBackButton) return@children null
 
-      when {
-        !handleBackButton -> null
-
-        (panels.mode == ChildPanelsMode.SINGLE) && (panels.extra != null) -> {
-          { state.copy(panels = panels.copy(extra = null)) }
-        }
-
-        (panels.mode == ChildPanelsMode.SINGLE) && (panels.details != null) -> {
-          { state.copy(panels = panels.copy(details = null)) }
-        }
-
-        // Added two more customizations for back button handling, where in the wide screen, going back will close the right-most panel
-        (panels.mode == ChildPanelsMode.TRIPLE) && (panels.extra != null) -> {
-          { state.copy(panels = panels.copy(extra = null, mode = ChildPanelsMode.DUAL)) }
-        }
-
-        (panels.mode == ChildPanelsMode.DUAL) && (panels.details != null) -> {
-          { state.copy(panels = panels.copy(details = null, mode = ChildPanelsMode.SINGLE)) }
-        }
-
-        else -> null
-      }
+      val newPanel: Panels<MC, DC, EC>? = backHandler.handle(state.panels)
+      newPanel?.let { panels -> { state.copy(panels = panels) } }
     },
     childFactory = { config, ctx ->
       when (config) {
@@ -295,9 +295,14 @@ private sealed interface Config<out MC : Any, out DC : Any, out EC : Any> {
 }
 
 private sealed interface Panel<out MC : Any, out MT : Any, out DC : Any, out DT : Any, out EC : Any, out ET : Any> {
-  data class Main<out MC : Any, out MT : Any>(val config: MC, val instance: MT) : Panel<MC, MT, Nothing, Nothing, Nothing, Nothing>
-  data class Details<out DC : Any, out DT : Any>(val config: DC, val instance: DT) : Panel<Nothing, Nothing, DC, DT, Nothing, Nothing>
-  data class Extra<out EC : Any, out ET : Any>(val config: EC, val instance: ET) : Panel<Nothing, Nothing, Nothing, Nothing, EC, ET>
+  data class Main<out MC : Any, out MT : Any>(val config: MC, val instance: MT) :
+    Panel<MC, MT, Nothing, Nothing, Nothing, Nothing>
+
+  data class Details<out DC : Any, out DT : Any>(val config: DC, val instance: DT) :
+    Panel<Nothing, Nothing, DC, DT, Nothing, Nothing>
+
+  data class Extra<out EC : Any, out ET : Any>(val config: EC, val instance: ET) :
+    Panel<Nothing, Nothing, Nothing, Nothing, EC, ET>
 }
 
 private data class PanelsNavState<out MC : Any, out DC : Any, out EC : Any>(

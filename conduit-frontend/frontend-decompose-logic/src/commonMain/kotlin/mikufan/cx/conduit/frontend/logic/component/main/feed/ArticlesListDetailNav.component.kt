@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import mikufan.cx.conduit.frontend.logic.component.custom.customChildPanels
+import mikufan.cx.conduit.frontend.logic.component.custom.MultiModeChildPanelsBackHandler
+import mikufan.cx.conduit.frontend.logic.component.custom.customizableBackHandlerChildPanels
 
 /**
  * Naming is a bit confusing
@@ -81,12 +82,14 @@ class DefaultArticlesListDetailNavComponent(
   override val panels: Value<ChildPanels<*, ArticlesListDetailNavComponentChild.ArticlesList,
       *, ArticlesListDetailNavComponentChild.ArticleDetail,
       Nothing, Nothing>> =
-    customChildPanels(
+    customizableBackHandlerChildPanels(
       source = panelNavigation,
       key = "ArticlesListDetailPanel",
+      // currently K2 mode is having problems interpolating this typing, K1 still works
       serializers = Config.ArticlesList.serializer() to Config.ArticleDetail.serializer(),
       initialPanels = { Panels(Config.ArticlesList) },
       handleBackButton = true,
+      backHandler = MultiModeChildPanelsBackHandler(),
       mainFactory = ::mainComponent,
       detailsFactory = ::detailComponent,
     )
