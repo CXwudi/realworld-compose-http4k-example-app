@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
@@ -19,6 +21,7 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
  */
 @Composable
 fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent) {
+  val state by component.state.collectAsState()
   Box(
     modifier = Modifier
       .fillMaxSize()
@@ -29,7 +32,7 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent) {
     contentAlignment = Alignment.Center
   ) {
     Text(
-      text = "Viewing article: ${component.slug}",
+      text = "Viewing article: ${state.info.title}",
       style = MaterialTheme.typography.headlineSmall
     )
   }
