@@ -5,40 +5,37 @@ import kotlinx.serialization.Serializable
 
 sealed interface ArticleDetailIntent {
   data object BackToList : ArticleDetailIntent
-  data object LoadArticle : ArticleDetailIntent
 }
 
-sealed interface ArticleDetailState {
+data class ArticleDetailState(
+  val info: CommonArticleInfo
+)
 
-  data class Preloaded(
-    // we don't use the same ArticleInfo from list modeling
-    // because we want better separation of concepts
-    val info: PreloadedArticleInfo
-  ): ArticleDetailState
-
-  data class Loaded(
-    val info: FullArticleInfo
-  ): ArticleDetailState
+sealed interface CommonArticleInfo {
+  val authorThumbnail: String?
+  val authorUsername: String
+  val title: String
+  val slug: String
 }
 
 @Serializable
 data class PreloadedArticleInfo(
-  val authorThumbnail: String?,
-  val authorUsername: String,
-  val title: String,
-  val slug: String,
-)
+  override val authorThumbnail: String?,
+  override val authorUsername: String,
+  override val title: String,
+  override val slug: String,
+) : CommonArticleInfo
 
 data class FullArticleInfo(
-  val authorThumbnail: String?,
-  val authorUsername: String,
-  val title: String,
+  override val authorThumbnail: String?,
+  override val authorUsername: String,
+  override val title: String,
   val description: String,
   val bodyMarkdown: String,
   val tags: List<String>,
   val createdAt: String,
-  val slug: String,
-)
+  override val slug: String,
+) : CommonArticleInfo
 
 sealed interface ArticleDetailLabel {
   data object BackToList : ArticleDetailLabel

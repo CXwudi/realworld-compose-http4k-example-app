@@ -9,6 +9,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesPanelNavComponentFactory
@@ -37,6 +38,7 @@ val storeModule = module {
   single { EditProfileStoreFactory(get(), get()) }
   single { AddArticleStoreFactory(get(), get()) }
   single { ArticlesListStoreFactory(get(), get()) }
+  single { ArticleDetailStoreFactory(get(), get()) }
 }
 
 /**

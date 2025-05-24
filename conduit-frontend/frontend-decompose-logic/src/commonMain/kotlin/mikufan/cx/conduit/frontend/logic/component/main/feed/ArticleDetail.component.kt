@@ -1,38 +1,59 @@
 package mikufan.cx.conduit.frontend.logic.component.main.feed
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.component.util.LabelEmitter
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 
 /**
  * Component for the article detail page
- * TODO: Complete this component once the store is created
  */
-interface ArticleDetailComponent : MviComponent<ArticleDetailIntent, ArticleDetailState>, LabelEmitter<ArticleDetailLabel> {
-}
+interface ArticleDetailComponent : 
+  MviComponent<ArticleDetailIntent, ArticleDetailState>,
+  LabelEmitter<ArticleDetailLabel>
 
 class DefaultArticleDetailComponent(
   componentContext: ComponentContext,
   preloadedArticleInfo: PreloadedArticleInfo,
+  articleDetailStoreFactory: ArticleDetailStoreFactory,
+  private val onBackToList: () -> Unit,
 ) : ArticleDetailComponent, ComponentContext by componentContext {
-  // TODO: Add store, using slug from param
 
-  override val state: StateFlow<ArticleDetailState> =
-    MutableStateFlow(ArticleDetailState.Preloaded(preloadedArticleInfo))
-
-  override fun send(intent: ArticleDetailIntent) {
-    TODO("Not yet implemented")
+  private val store = instanceKeeper.getStore { 
+    articleDetailStoreFactory.createStore(preloadedArticleInfo, autoInit = true) 
   }
 
-  override val labels: Flow<ArticleDetailLabel>
-    get() = TODO("Not yet implemented")
+  override val state: StateFlow<ArticleDetailState> = store.stateFlow(coroutineScope())
+  override val labels: Flow<ArticleDetailLabel> = store.labels
 
+  init {
+    coroutineScope().launch {
+      store.labels.collectLatest { label ->
+        when (label) {
+          is ArticleDetailLabel.BackToList -> onBackToList()
+          else -> Unit // Ignore other labels
+        }
+      }
+    }
+  }
+
+  override fun send(intent: ArticleDetailIntent) = store.accept(intent)
 }
 
-class ArticleDetailComponentFactory {
-  fun create(componentContext: ComponentContext, preloadedArticleInfo: PreloadedArticleInfo) =
-    DefaultArticleDetailComponent(componentContext, preloadedArticleInfo)
+class ArticleDetailComponentFactory(
+  private val articleDetailStoreFactory: ArticleDetailStoreFactory,
+) {
+  fun create(
+    componentContext: ComponentContext, 
+    preloadedArticleInfo: PreloadedArticleInfo,
+    onBackToList: () -> Unit
+  ) =
+    DefaultArticleDetailComponent(componentContext, preloadedArticleInfo, articleDetailStoreFactory, onBackToList)
 }

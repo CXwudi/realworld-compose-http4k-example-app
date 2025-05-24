@@ -45,7 +45,7 @@ val samplePreloadedArticleInfo = PreloadedArticleInfo(
 
 val fakeArticleDetailComponent = object : ArticleDetailComponent {
   override val state: StateFlow<ArticleDetailState> = MutableStateFlow(
-    ArticleDetailState.Preloaded(samplePreloadedArticleInfo)
+    ArticleDetailState(samplePreloadedArticleInfo)
   )
 
   override fun send(intent: ArticleDetailIntent) {}

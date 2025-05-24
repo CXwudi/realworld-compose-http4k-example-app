@@ -126,7 +126,16 @@ class DefaultArticlesListDetailNavComponent(
     config: Config.ArticleDetail,
     componentContext: ComponentContext
   ): ArticlesListDetailNavComponentChild.ArticleDetail {
-    val detailComponent = articleDetailComponentFactory.create(componentContext, config.preloadedInfo)
+    val detailComponent = articleDetailComponentFactory.create(
+      componentContext = componentContext,
+      preloadedArticleInfo = config.preloadedInfo,
+      onBackToList = {
+        panelNavigation.navigate { panels ->
+          val targetMode = if (panels.mode > ChildPanelsMode.SINGLE) ChildPanelsMode.SINGLE else panels.mode
+          panels.copy(details = null, mode = targetMode)
+        }
+      }
+    )
     return ArticlesListDetailNavComponentChild.ArticleDetail(detailComponent)
   }
 
