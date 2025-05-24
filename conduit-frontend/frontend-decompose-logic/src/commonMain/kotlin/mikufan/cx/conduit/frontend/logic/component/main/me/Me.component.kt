@@ -3,8 +3,10 @@ package mikufan.cx.conduit.frontend.logic.component.main.me
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.component.util.MviComponent
 
 interface MePageComponent : MviComponent<MePageIntent, MePageState>
@@ -21,17 +23,20 @@ class DefaultMePageComponent(
 
   override val state: StateFlow<MePageState> = store.stateFlow(coroutineScope())
 
-  override fun send(intent: MePageIntent) {
-    when (intent) {
-      is MePageIntent.EditProfile -> {
-        val stateValue = state.value
-        if (stateValue is MePageState.Loaded) {
-          onEditProfile(LoadedMe(stateValue.email, stateValue.username, stateValue.bio, stateValue.imageUrl))
+  init {
+    coroutineScope().launch {
+      store.labels.collect { label ->
+        when (label) {
+          is MePageLabel.EditProfile -> onEditProfile(label.loadedMe)
+          is MePageLabel.AddArticle -> onAddArticle()
+          is MePageLabel.TestOnly -> Unit // do nothing - test only
         }
       }
-      is MePageIntent.AddArticle -> onAddArticle()
-      else -> store.accept(intent)
     }
+  }
+
+  override fun send(intent: MePageIntent) {
+    store.accept(intent)
   }
 }
 

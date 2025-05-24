@@ -30,7 +30,7 @@ class MeStoreTest {
   private val testDispatcher = StandardTestDispatcher()
 
   private lateinit var mePageService: MePageService
-  private lateinit var meStore: Store<MePageIntent, MePageState, Unit>
+  private lateinit var meStore: Store<MePageIntent, MePageState, MePageLabel>
 
   @BeforeTest
   fun setUp() {
@@ -38,7 +38,7 @@ class MeStoreTest {
     meStore = MeStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
       mePageService,
-      Dispatchers.Default,
+      testDispatcher,
     ).createStore(autoInit = false)
   }
 
@@ -130,7 +130,7 @@ class MeStoreTest {
     meStore.accept(MePageIntent.Logout) // simulate user action
 
     // Then
-    labelChannel.receive() // wait until the label is emitted
+    assertEquals(MePageLabel.TestOnly, labelChannel.receive())
     verifySuspend(exactly(1)) { mePageService.logout() }
 
     // And
@@ -164,8 +164,75 @@ class MeStoreTest {
     meStore.accept(MePageIntent.SwitchServer) // simulate user action
 
     // Then
-    labelChannel.receive() // wait until the label is emitted
+    assertEquals(MePageLabel.TestOnly, labelChannel.receive())
     verifySuspend(exactly(1)) { mePageService.switchServer() }
+
+    // And
+    disposable.dispose()
+    testScope.cancel()
+  }
+
+  @OptIn(ExperimentalMviKotlinApi::class)
+  @Test
+  fun testAddArticle() = runTest(testDispatcher) {
+    val stateChannel = Channel<MePageState>()
+    val testScope = TestScope(testDispatcher)
+    val labelChannel = meStore.labelsChannel(testScope)
+
+    // Given
+    val loadedMe = LoadedMe(
+      email = "test@email.com",
+      username = "testuser",
+      bio = "test bio",
+      imageUrl = "test image url"
+    )
+    // When
+    val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    everySuspend { mePageService.getCurrentUser() } returns loadedMe
+    meStore.init()
+
+    // And
+    stateChannel.receive() // ignore the first initial state
+    stateChannel.receive() // wait until the user info is loaded
+    meStore.accept(MePageIntent.AddArticle) // simulate user action
+
+    // Then
+    assertEquals(MePageLabel.AddArticle, labelChannel.receive())
+
+    // And
+    disposable.dispose()
+    testScope.cancel()
+  }
+
+  @OptIn(ExperimentalMviKotlinApi::class)
+  @Test
+  fun testEditProfile() = runTest(testDispatcher) {
+    val stateChannel = Channel<MePageState>()
+    val testScope = TestScope(testDispatcher)
+    val labelChannel = meStore.labelsChannel(testScope)
+
+    // Given
+    val loadedMe = LoadedMe(
+      email = "test@email.com",
+      username = "testuser",
+      bio = "test bio",
+      imageUrl = "test image url"
+    )
+    // When
+    val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    everySuspend { mePageService.getCurrentUser() } returns loadedMe
+    meStore.init()
+
+    // And
+    stateChannel.receive() // ignore the first initial state
+    stateChannel.receive() // wait until the user info is loaded
+    meStore.accept(MePageIntent.EditProfile) // simulate user action
+
+    // Then
+    val receivedLabel = labelChannel.receive()
+    assertTrue { receivedLabel is MePageLabel.EditProfile }
+    val editProfileLabel = receivedLabel as MePageLabel.EditProfile
+    assertEquals(loadedMe, editProfileLabel.loadedMe)
 
     // And
     disposable.dispose()
@@ -174,8 +241,6 @@ class MeStoreTest {
 
   @Test
   fun createStoreWithPreloadedMe() = runTest(testDispatcher) {
-    meStore.dispose()
-
     // Given
     val preloadedMe = LoadedMe(
       email = "test2@email.com",
@@ -183,7 +248,7 @@ class MeStoreTest {
       bio = "test bio 2",
       imageUrl = "test image url 2"
     )
-    meStore = MeStoreFactory(
+    val meStore2 = MeStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
       mePageService,
       Dispatchers.Default,
@@ -191,7 +256,7 @@ class MeStoreTest {
 
     // Then
     assertEquals(
-      meStore.state,
+      meStore2.state,
       MePageState.Loaded(
         preloadedMe.email,
         preloadedMe.imageUrl,

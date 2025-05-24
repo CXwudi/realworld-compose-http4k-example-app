@@ -20,7 +20,7 @@ class MeStoreFactory(
   private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) {
 
-  private val executorFactory = coroutineExecutorFactory<MePageIntent, Action, MePageState, Msg, Unit>(mainDispatcher) {
+  private val executorFactory = coroutineExecutorFactory<MePageIntent, Action, MePageState, Msg, MePageLabel>(mainDispatcher) {
     onAction<Action.LoadMeSuccess> {
       val loadedMe = it.loadedMe
       dispatch(Msg.LoadMe(loadedMe))
@@ -37,7 +37,7 @@ class MeStoreFactory(
           withContext(Dispatchers.Default) {
             mePageService.logout()
           }
-          publish(Unit) // purely for test purpose
+          publish(MePageLabel.TestOnly)
         } catch (t: Throwable) {
           rethrowIfShouldNotBeHandled(t) { e ->
             log.error(e) { "Failed to logout" }
@@ -53,13 +53,30 @@ class MeStoreFactory(
           withContext(Dispatchers.Default) {
             mePageService.switchServer()
           }
-          publish(Unit) // purely for test purpose
+          publish(MePageLabel.TestOnly)
         } catch (t: Throwable) {
           rethrowIfShouldNotBeHandled(t) { e ->
             log.error(e) { "Failed to switch server" }
           }
         }
       }
+    }
+
+    onIntent<MePageIntent.EditProfile> {
+      val currentState = state()
+      if (currentState is MePageState.Loaded) {
+        val loadedMe = LoadedMe(
+          email = currentState.email,
+          username = currentState.username,
+          bio = currentState.bio,
+          imageUrl = currentState.imageUrl
+        )
+        publish(MePageLabel.EditProfile(loadedMe))
+      }
+    }
+
+    onIntent<MePageIntent.AddArticle> {
+      publish(MePageLabel.AddArticle)
     }
   }
 
@@ -91,7 +108,7 @@ class MeStoreFactory(
     }
   }
 
-  fun createStore(preloadedMe: LoadedMe? = null, autoInit: Boolean = true): Store<MePageIntent, MePageState, Unit> {
+  fun createStore(preloadedMe: LoadedMe? = null, autoInit: Boolean = true): Store<MePageIntent, MePageState, MePageLabel> {
     val initialState = if (preloadedMe != null) {
       MePageState.Loaded(
         email = preloadedMe.email,

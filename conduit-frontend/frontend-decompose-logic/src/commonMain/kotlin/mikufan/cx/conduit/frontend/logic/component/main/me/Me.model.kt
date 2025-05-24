@@ -17,7 +17,7 @@ sealed interface MePageState {
  * Used for passing the information from service to store
  */
 @Serializable
-class LoadedMe(
+data class LoadedMe(
   val email: String,
   val username: String,
   val bio: String = "",
@@ -32,7 +32,7 @@ sealed interface MePageIntent {
 }
 
 sealed interface MePageLabel {
-
+  data class EditProfile(val loadedMe: LoadedMe) : MePageLabel
+  data object AddArticle : MePageLabel
+  data object TestOnly : MePageLabel
 }
-
-
