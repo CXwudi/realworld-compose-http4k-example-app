@@ -14,26 +14,8 @@ We've gone to great lengths to adhere to the community styleguides & best practi
 
 For more information on how this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
-## How it works
+## Documentation
 
-The project is divided into 4 modules:
+Head over to the [`common-doc`](common-doc) folder for documentation.
 
-1. [`conduit-common`](./conduit-common) - the shared code between the client and the server.
-2. [`conduit-frontend`](./conduit-frontend) - the KMP client source code.
-3. [`conduit-backend`](./conduit-backend) - the server source code.
-4. [`build-src`](./build-src) - shared Gradle build logic, including the [version catalog](./build-src/libs.versions.toml) that is used globally across the project.
-
-## Develop
-
-Install Android Studio and IntelliJ IDEA, then:
-
-- Frontend: Open the `conduit-frontend` directory in Android Studio.
-- Backend: Open the `conduit-backend` directory in IntelliJ IDEA.
-
-### About Frontend
-
-For frontend development, you need to follow this [guide](https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-setup.html#check-your-environment) to set up the Compose Multiplatform development environment.
-
-`conduit-frontend` declares all 4 platforms of JVM, Android, JS, and iOS. However, iOS is only declared in Gradle but not developed since I don't have a Mac machine.
-
-`conduit-frontend` contains multiplatform tests that run on all 4 platforms. However, tests on the JS platform require a browser, so far `useChromiumHeadless()` is defined in [`kmp-library.gradle.kts`](build-src/plugins/multiplatform-library/src/main/kotlin/my/kmp-library.gradle.kts), which means you need to install Chromium for running tests on the JS platform. If you already have a Chrome browser, feel free to change to `useChromeHeadless()`(or `useFirefox()` and others) for your convenience.
+The documentation is served as both a guide for human contributors, and a prompt for LLMs.
