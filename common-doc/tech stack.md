@@ -1,8 +1,8 @@
 # Tech Stack
 
-This document describes the tech stack used in this project, so that LLM can understand what libraries to use when generating codes.
+Below are the list of tech stack used in this project.
 
-When doing tasks, LLM should try to read the documentation to get the latest version of APIs and provide precise answers. To do so, try to use any tools available to you to search, read, crawl the document from the following URLs. Or use context7 for searching documentation
+For LLM: You should try to read the latest documentation to refresh your own understanding of each library as they could be outdated, so that you can provide precise answers. To do so, try to use any tools available (like search, crawl, browser tools, etc.) to you to read the document from the following URLs.
 
 ## Common
 
