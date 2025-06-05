@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.window.core.layout.WindowWidthSizeClass
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
@@ -122,17 +124,22 @@ private fun MePageContent(
 
   val model by mePageComponent.state.collectAsState()
 
+  val parentColumnPadding = PaddingValues(
+    top = LocalSpace.current.vertical.padding,
+    bottom = max(paddingValues.calculateBottomPadding(), LocalSpace.current.vertical.padding),
+  )
+
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
     modifier = modifier
       .fillMaxSize()
       .verticalScroll(rememberScrollState())
-      .padding(bottom = paddingValues.calculateBottomPadding())
+      .padding(parentColumnPadding)
+      .safeDrawingPadding()
+      .consumeWindowInsets(parentColumnPadding)
   ) {
-    Box(
-      modifier = modifier.safeDrawingPadding().consumeWindowInsets(paddingValues)
-    ) {
+    Box {
       when (model) {
         is MePageState.Loading -> {
           CircularProgressIndicator()
@@ -163,7 +170,6 @@ private fun MePageContent(
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
-      modifier = modifier.safeDrawingPadding().consumeWindowInsets(paddingValues)
     ) {
       Button(
         onClick = { mePageComponent.send(MePageIntent.EditProfile) },
@@ -208,11 +214,15 @@ private fun Profile(
   if (shouldExpand) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(LocalSpace.current.horizontal.spacing * 6)
+      horizontalArrangement = Arrangement.spacedBy(LocalSpace.current.horizontal.spacing * 6),
+      modifier = modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
     ) {
       ProfileImage(imageUrl = imageUrl, username = username)
       Column(
         verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing * 2),
+        modifier = modifier
+          .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
+          .padding(vertical = LocalSpace.current.vertical.padding)
       ) {
         Text(
           text = username,
@@ -229,18 +239,22 @@ private fun Profile(
     Column(
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing * 2),
       horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
+      modifier = modifier
+        .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
+        .padding(vertical = LocalSpace.current.vertical.padding)
     ) {
       ProfileImage(imageUrl = imageUrl, username = username)
       Spacer(modifier = Modifier.height(LocalSpace.current.vertical.spacing * 2)) // so this is doubled the spacing
       Text(
         text = username,
-        style = MaterialTheme.typography.headlineMedium
+        style = MaterialTheme.typography.headlineMedium,
+        modifier = modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
       )
       ExpandableBioText(
         bio = bio,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
       )
     }
   }
@@ -274,13 +288,12 @@ private fun ExpandableBioText(
   Column(
     // we want the bio and the button to be closer
     verticalArrangement = Arrangement.spacedBy(-LocalSpace.current.vertical.spacingSmall),
-    modifier = modifier
   ) {
     Text(
       text = bio,
       style = style,
       color = color,
-      modifier = Modifier.animateContentSize(
+      modifier = modifier.animateContentSize(
         animationSpec = spring(
           stiffness = Spring.StiffnessMedium,
           visibilityThreshold = IntSize.VisibilityThreshold,
@@ -300,6 +313,7 @@ private fun ExpandableBioText(
       TextButton(
         onClick = { isExpanded = !isExpanded },
         contentPadding = textButtonPadding,
+        modifier = modifier
       ) {
         AnimatedContent(
           targetState = textButtonText,

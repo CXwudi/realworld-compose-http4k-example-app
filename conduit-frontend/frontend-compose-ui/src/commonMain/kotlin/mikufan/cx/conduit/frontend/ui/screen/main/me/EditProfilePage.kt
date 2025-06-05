@@ -43,11 +43,9 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifier = Modifier) {
   val model by editProfileComponent.state.collectAsState()
 
-  Box(
+  Box( // outer box to make sure the column is in the center
     modifier = modifier
-      // fill max size on the outer box
-      .fillMaxSize()
-      .padding(horizontal = LocalSpace.current.horizontal.padding),
+      .fillMaxSize(),
     contentAlignment = Alignment.Center
   ) {
     Column(
@@ -57,9 +55,9 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
         .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
         .fillMaxHeight()
         .verticalScroll(rememberScrollState())
+        .padding(vertical = LocalSpace.current.vertical.padding)
         .imePadding()
-        .safeDrawingPadding()
-        .consumeWindowInsets(PaddingValues(horizontal = LocalSpace.current.horizontal.padding))
+        .safeDrawingPadding(),
     ) {
       val username by remember { derivedStateOf { model.username } }
       val bio by remember { derivedStateOf { model.bio } }
@@ -70,6 +68,7 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
       IconButton(
         onClick = { editProfileComponent.send(EditProfileIntent.BackWithoutSave) },
         modifier = Modifier.align(Alignment.Start)
+          .padding(horizontal = LocalSpace.current.horizontal.padding)
       ) {
         Icon(
           imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -82,14 +81,16 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
         onValueChange = { editProfileComponent.send(EditProfileIntent.UsernameChanged(it)) },
         label = { Text("Username") },
         singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
       OutlinedTextField(
         value = bio,
         onValueChange = { editProfileComponent.send(EditProfileIntent.BioChanged(it)) },
         label = { Text("Bio") },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
       OutlinedTextField(
@@ -97,17 +98,20 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
         onValueChange = { editProfileComponent.send(EditProfileIntent.ImageUrlChanged(it)) },
         label = { Text("Image URL") },
         singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
       PasswordTextField(
         passwordProvider = passwordState,
         onPasswordChanged = { editProfileComponent.send(EditProfileIntent.PasswordChanged(it)) },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
       Button(
         onClick = { editProfileComponent.send(EditProfileIntent.Save) },
+        modifier = Modifier.padding(horizontal = LocalSpace.current.horizontal.padding),
       ) {
         Text("Save")
       }

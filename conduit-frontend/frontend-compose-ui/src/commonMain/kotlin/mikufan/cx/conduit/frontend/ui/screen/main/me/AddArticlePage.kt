@@ -42,10 +42,9 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier = Modifier) {
   val model by addArticleComponent.state.collectAsState()
 
-  Box(
+  Box( // outer box to make sure the column is in the center
     modifier = modifier
-      .fillMaxSize()
-      .padding(horizontal = LocalSpace.current.horizontal.padding),
+      .fillMaxSize(),
     contentAlignment = Alignment.Center
   ) {
     Column(
@@ -55,9 +54,9 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
         .fillMaxHeight()
         .verticalScroll(rememberScrollState())
+        .padding(vertical = LocalSpace.current.vertical.padding)
         .imePadding()
-        .safeDrawingPadding()
-        .consumeWindowInsets(PaddingValues(horizontal = LocalSpace.current.horizontal.padding))
+        .safeDrawingPadding(),
     ) {
       val title by remember { derivedStateOf { model.title } }
       val description by remember { derivedStateOf { model.description } }
@@ -68,6 +67,7 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
       IconButton(
         onClick = { addArticleComponent.send(AddArticleIntent.BackWithoutPublish) },
         modifier = Modifier.align(Alignment.Start)
+          .padding(horizontal = LocalSpace.current.horizontal.padding)
       ) {
         Icon(
           imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -80,7 +80,8 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         onValueChange = { addArticleComponent.send(AddArticleIntent.TitleChanged(it)) },
         label = { Text("Title") },
         singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
       OutlinedTextField(
@@ -88,7 +89,8 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         onValueChange = { addArticleComponent.send(AddArticleIntent.DescriptionChanged(it)) },
         label = { Text("Description") },
         singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
 
@@ -97,7 +99,8 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         onValueChange = { addArticleComponent.send(AddArticleIntent.BodyChanged(it)) },
         label = { Text("Article Content") },
         minLines = 5,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
       OutlinedTextField(
@@ -105,11 +108,13 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
         onValueChange = { addArticleComponent.send(AddArticleIntent.TagListChanged(it)) },
         label = { Text("Tags") },
         singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+          .padding(horizontal = LocalSpace.current.horizontal.padding),
       )
 
       Button(
         onClick = { addArticleComponent.send(AddArticleIntent.Publish) },
+        modifier = Modifier.padding(horizontal = LocalSpace.current.horizontal.padding),
       ) {
         Text("Publish")
       }
