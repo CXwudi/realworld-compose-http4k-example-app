@@ -10,6 +10,8 @@ For LLM: You should try to read the latest documentation to refresh your own und
 - [kotlinx.serialization](https://kotlinlang.org/docs/serialization.html) - Library for serializing Kotlin objects
 - [Gradle](https://gradle.org/) - Build tool, used for both Frontend and Backend
 
+For LLM: Kotlin is not properly configured in VSCode, so ignore any Kotlin import-related errors reported by VSCode, but please do make sure not to make syntax errors.
+
 ## Backend
 
 - [Http4k](https://www.http4k.org/) - Functional toolkit for Kotlin HTTP applications
