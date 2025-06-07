@@ -53,7 +53,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
@@ -174,16 +173,17 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
   val contentPaddingState = remember {
     derivedStateOf {
       PaddingValues(
-        top = max(space.vertical.padding, safePadding.calculateTopPadding()),
-        bottom = max(space.vertical.padding, safePadding.calculateBottomPadding()),
-        start = max(space.horizontal.padding, safePadding.calculateStartPadding(layoutDir)),
-        end = max(space.horizontal.padding, safePadding.calculateEndPadding(layoutDir))
+        top = space.vertical.padding + safePadding.calculateTopPadding(),
+        bottom = space.vertical.padding + safePadding.calculateBottomPadding(),
+        start = space.horizontal.padding + safePadding.calculateStartPadding(layoutDir),
+        end = space.horizontal.padding + safePadding.calculateEndPadding(layoutDir)
       )
     }
   }
 
   LazyVerticalGrid(
     state = gridState,
+    modifier = Modifier.animateEnterExit(),
     columns = GridCells.Adaptive(minSize = space.horizontal.maxContentSpace / 2),
     horizontalArrangement = Arrangement.spacedBy(space.horizontal.spacing),
     verticalArrangement = Arrangement.spacedBy(space.vertical.spacing),
