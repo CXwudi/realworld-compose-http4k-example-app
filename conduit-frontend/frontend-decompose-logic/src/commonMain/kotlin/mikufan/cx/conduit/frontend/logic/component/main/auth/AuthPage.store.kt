@@ -18,7 +18,7 @@ class AuthPageStoreFactory(
 ) {
 
   private val executorFactory =
-    coroutineExecutorFactory<AuthPageIntent, Nothing, AuthPageState, Msg, Unit>(dispatcher) {
+    coroutineExecutorFactory<AuthPageIntent, Nothing, AuthPageState, Msg, AuthPageLabel>(dispatcher) {
       onIntent<AuthPageIntent.UsernameChanged> {
         dispatch(Msg.UsernameChanged(it.username))
       }
@@ -36,20 +36,25 @@ class AuthPageStoreFactory(
         val state = state()
 
         launch {
-          withContext(Dispatchers.Default) {
-            try {
+          try {
+            withContext(Dispatchers.Default) {
               if (state.mode == AuthPageMode.SIGN_IN) {
                 authService.login(state.email, state.password)
               } else {
                 authService.register(state.email, state.username, state.password)
               }
-            } catch (t: Throwable) {
-              rethrowIfShouldNotBeHandled(t) { e ->
-                log.error(e) { "Failed to login" }
-                // TODO show error message
-              }
+            }
+          } catch (t: Throwable) {
+            rethrowIfShouldNotBeHandled(t) { e ->
+              log.error(e) { "Failed to login" }
+              publish(
+                AuthPageLabel.Failure(
+                  e as? Exception,
+                  e.message ?: "Unknown error happened while authenticating")
+              )
             }
           }
+
         }
 
       }
@@ -59,7 +64,7 @@ class AuthPageStoreFactory(
           withContext(Dispatchers.Default) {
             authService.reset()
           }
-          publish(Unit) // purely for test purpose
+          publish(AuthPageLabel.BackToLanding)
         }
       }
     }

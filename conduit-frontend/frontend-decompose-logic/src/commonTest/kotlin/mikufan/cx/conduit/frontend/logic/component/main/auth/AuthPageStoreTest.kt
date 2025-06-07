@@ -1,14 +1,13 @@
 package mikufan.cx.conduit.frontend.logic.component.main.auth
 
 import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.extensions.coroutines.labelsChannel
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.exactly
 import dev.mokkery.verifySuspend
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -22,7 +21,7 @@ class AuthPageStoreTest {
   private val testDispatcher = StandardTestDispatcher()
 
   lateinit var authService: AuthService
-  lateinit var authPageStore: Store<AuthPageIntent, AuthPageState, Unit>
+  lateinit var authPageStore: Store<AuthPageIntent, AuthPageState, AuthPageLabel>
 
   @BeforeTest
   fun setUp() {
@@ -30,7 +29,7 @@ class AuthPageStoreTest {
     authPageStore = AuthPageStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
       authService,
-      Dispatchers.Default,
+      testDispatcher,
     ).createStore()
   }
 
@@ -50,14 +49,15 @@ class AuthPageStoreTest {
     assertEquals(authPageStore.state.mode, AuthPageMode.REGISTER)
   }
 
-  @OptIn(ExperimentalMviKotlinApi::class)
   @Test
   fun backToLanding() = runTest(testDispatcher) {
-    val channel = authPageStore.labelsChannel(TestScope()) // label channel in another scope
+    val testScope = TestScope()
+    val channel = authPageStore.labelsChannel(testScope) // label channel in another scope
 
     authPageStore.accept(AuthPageIntent.BackToLanding)
 
-    assertEquals(Unit, channel.receive())
+    assertEquals(AuthPageLabel.BackToLanding, channel.receive())
     verifySuspend(exactly(1)) { authService.reset() }
+    testScope.cancel()
   }
 }

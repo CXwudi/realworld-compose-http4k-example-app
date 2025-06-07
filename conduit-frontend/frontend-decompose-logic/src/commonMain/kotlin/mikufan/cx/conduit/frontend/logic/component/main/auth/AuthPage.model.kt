@@ -38,3 +38,14 @@ sealed interface AuthPageIntent {
    */
   data object BackToLanding : AuthPageIntent
 }
+
+sealed interface AuthPageLabel {
+  data class Failure(
+    val exception: Exception? = null,
+    val message: String,
+  ) : AuthPageLabel
+  /**
+   * Just for test purpose
+   */
+  data object BackToLanding : AuthPageLabel
+}

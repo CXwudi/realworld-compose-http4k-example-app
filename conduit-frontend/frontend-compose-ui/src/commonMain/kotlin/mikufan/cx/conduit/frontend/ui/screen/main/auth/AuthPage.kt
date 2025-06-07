@@ -11,14 +11,21 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,12 +34,18 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageIntent
+import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageLabel
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageMode
 import mikufan.cx.conduit.frontend.ui.common.PasswordTextField
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
@@ -45,6 +58,8 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
   val email = remember { derivedStateOf { state.email } }
   val username = remember { derivedStateOf { state.username } }
   val password = remember { derivedStateOf { state.password } }
+
+  showErrorAlert(labels = component.labels)
 
   val paddingLarge = LocalSpace.current.vertical.paddingLarge
   Box(
@@ -180,5 +195,68 @@ private fun AnimatedText(
 //    transitionSpec = { fadeInAndOut() },
   ) {
     Text(it, modifier = modifier)
+  }
+}
+
+@Composable
+private fun showErrorAlert(labels: Flow<AuthPageLabel>) {
+  // almost not possible to animate it, as dialog are drawn outside of current tree
+  // see https://github.com/JetBrains/compose-multiplatform/issues/4431
+  
+  val errorMsgState = remember { mutableStateOf("") }
+  val showErrorAlert by remember { derivedStateOf { errorMsgState.value.isNotBlank() } }
+  
+  val scope = rememberCoroutineScope()
+  scope.launch {
+    labels.collect { label ->
+      when (label) {
+        is AuthPageLabel.Failure -> {
+          errorMsgState.value = label.message
+        }
+        // Handle other labels if necessary
+        else -> {}
+      }
+    }
+  }
+  
+  if (showErrorAlert) {
+    AlertDialog(
+      onDismissRequest = { errorMsgState.value = "" },
+      shape = MaterialTheme.shapes.large,
+      tonalElevation = LocalSpace.current.vertical.spacingLarge,
+      icon = {
+        Icon(
+          imageVector = Icons.Filled.Warning,
+          contentDescription = "Error Icon",
+          tint = MaterialTheme.colorScheme.error,
+          modifier = Modifier.size(LocalSpace.current.vertical.spacingLarge * 4)
+        )
+      },
+      title = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Text(
+            text = "Error",
+            style = MaterialTheme.typography.headlineSmall
+          )
+        }
+      },
+      text = {
+        val scrollState = rememberScrollState()
+        Text(
+          text = errorMsgState.value,
+          style = MaterialTheme.typography.bodyMedium,
+          modifier = Modifier
+            .heightIn(max = 600.dp)
+            .verticalScroll(scrollState)
+        )
+      },
+      confirmButton = {
+        TextButton(
+          onClick = { errorMsgState.value = "" }
+        ) {
+          Text("OK")
+        }
+      },
+    )
   }
 }
