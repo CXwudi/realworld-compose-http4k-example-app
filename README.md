@@ -6,7 +6,7 @@
 
 | Phone | Desktop | Web|
 |---|---|---|
-| ![Phone App Screenshot](doc/screenshots/Screenshot_20240911_105149.png) | ![Desktop App Screenshot](doc/screenshots/Screenshot%202025-01-11%20230957.png) Click to enlarge | ![Web App Screenshot](doc/screenshots/Screenshot%202025-01-11%20231502.png) Click to enlarge |
+| ![Phone App Screenshot](diagram/screenshots/Screenshot_20240911_105149.png) | ![Desktop App Screenshot](diagram/screenshots/Screenshot%202025-01-11%20230957.png) Click to enlarge | ![Web App Screenshot](diagram/screenshots/Screenshot%202025-01-11%20231502.png) Click to enlarge |
 
 This codebase was created to demonstrate a fully fledged fullstack application built with **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** and **[http4k](https://www.http4k.org/)** including CRUD operations, authentication, routing, pagination, and more.
 
