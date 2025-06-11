@@ -79,7 +79,7 @@ dev-backend-exposedBom = { module = "org.jetbrains.exposed:exposed-bom", version
 dev-backend-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 dev-backend-mockk = "io.mockk:mockk:1.14.2"
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
-dev-backend-postgresql = "org.postgresql:postgresql:42.7.6"
+dev-backend-postgresql = "org.postgresql:postgresql:42.7.7"
 dev-backend-hikari = "com.zaxxer:HikariCP:6.3.0"
 dev-backend-logback = "ch.qos.logback:logback-classic:1.5.18"
 dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.17"
