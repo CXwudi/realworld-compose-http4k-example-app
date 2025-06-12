@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
-import mikufan.cx.conduit.frontend.logic.component.main.feed.FullArticleInfo
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 /**
@@ -50,13 +49,13 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, mo
         .safeDrawingPadding(),
     ) {
       Text(
-        text = "Viewing article: ${state.info.title}",
+        text = "Viewing article: ${state.basicInfo.title}",
         style = MaterialTheme.typography.headlineSmall
       )
 
       val body = remember {
         derivedStateOf {
-          (state.info as? FullArticleInfo)?.bodyMarkdown ?: "No content"
+          state.detailInfo?.bodyMarkdown ?: "Loading content..."
         }
       }
 

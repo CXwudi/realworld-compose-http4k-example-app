@@ -73,8 +73,8 @@ class ArticlesListStoreFactory(
         )
       }
       
-      onIntent<ArticlesListIntent.SelectArticle> { intent ->
-        publish(ArticlesListLabel.OpenArticle(intent.preloadedInfo))
+      onIntent<ArticlesListIntent.ClickOnArticle> { intent ->
+        publish(ArticlesListLabel.OpenArticle(intent.articleBasicInfo))
       }
     }
 

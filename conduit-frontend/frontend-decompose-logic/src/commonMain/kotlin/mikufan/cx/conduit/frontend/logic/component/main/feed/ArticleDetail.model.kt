@@ -8,34 +8,24 @@ sealed interface ArticleDetailIntent {
 }
 
 data class ArticleDetailState(
-  val info: CommonArticleInfo
+  val basicInfo: ArticleBasicInfo,
+  val detailInfo: ArticleDetailInfo? = null
 )
 
-sealed interface CommonArticleInfo {
-  val authorThumbnail: String?
-  val authorUsername: String
-  val title: String
-  val slug: String
-}
-
 @Serializable
-data class PreloadedArticleInfo(
-  override val authorThumbnail: String?,
-  override val authorUsername: String,
-  override val title: String,
-  override val slug: String,
-) : CommonArticleInfo
+data class ArticleBasicInfo(
+  val authorThumbnail: String?,
+  val authorUsername: String,
+  val title: String,
+  val slug: String
+)
 
-data class FullArticleInfo(
-  override val authorThumbnail: String?,
-  override val authorUsername: String,
-  override val title: String,
+data class ArticleDetailInfo(
   val description: String,
   val bodyMarkdown: String,
   val tags: List<String>,
-  val createdAt: String,
-  override val slug: String,
-) : CommonArticleInfo
+  val createdAt: String
+)
 
 sealed interface ArticleDetailLabel {
   data object BackToList : ArticleDetailLabel

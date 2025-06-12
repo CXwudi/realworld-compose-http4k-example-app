@@ -104,9 +104,9 @@ class DefaultArticlesListDetailNavComponent(
     componentContext: ComponentContext
   ): ArticlesListDetailNavComponentChild.ArticlesList {
     val listComponent = articlesListComponentFactory.create(
-      componentContext = componentContext, 
+      componentContext = componentContext,
       searchFilter = searchFilter,
-      onOpenArticle = { slug ->
+      onOpenArticle = { basicInfo ->
         panelNavigation.navigate { panels ->
           // Set mode to DUAL if widest allowed mode is at least DUAL
           val newMode = if (_widestAllowedMode.value >= ChildPanelsMode.DUAL) {
@@ -114,7 +114,7 @@ class DefaultArticlesListDetailNavComponent(
           } else {
             panels.mode
           }
-          panels.copy(details = Config.ArticleDetail(slug), mode = newMode)
+          panels.copy(details = Config.ArticleDetail(basicInfo), mode = newMode)
         }
       }
     )
@@ -128,7 +128,7 @@ class DefaultArticlesListDetailNavComponent(
   ): ArticlesListDetailNavComponentChild.ArticleDetail {
     val detailComponent = articleDetailComponentFactory.create(
       componentContext = componentContext,
-      preloadedArticleInfo = config.preloadedInfo,
+      basicInfo = config.basicInfo,
       onBackToList = {
         panelNavigation.navigate { panels ->
           val targetMode = if (panels.mode > ChildPanelsMode.SINGLE) ChildPanelsMode.SINGLE else panels.mode
@@ -146,7 +146,7 @@ class DefaultArticlesListDetailNavComponent(
     data object ArticlesList : Config
 
     @Serializable
-    data class ArticleDetail(val preloadedInfo: PreloadedArticleInfo) : Config
+    data class ArticleDetail(val basicInfo: ArticleBasicInfo) : Config
   }
 }
 

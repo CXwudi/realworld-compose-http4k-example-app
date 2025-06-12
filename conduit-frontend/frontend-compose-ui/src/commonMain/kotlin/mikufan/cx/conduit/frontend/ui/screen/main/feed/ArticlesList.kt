@@ -60,12 +60,12 @@ import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleBasicInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
-import mikufan.cx.conduit.frontend.logic.component.main.feed.PreloadedArticleInfo
 import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
 import mikufan.cx.conduit.frontend.ui.resources.Res
 import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
@@ -96,7 +96,7 @@ fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
     itemsState = collectedThumbInfosState,
     loadStateState = loadMoreStateState,
     gridState = gridState,
-    onItemClick = { detail -> component.send(ArticlesListIntent.SelectArticle(detail)) }
+    onItemClick = { detail -> component.send(ArticlesListIntent.ClickOnArticle(detail)) }
   )
 
   // Handle error label: label and show error message as pop up
@@ -160,7 +160,7 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
   itemsState: State<List<ArticleInfo>>,
   loadStateState: State<LoadMoreState>,
   gridState: LazyGridState,
-  onItemClick: (PreloadedArticleInfo) -> Unit
+  onItemClick: (ArticleBasicInfo) -> Unit
 ) {
   val space = LocalSpace.current
   val safePadding = WindowInsets.safeDrawing.asPaddingValues()
@@ -196,7 +196,7 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
     ) { item ->
       ArticleCard(
         article = item,
-        modifier = Modifier.clickable { onItemClick(item.toPreloadedInfo()) }
+        modifier = Modifier.clickable { onItemClick(item.toBasicInfo()) }
       )
     }
     if (isLoadingState.value) {

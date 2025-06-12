@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleBasicInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailLabel
@@ -22,7 +23,6 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailN
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListState
-import mikufan.cx.conduit.frontend.logic.component.main.feed.PreloadedArticleInfo
 import mikufan.cx.conduit.frontend.ui.util.SetupPreviewUI
 
 val fakeLoadingArticleListComponent = object : ArticlesListComponent {
@@ -36,7 +36,7 @@ val fakeLoadingArticleListComponent = object : ArticlesListComponent {
   }
 }
 
-val samplePreloadedArticleInfo = PreloadedArticleInfo(
+val sampleArticleBasicInfo = ArticleBasicInfo(
   authorThumbnail = "https://example.com/avatar.png",
   authorUsername = "testuser",
   title = "Test Article",
@@ -45,7 +45,7 @@ val samplePreloadedArticleInfo = PreloadedArticleInfo(
 
 val fakeArticleDetailComponent = object : ArticleDetailComponent {
   override val state: StateFlow<ArticleDetailState> = MutableStateFlow(
-    ArticleDetailState(samplePreloadedArticleInfo)
+    ArticleDetailState(sampleArticleBasicInfo)
   )
 
   override fun send(intent: ArticleDetailIntent) {}

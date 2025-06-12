@@ -21,13 +21,13 @@ interface ArticleDetailComponent :
 
 class DefaultArticleDetailComponent(
   componentContext: ComponentContext,
-  preloadedArticleInfo: PreloadedArticleInfo,
+  basicInfo: ArticleBasicInfo,
   articleDetailStoreFactory: ArticleDetailStoreFactory,
   private val onBackToList: () -> Unit,
 ) : ArticleDetailComponent, ComponentContext by componentContext {
 
-  private val store = instanceKeeper.getStore { 
-    articleDetailStoreFactory.createStore(preloadedArticleInfo, autoInit = true) 
+  private val store = instanceKeeper.getStore {
+    articleDetailStoreFactory.createStore(basicInfo, autoInit = true)
   }
 
   override val state: StateFlow<ArticleDetailState> = store.stateFlow(coroutineScope())
@@ -51,9 +51,9 @@ class ArticleDetailComponentFactory(
   private val articleDetailStoreFactory: ArticleDetailStoreFactory,
 ) {
   fun create(
-    componentContext: ComponentContext, 
-    preloadedArticleInfo: PreloadedArticleInfo,
+    componentContext: ComponentContext,
+    basicInfo: ArticleBasicInfo,
     onBackToList: () -> Unit
   ) =
-    DefaultArticleDetailComponent(componentContext, preloadedArticleInfo, articleDetailStoreFactory, onBackToList)
+    DefaultArticleDetailComponent(componentContext, basicInfo, articleDetailStoreFactory, onBackToList)
 }

@@ -22,8 +22,8 @@ class ArticleDetailStoreFactory(
 
   private val executorFactory = coroutineExecutorFactory<ArticleDetailIntent, Action, ArticleDetailState, Msg, ArticleDetailLabel>(mainDispatcher) {
     onAction<Action.LoadArticleSuccess> {
-      val fullArticleInfo = it.fullArticleInfo
-      dispatch(Msg.SetFullArticle(fullArticleInfo))
+      val detailInfo = it.articleDetailInfo
+      dispatch(Msg.SetDetailInfo(detailInfo))
     }
 
     onAction<Action.LoadArticleError> {
@@ -40,10 +40,10 @@ class ArticleDetailStoreFactory(
   private fun createBootstrapper(slug: String) = coroutineBootstrapper(mainDispatcher) {
     launch {
       try {
-        val fullArticleInfo = withContext(Dispatchers.Default) {
+        val articleResponse = withContext(Dispatchers.Default) {
           articleDetailService.getArticle(slug)
         }
-        dispatch(Action.LoadArticleSuccess(fullArticleInfo))
+        dispatch(Action.LoadArticleSuccess(articleResponse))
       } catch (t: Throwable) {
         rethrowIfShouldNotBeHandled(t) { e ->
           log.error(e) { "Failed to load article: $slug" }
@@ -55,15 +55,15 @@ class ArticleDetailStoreFactory(
 
   private val reducer = Reducer<ArticleDetailState, Msg> { msg ->
     when (msg) {
-      is Msg.SetFullArticle -> ArticleDetailState(msg.fullArticleInfo)
+      is Msg.SetDetailInfo -> this.copy(detailInfo = msg.detailInfo)
     }
   }
 
-  fun createStore(preloadedArticleInfo: PreloadedArticleInfo, autoInit: Boolean = true): Store<ArticleDetailIntent, ArticleDetailState, ArticleDetailLabel> {
-    val initialState = ArticleDetailState(preloadedArticleInfo)
+  fun createStore(basicInfo: ArticleBasicInfo, autoInit: Boolean = true): Store<ArticleDetailIntent, ArticleDetailState, ArticleDetailLabel> {
+    val initialState = ArticleDetailState(basicInfo = basicInfo)
 
     val bootstrapper: Bootstrapper<Action>? = if (autoInit) {
-      createBootstrapper(preloadedArticleInfo.slug)
+      createBootstrapper(basicInfo.slug)
     } else {
       null
     }
@@ -79,12 +79,12 @@ class ArticleDetailStoreFactory(
   }
 
   private sealed interface Action {
-    data class LoadArticleSuccess(val fullArticleInfo: FullArticleInfo) : Action
+    data class LoadArticleSuccess(val articleDetailInfo: ArticleDetailInfo) : Action
     data class LoadArticleError(val errorMsg: String, val exception: Exception?) : Action
   }
 
   private sealed interface Msg {
-    data class SetFullArticle(val fullArticleInfo: FullArticleInfo) : Msg
+    data class SetDetailInfo(val detailInfo: ArticleDetailInfo) : Msg
   }
 }
 
