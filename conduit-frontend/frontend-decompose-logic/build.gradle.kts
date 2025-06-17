@@ -26,6 +26,7 @@ kotlin {
       // dependencies used in both this module and compose ui module are extracted into the precompiled script plugin
       implementation("mikufan.cx.conduit:conduit-common")
 
+      implementation(libs.dev.datetime)
       implementation(libs.dev.frontend.mvikotlin)
       implementation(libs.dev.frontend.mvikotlinMain)
       implementation(libs.dev.frontend.mvikotlinCoroutines)
