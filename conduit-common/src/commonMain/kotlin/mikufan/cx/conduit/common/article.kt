@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.common
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -39,14 +40,14 @@ data class ArticleDto(
    * null body means the API doesn't return the body during the list articles request
    */
   val body: String? = null,
-  val createdAt: String,
+  val createdAt: Instant,
   val description: String,
   val favorited: Boolean,
   val favoritesCount: Int,
   val slug: String,
   val tagList: List<String>,
   val title: String,
-  val updatedAt: String
+  val updatedAt: Instant
 )
 
 @Serializable

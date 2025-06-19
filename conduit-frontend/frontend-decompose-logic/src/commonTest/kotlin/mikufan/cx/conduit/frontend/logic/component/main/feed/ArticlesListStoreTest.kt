@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Instant
 import mikufan.cx.conduit.frontend.logic.service.main.ArticlesListService
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -38,7 +39,7 @@ class ArticlesListStoreTest {
       title = "Test Article",
       description = "Test Description",
       tags = listOf("test", "kotlin"),
-      createdAt = "2023-01-01T12:00:00Z",
+      createdAt = Instant.parse("2023-01-01T12:00:00Z"),
       slug = "test-article"
     ),
     ArticleInfo(
@@ -47,7 +48,7 @@ class ArticlesListStoreTest {
       title = "Another Test Article",
       description = "Another Description",
       tags = listOf("test", "mvikotlin"),
-      createdAt = "2023-01-02T12:00:00Z",
+      createdAt = Instant.parse("2023-01-02T12:00:00Z"),
       slug = "another-test-article"
     )
   )
@@ -161,7 +162,7 @@ class ArticlesListStoreTest {
         title = "Third Article",
         description = "More test content",
         tags = listOf("testing"),
-        createdAt = "2023-01-03T12:00:00Z",
+        createdAt = Instant.parse("2023-01-03T12:00:00Z"),
         slug = "third-article"
       )
     )

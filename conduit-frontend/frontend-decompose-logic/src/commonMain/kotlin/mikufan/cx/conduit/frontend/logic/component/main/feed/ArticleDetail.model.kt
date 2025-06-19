@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.component.main.feed
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 
@@ -24,7 +25,7 @@ data class ArticleDetailInfo(
   val description: String,
   val bodyMarkdown: String,
   val tags: List<String>,
-  val createdAt: String
+  val createdAt: Instant
 )
 
 sealed interface ArticleDetailLabel {

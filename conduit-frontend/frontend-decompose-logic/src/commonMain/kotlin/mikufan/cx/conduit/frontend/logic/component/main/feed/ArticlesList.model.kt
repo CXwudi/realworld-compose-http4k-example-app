@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.component.main.feed
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 
@@ -22,7 +23,7 @@ data class ArticleInfo(
   val title: String,
   val description: String,
   val tags: List<String>,
-  val createdAt: String,
+  val createdAt: Instant,
   val slug: String,
 ) {
   fun toBasicInfo(): ArticleBasicInfo = ArticleBasicInfo(
