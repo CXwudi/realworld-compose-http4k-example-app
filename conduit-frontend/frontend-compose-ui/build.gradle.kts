@@ -39,6 +39,7 @@ kotlin {
       implementation(libs.dev.frontend.coil.cacheControl)
       implementation(libs.dev.frontend.coil.svg)
 
+      implementation(libs.dev.datetime)
 
     }
     commonJvmMain.dependencies {
