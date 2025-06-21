@@ -60,6 +60,10 @@ import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toLocalDateTime
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleBasicInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
@@ -67,11 +71,8 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
 import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
-import mikufan.cx.conduit.frontend.ui.resources.Res
-import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
-import mikufan.cx.conduit.frontend.ui.resources.user_default_avater
+import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
@@ -236,7 +237,7 @@ private fun ArticleCard(
         ProfileImage(
           imageUrl = article.authorThumbnail,
           username = article.authorUsername,
-          modifier = Modifier.size(40.dp)
+          size = 40.dp
         )
         Text(
           text = article.authorUsername,
@@ -265,7 +266,7 @@ private fun ArticleCard(
 
       // Date at the bottom
       Text(
-        text = article.createdAt,
+        text = formatDate(article.createdAt),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
@@ -274,77 +275,28 @@ private fun ArticleCard(
 }
 
 /**
- * Displays a profile image in a circular shape.
- * Handles loading, error, and empty states.
- *
- * @param imageUrl URL of the profile image to load, can be null
- * @param username Username used for accessibility description
- * @param modifier Optional modifier for customizing the layout
+ * Formats an Instant to a human-readable date string
  */
-@Composable
-private fun ProfileImage(
-  imageUrl: String?,
-  username: String,
-  modifier: Modifier = Modifier,
-) {
-  // If imageUrl is null or blank, directly use the default avatar
-  if (imageUrl.isNullOrBlank()) {
-    Image(
-      painter = painterResource(Res.drawable.user_default_avater),
-      contentDescription = "Default profile picture for $username",
-      contentScale = ContentScale.Crop,
-      modifier = modifier.clip(CircleShape)
-    )
-    return
+private fun formatDate(instant: Instant): String {
+  val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+  val month = when (localDateTime.month.number) {
+    1 -> "Jan"
+    2 -> "Feb"
+    3 -> "Mar"
+    4 -> "Apr"
+    5 -> "May"
+    6 -> "Jun"
+    7 -> "Jul"
+    8 -> "Aug"
+    9 -> "Sep"
+    10 -> "Oct"
+    11 -> "Nov"
+    12 -> "Dec"
+    else -> "Unknown"
   }
-
-  // Only use Coil for non-blank URLs
-  val sizeResolver = rememberConstraintsSizeResolver()
-  val painter = rememberAsyncImagePainter(
-    model = ImageRequest.Builder(LocalPlatformContext.current)
-      .data(imageUrl)
-      .size(sizeResolver)
-      .diskCacheKey(username)
-      .memoryCacheKey(username)
-      .build(),
-  )
-
-  val painterState by painter.state.collectAsState()
-
-  Crossfade(painterState) {
-    when (painterState) {
-      is AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Loading -> {
-        CircularProgressIndicator(
-          modifier = modifier
-            .then(sizeResolver)
-            .clip(CircleShape)
-        )
-      }
-
-      is AsyncImagePainter.State.Success -> {
-        Image(
-          painter = painter,
-          contentDescription = "Profile picture of $username",
-          contentScale = ContentScale.Crop,
-          modifier = modifier
-            .then(sizeResolver)
-            .clip(CircleShape)
-        )
-      }
-
-      is AsyncImagePainter.State.Error -> {
-        Icon(
-          painter = painterResource(Res.drawable.outlined_broken_image),
-          contentDescription = "Broken profile picture of $username",
-          modifier = modifier
-            .then(sizeResolver)
-            .clip(CircleShape)
-        )
-      }
-    }
-
-  }
+  return "$month ${localDateTime.dayOfMonth}, ${localDateTime.year}"
 }
+
 
 @Composable
 fun ArticlesListErrorAlert(articlesListLabelFlow: Flow<ArticlesListLabel>) {

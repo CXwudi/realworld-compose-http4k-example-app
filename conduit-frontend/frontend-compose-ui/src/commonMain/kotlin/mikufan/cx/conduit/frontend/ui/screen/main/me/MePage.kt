@@ -1,12 +1,10 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.me
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,10 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -44,9 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,19 +48,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.window.core.layout.WindowWidthSizeClass
-import coil3.compose.AsyncImagePainter
-import coil3.compose.LocalPlatformContext
-import coil3.compose.rememberAsyncImagePainter
-import coil3.compose.rememberConstraintsSizeResolver
-import coil3.request.ImageRequest
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageState
-import mikufan.cx.conduit.frontend.ui.resources.Res
-import mikufan.cx.conduit.frontend.ui.resources.outlined_broken_image
-import mikufan.cx.conduit.frontend.ui.resources.user_default_avater
+import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
-import org.jetbrains.compose.resources.painterResource
 
 /**
  * The main composable for the Me page that displays the user's profile.
@@ -217,7 +203,7 @@ private fun Profile(
       horizontalArrangement = Arrangement.spacedBy(LocalSpace.current.horizontal.spacing * 6),
       modifier = modifier.padding(horizontal = LocalSpace.current.horizontal.padding)
     ) {
-      ProfileImage(imageUrl = imageUrl, username = username)
+      ProfileImage(imageUrl = imageUrl, username = username, size = 120.dp)
       Column(
         verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing * 2),
         modifier = modifier
@@ -243,7 +229,7 @@ private fun Profile(
         .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
         .padding(vertical = LocalSpace.current.vertical.padding)
     ) {
-      ProfileImage(imageUrl = imageUrl, username = username)
+      ProfileImage(imageUrl = imageUrl, username = username, size = 120.dp)
       Spacer(modifier = Modifier.height(LocalSpace.current.vertical.spacing * 2)) // so this is doubled the spacing
       Text(
         text = username,
@@ -330,81 +316,3 @@ private fun ExpandableBioText(
   }
 }
 
-/**
- * Displays the user's profile image in a circular shape.
- * Uses Coil for image loading and applies proper content scaling.
- * Shows broken image icon if loading failed.
- * Shows hide image icon if image is not available.
- *
- * @param imageUrl URL of the profile image to load
- * @param username Username used for accessibility description
- * @param modifier Optional modifier for customizing the layout
- */
-@Composable
-private fun ProfileImage(
-  imageUrl: String,
-  username: String,
-  modifier: Modifier = Modifier,
-) {
-  // If imageUrl is null or blank, directly use the default avatar
-  if (imageUrl.isBlank()) {
-    Image(
-      painter = painterResource(Res.drawable.user_default_avater),
-      contentDescription = "Default profile picture for $username",
-      contentScale = ContentScale.Crop,
-      modifier = modifier.clip(CircleShape)
-    )
-    return
-  }
-
-  // Only use Coil for non-blank URLs
-  val sizeResolver = rememberConstraintsSizeResolver()
-  val painter = rememberAsyncImagePainter(
-    model = ImageRequest.Builder(LocalPlatformContext.current)
-      .data(imageUrl)
-      .size(sizeResolver)
-      .diskCacheKey(username)
-      .memoryCacheKey(username)
-      .build(),
-  )
-
-  val painterState by painter.state.collectAsState()
-
-  Crossfade(painterState) {
-    when (painterState) {
-      is AsyncImagePainter.State.Loading, is AsyncImagePainter.State.Empty -> {
-        CircularProgressIndicator(
-          modifier = modifier
-            .then(sizeResolver)
-            .size(120.dp)
-            .clip(CircleShape)
-        )
-      }
-
-      is AsyncImagePainter.State.Success -> {
-        Image(
-          painter = painter,
-          contentDescription = "Profile picture of $username",
-          contentScale = ContentScale.Crop,
-          modifier = modifier
-            .then(sizeResolver)
-            .size(120.dp)
-            .clip(CircleShape)
-        )
-      }
-
-      is AsyncImagePainter.State.Error -> {
-        Icon(
-          painter = painterResource(Res.drawable.outlined_broken_image),
-          contentDescription = "Broken profile picture of $username",
-          modifier = modifier
-            .then(sizeResolver)
-            .size(120.dp)
-            .clip(CircleShape)
-        )
-      }
-    }
-  }
-
-
-}
