@@ -28,4 +28,7 @@ For lazy layouts such as `LazyRow`, `LazyColumn`, `LazyVerticalGrid`, etc, that 
 
 ## Compose Guidance
 
-When creating Composable that need to pass variables delegated from `State<>`, prefer to pass the `State<T>` variable instead of the `T` variable. This is because `State<T>` is traded as an immutable variable by Compose. Hence value changes in `State<T>` will not trigger a whole recomposition of the Composable like `T` does. And only the part of the Composable that actually read the `State<T>` will be recomposed.
+In a Composable function that has a Decompose Component as a parameter, of course we will have `val state by component.state.collectAsState()`.
+However, any field retrieved from `state` must use `remember` and `derivedStateOf`, in order to avoid recomposition.
+
+When creating Composable that need to pass retrieved fields delegated from `state`, prefer to pass the `State<T>` variable instead of the `T` variable. This is because `State<T>` is traded as an immutable variable by Compose. Hence value changes in `State<T>` will not trigger a whole recomposition of the Composable like `T` does. And only the part of the Composable that actually read the `State<T>` will be recomposed.
