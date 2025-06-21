@@ -34,6 +34,11 @@ import kotlinx.datetime.toLocalDateTime
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
 import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
+import com.mikepenz.markdown.m3.Markdown
+import com.mikepenz.markdown.m3.markdownComponents
+import com.mikepenz.markdown.coil3.Coil3ImageTransformerImpl
+import com.mikepenz.markdown.code.highlightedCodeBlock
+import com.mikepenz.markdown.code.highlightedCodeFence
 
 /**
  * Display the article detail screen.
@@ -96,9 +101,13 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, mo
       )
 
       // Article body content
-      Text(
-        text = bodyState.value,
-        style = MaterialTheme.typography.bodyLarge,
+      Markdown(
+        content = bodyState.value,
+        imageTransformer = Coil3ImageTransformerImpl,
+        components = markdownComponents(
+          codeBlock = highlightedCodeBlock,
+          codeFence = highlightedCodeFence,
+        ),
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = horizontalPadding)

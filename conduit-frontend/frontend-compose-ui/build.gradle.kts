@@ -39,6 +39,11 @@ kotlin {
       implementation(libs.dev.frontend.coil.cacheControl)
       implementation(libs.dev.frontend.coil.svg)
 
+      implementation(libs.dev.frontend.markdownRenderer)
+      implementation(libs.dev.frontend.markdownRenderer.m3)
+      implementation(libs.dev.frontend.markdownRenderer.coil3)
+      implementation(libs.dev.frontend.markdownRenderer.code)
+
       implementation(libs.dev.datetime)
 
     }
