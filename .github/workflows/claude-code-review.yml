@@ -4,11 +4,22 @@ on:
   pull_request:
     types: [opened, synchronize]
     # Optional: Only run on specific file changes
+    paths:
+      - "**/*.kt"
+      - "**/*.kts"
+      - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "libs.versions.toml"
     # paths:
     #   - "src/**/*.ts"
     #   - "src/**/*.tsx"
     #   - "src/**/*.js"
     #   - "src/**/*.jsx"
+
+# Prevent concurrent workflow runs for the same PR
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   claude-review:
@@ -19,6 +30,7 @@ jobs:
     #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
     
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       pull-requests: read
@@ -29,7 +41,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Allow Claude to analyze commit history
 
       - name: Run Claude Code Review
         id: claude-review
