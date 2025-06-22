@@ -17,5 +17,10 @@
         'org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom{/,}**',
       ],
     },
+    {
+      enabled: false,
+      matchPackageNames: ['io.ktor:ktor-bom'],
+      matchCurrentVersion: '3.2.0',
+    },
   ],
 }
