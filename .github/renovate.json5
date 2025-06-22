@@ -15,12 +15,8 @@
         'org.jetbrains.compose{/,}**',
         'com.google.devtools.ksp{/,}**',
         'org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom{/,}**',
+        'io.ktor:ktor-bom{/,}**',
       ],
-    },
-    {
-      enabled: false,
-      matchPackageNames: ['io.ktor:ktor-bom'],
-      matchCurrentVersion: '3.2.0',
-    },
+    }
   ],
 }
