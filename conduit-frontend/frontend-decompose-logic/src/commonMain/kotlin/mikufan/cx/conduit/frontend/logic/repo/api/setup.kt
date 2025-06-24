@@ -59,17 +59,19 @@ fun createBaseUrlAndTokenProvidingPlugin(userConfigKStore: UserConfigKStore) =
     onRequest { requestBuilder, _ ->
       val userConfigState = userConfigKStore.userConfigFlow.first()
       val (url, token) = when (userConfigState) {
-        is UserConfigState.Landing -> throw IllegalStateException("User config is not set when making API call")
+        is UserConfigState.Landing -> null to null
         is UserConfigState.OnUrl -> userConfigState.url to null
         is UserConfigState.OnLogin -> userConfigState.url to userConfigState.userInfo.token
       }
 
-      requestBuilder.url { reqUrlBuilder ->
-        val newUrlBuilder = URLBuilder(url).apply {
-          appendEncodedPathSegments(reqUrlBuilder.encodedPathSegments)
-          parameters.appendAll(reqUrlBuilder.parameters.build())
+      url?.let { baseUrl ->
+        requestBuilder.url { reqUrlBuilder ->
+          val newUrlBuilder = URLBuilder(baseUrl).apply {
+            appendEncodedPathSegments(reqUrlBuilder.encodedPathSegments)
+            parameters.appendAll(reqUrlBuilder.parameters.build())
+          }
+          reqUrlBuilder.takeFrom(newUrlBuilder)
         }
-        reqUrlBuilder.takeFrom(newUrlBuilder)
       }
 
       token?.let {
