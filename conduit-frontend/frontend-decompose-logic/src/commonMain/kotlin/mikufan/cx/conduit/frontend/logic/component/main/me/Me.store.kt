@@ -13,10 +13,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
 import mikufan.cx.conduit.frontend.logic.service.main.MePageService
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
 
 class MeStoreFactory(
   private val storeFactory: StoreFactory,
   private val mePageService: MePageService,
+  private val userConfigKStore: UserConfigKStore,
   private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) {
 
@@ -82,15 +85,21 @@ class MeStoreFactory(
 
   private fun createBootstrapper() = coroutineBootstrapper(mainDispatcher) {
     launch {
-      try {
-        val currentUser = withContext(Dispatchers.Default) {
-          mePageService.getCurrentUser()
-        }
-        dispatch(Action.LoadMeSuccess(currentUser))
-      } catch (t: Throwable) {
-        rethrowIfShouldNotBeHandled(t) { e ->
-          log.error(e) { "Failed to load current user" }
-          dispatch(Action.LoadMeError(e.message ?: "Failed to load current user"))
+      userConfigKStore.userConfigFlow.collect { userConfigState ->
+        when (userConfigState) {
+          is UserConfigState.OnLogin -> {
+            val userInfo = userConfigState.userInfo
+            val loadedMe = LoadedMe(
+              email = userInfo.email,
+              username = userInfo.username,
+              bio = userInfo.bio ?: "",
+              imageUrl = userInfo.image ?: ""
+            )
+            dispatch(Action.LoadMeSuccess(loadedMe))
+          }
+          is UserConfigState.Landing, is UserConfigState.OnUrl -> {
+            dispatch(Action.LoadMeError("User not logged in"))
+          }
         }
       }
     }
@@ -108,30 +117,13 @@ class MeStoreFactory(
     }
   }
 
-  fun createStore(preloadedMe: LoadedMe? = null, autoInit: Boolean = true): Store<MePageIntent, MePageState, MePageLabel> {
-    val initialState = if (preloadedMe != null) {
-      MePageState.Loaded(
-        email = preloadedMe.email,
-        imageUrl = preloadedMe.imageUrl,
-        username = preloadedMe.username,
-        bio = preloadedMe.bio,
-      )
-    } else {
-      MePageState.Loading
-    }
-
-    val bootstrapper: Bootstrapper<Action>? = if (preloadedMe != null) {
-      null
-    } else {
-      createBootstrapper()
-    }
-
+  fun createStore(autoInit: Boolean = true): Store<MePageIntent, MePageState, MePageLabel> {
     return storeFactory.create(
       name = "MePageStore",
       autoInit = autoInit,
-      initialState = initialState,
+      initialState = MePageState.Loading,
       executorFactory = executorFactory,
-      bootstrapper = bootstrapper,
+      bootstrapper = createBootstrapper(),
       reducer = reducer
     )
   }

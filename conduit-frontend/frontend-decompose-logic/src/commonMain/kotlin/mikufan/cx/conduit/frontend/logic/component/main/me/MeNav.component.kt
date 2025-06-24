@@ -31,7 +31,7 @@ class DefaultMeNavComponent(
 
   override val childStack: Value<ChildStack<*, MeNavComponentChild>> = childStack(
     source = stackNavigation,
-    initialConfiguration = Config.MePage(),
+    initialConfiguration = Config.MePage,
     serializer = Config.serializer(),
     handleBackButton = true,
     childFactory = ::childFactory
@@ -45,7 +45,6 @@ class DefaultMeNavComponent(
       is Config.MePage -> {
         val mePageComponent = mePageComponentFactory.create(
           componentContext = componentContext,
-          preloadedMe = config.preloadedMe,
           onEditProfile = { loadedMe -> stackNavigation.pushNew(Config.EditProfile(loadedMe)) },
           onAddArticle = { stackNavigation.pushNew(Config.AddArticle) },
         )
@@ -56,11 +55,10 @@ class DefaultMeNavComponent(
         val editProfileComponent = editProfileComponentFactory.create(
           componentContext = componentContext,
           loadedMe = config.loadedMe,
-          onSaveSuccess = { newMe ->
-            // we can also have the returned new me being directly passed into the existing me page component
-            // and update the store through the component.
-            // However, that was too much rigging, so we are just lazy and recreate the me page component.
-            stackNavigation.replaceAll(Config.MePage(newMe))
+          onSaveSuccess = {
+            // Using replaceAll instead of pop to re-launch the bootstrapper
+            // and refresh the Me page with updated data from kstore
+            stackNavigation.replaceAll(Config.MePage)
           },
           onBackWithoutSave = { stackNavigation.pop() },
         )
@@ -81,7 +79,7 @@ class DefaultMeNavComponent(
   private sealed interface Config {
 
     @Serializable
-    data class MePage(val preloadedMe: LoadedMe? = null) : Config
+    data object MePage : Config
 
     @Serializable
     data class EditProfile(val loadedMe: LoadedMe) : Config

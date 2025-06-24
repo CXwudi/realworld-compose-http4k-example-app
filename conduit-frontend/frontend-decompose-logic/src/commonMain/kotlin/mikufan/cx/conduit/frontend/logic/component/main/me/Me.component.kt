@@ -14,12 +14,11 @@ interface MePageComponent : MviComponent<MePageIntent, MePageState>
 class DefaultMePageComponent(
   componentContext: ComponentContext,
   meStoreFactory: MeStoreFactory,
-  preloadedMe: LoadedMe? = null,
   private val onEditProfile: (LoadedMe) -> Unit,
   private val onAddArticle: () -> Unit,
 ) : MePageComponent, ComponentContext by componentContext {
 
-  private val store = instanceKeeper.getStore { meStoreFactory.createStore(preloadedMe = preloadedMe) }
+  private val store = instanceKeeper.getStore { meStoreFactory.createStore() }
 
   override val state: StateFlow<MePageState> = store.stateFlow(coroutineScope())
 
@@ -45,14 +44,12 @@ class MePageComponentFactory(
 ) {
   fun create(
     componentContext: ComponentContext,
-    preloadedMe: LoadedMe? = null,
     onEditProfile: (LoadedMe) -> Unit,
     onAddArticle: () -> Unit,
   ) =
     DefaultMePageComponent(
       componentContext = componentContext,
       meStoreFactory = meStoreFactory,
-      preloadedMe = preloadedMe,
       onEditProfile = onEditProfile,
       onAddArticle = onAddArticle,
     )
