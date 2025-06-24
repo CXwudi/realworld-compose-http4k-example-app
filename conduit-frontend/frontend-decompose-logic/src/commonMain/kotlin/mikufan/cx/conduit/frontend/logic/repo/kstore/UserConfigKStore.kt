@@ -12,18 +12,16 @@ interface UserConfigKStore {
   val userConfigFlow: Flow<UserConfigState>
 
   suspend fun setUrl(url: String? = null)
-  suspend fun setToken(token: String? = null)
+  suspend fun setUserInfo(userInfo: UserInfo? = null)
 
   suspend fun set(newConfig: PersistedConfig)
   suspend fun reset()
 }
 
 sealed interface UserConfigState {
-  data object Loading : UserConfigState
-  data class Loaded(
-    val url: String? = null,
-    val token: String? = null,
-  ) : UserConfigState
+  data object Landing : UserConfigState
+  data class OnUrl(val url: String) : UserConfigState
+  data class OnLogin(val url: String, val userInfo: UserInfo) : UserConfigState
 }
 
 class UserConfigKStoreImpl(
@@ -33,8 +31,13 @@ class UserConfigKStoreImpl(
    * Note: under the hood, this is a state flow
    */
   override val userConfigFlow: Flow<UserConfigState> =
-    kStore.updates.map {
-      it?.let { UserConfigState.Loaded(it.url, it.token) } ?: UserConfigState.Loading
+    kStore.updates.map { config ->
+      when {
+        config == null -> UserConfigState.Landing
+        config.url != null && config.userInfo != null -> UserConfigState.OnLogin(config.url, config.userInfo)
+        config.url != null -> UserConfigState.OnUrl(config.url)
+        else -> UserConfigState.Landing
+      }
     }
 
   override suspend fun setUrl(url: String?) = kStore.update {
@@ -42,8 +45,8 @@ class UserConfigKStoreImpl(
     it?.copy(url = url)
   }
 
-  override suspend fun setToken(token: String?) = kStore.update {
-    it?.copy(token = token)
+  override suspend fun setUserInfo(userInfo: UserInfo?) = kStore.update {
+    it?.copy(userInfo = userInfo)
   }
 
   override suspend fun set(newConfig: PersistedConfig) = kStore.set(newConfig)

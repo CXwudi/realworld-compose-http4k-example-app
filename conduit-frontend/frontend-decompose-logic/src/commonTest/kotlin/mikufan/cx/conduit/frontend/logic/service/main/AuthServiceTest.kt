@@ -13,6 +13,7 @@ import mikufan.cx.conduit.common.UserRsp
 import mikufan.cx.conduit.frontend.logic.repo.api.AuthApi
 import mikufan.cx.conduit.frontend.logic.repo.api.util.ConduitResponse
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserInfo
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -54,7 +55,15 @@ class AuthServiceTest {
 
     // then
     verifySuspend(exactly(1)) { authApi.login(loginReq) }
-    verifySuspend(exactly(1)) { userConfigKStore.setToken(token) }
+    verifySuspend(exactly(1)) { 
+      userConfigKStore.setUserInfo(UserInfo(
+        email = email,
+        username = "testuser",
+        bio = null,
+        image = null,
+        token = token
+      ))
+    }
   }
 
   @Test
@@ -106,7 +115,15 @@ class AuthServiceTest {
 
     // then
     verifySuspend(exactly(1)) { authApi.register(registerReq) }
-    verifySuspend(exactly(1)) { userConfigKStore.setToken(token) }
+    verifySuspend(exactly(1)) { 
+      userConfigKStore.setUserInfo(UserInfo(
+        email = email,
+        username = username,
+        bio = null,
+        image = null,
+        token = token
+      ))
+    }
   }
 
   @Test

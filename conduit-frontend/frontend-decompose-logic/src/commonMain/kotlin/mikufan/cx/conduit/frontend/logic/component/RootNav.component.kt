@@ -64,14 +64,9 @@ class DefaultRootNavComponent(
     userConfigKStore.userConfigFlow
       .map {
         when (it) {
-          is UserConfigState.Loading -> Config.Loading
-          is UserConfigState.Loaded -> {
-            if (it.url.isNullOrBlank()) {
-              Config.LandingPage
-            } else {
-              Config.MainPage
-            }
-          }
+          is UserConfigState.Landing -> Config.LandingPage
+          is UserConfigState.OnUrl -> Config.MainPage
+          is UserConfigState.OnLogin -> Config.MainPage
         }
       }
       .collectLatest {

@@ -29,7 +29,7 @@ class DefaultMePageService(
   }
 
   override suspend fun logout() {
-    userConfigKStore.setToken(null)
+    userConfigKStore.setUserInfo(null)
   }
 
   override suspend fun switchServer() {

@@ -76,17 +76,9 @@ class MainNavStoreFactory(
     val userConfigState: UserConfigState
   ) {
     fun toMsg() = when (userConfigState) {
-      is UserConfigState.Loaded -> {
-        if (userConfigState.token.isNullOrBlank()) {
-          Msg.ModeSwitching(MainNavMode.NOT_LOGGED_IN)
-        } else {
-          Msg.ModeSwitching(MainNavMode.LOGGED_IN)
-        }
-      }
-
-      is UserConfigState.Loading -> {
-        error("Should not happen since the main page appears only after the user config is loaded")
-      }
+      is UserConfigState.Landing -> Msg.ModeSwitching(MainNavMode.NOT_LOGGED_IN)
+      is UserConfigState.OnUrl -> Msg.ModeSwitching(MainNavMode.NOT_LOGGED_IN)
+      is UserConfigState.OnLogin -> Msg.ModeSwitching(MainNavMode.LOGGED_IN)
     }
   }
 
