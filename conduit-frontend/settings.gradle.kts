@@ -50,7 +50,6 @@ develocity {
       !System.getenv("CI").isNullOrEmpty()
     }
   }
-
 }
 
 fileTree(".").matching {
