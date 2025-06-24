@@ -90,7 +90,7 @@ class DefaultMainNavComponent(
       articleListDetailComponentFactory.create(componentContext)
     )
     Config.Favourite -> {
-      // TODO: need to depend on the user config, just like in root nav component
+      // TODO: need to depend on the user config properly
       val searchFilter = ArticlesSearchFilter(favoritedByUsername = "CXwudi")
       MainNavComponentChild.Favourite(
         articleListDetailComponentFactory.create(componentContext, searchFilter)
