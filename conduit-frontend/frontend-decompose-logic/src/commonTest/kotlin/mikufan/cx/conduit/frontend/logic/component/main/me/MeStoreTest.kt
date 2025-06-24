@@ -20,6 +20,10 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import mikufan.cx.conduit.frontend.logic.service.main.MePageService
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserInfo
+import kotlinx.coroutines.flow.flowOf
+import dev.mokkery.every
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -63,14 +67,20 @@ class MeStoreTest {
 
     // When
     val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    everySuspend { mePageService.getCurrentUser() } returns loadedMe
+    val userInfo = UserInfo(
+      email = loadedMe.email,
+      username = loadedMe.username,
+      bio = loadedMe.bio,
+      image = loadedMe.imageUrl,
+      token = "test-token"
+    )
+    every { mePageService.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
     meStore.init()
 
     // Then
     stateChannel.receive() // ignore the first initial state
     val newState = stateChannel.receive()
     assertTrue { newState is MePageState.Loaded }
-    verifySuspend(exactly(1)) { mePageService.getCurrentUser() }
     (newState as MePageState.Loaded).let {
       assertEquals(loadedMe.email, it.email)
       assertEquals(loadedMe.username, it.username)
@@ -91,15 +101,14 @@ class MeStoreTest {
 
     // When
     val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    everySuspend { mePageService.getCurrentUser() } throws RuntimeException(errorMessage)
+    every { mePageService.userConfigFlow } returns flowOf(UserConfigState.Landing)
     meStore.init()
 
     // Then
     stateChannel.receive() // ignore the first initial state
     val newState = stateChannel.receive()
     assertTrue { newState is MePageState.Error }
-    verifySuspend(exactly(1)) { mePageService.getCurrentUser() }
-    assertEquals(errorMessage, (newState as MePageState.Error).errorMsg)
+    assertEquals("User not logged in", (newState as MePageState.Error).errorMsg)
 
     disposable.dispose()
   }
@@ -121,7 +130,14 @@ class MeStoreTest {
 
     // When
     val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    everySuspend { mePageService.getCurrentUser() } returns loadedMe
+    val userInfo = UserInfo(
+      email = loadedMe.email,
+      username = loadedMe.username,
+      bio = loadedMe.bio,
+      image = loadedMe.imageUrl,
+      token = "test-token"
+    )
+    every { mePageService.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
     meStore.init()
 
     // And
@@ -155,7 +171,14 @@ class MeStoreTest {
 
     // When
     val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    everySuspend { mePageService.getCurrentUser() } returns loadedMe
+    val userInfo = UserInfo(
+      email = loadedMe.email,
+      username = loadedMe.username,
+      bio = loadedMe.bio,
+      image = loadedMe.imageUrl,
+      token = "test-token"
+    )
+    every { mePageService.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
     meStore.init()
 
     // And
@@ -188,7 +211,14 @@ class MeStoreTest {
     )
     // When
     val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    everySuspend { mePageService.getCurrentUser() } returns loadedMe
+    val userInfo = UserInfo(
+      email = loadedMe.email,
+      username = loadedMe.username,
+      bio = loadedMe.bio,
+      image = loadedMe.imageUrl,
+      token = "test-token"
+    )
+    every { mePageService.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
     meStore.init()
 
     // And
@@ -220,7 +250,14 @@ class MeStoreTest {
     )
     // When
     val disposable = meStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    everySuspend { mePageService.getCurrentUser() } returns loadedMe
+    val userInfo = UserInfo(
+      email = loadedMe.email,
+      username = loadedMe.username,
+      bio = loadedMe.bio,
+      image = loadedMe.imageUrl,
+      token = "test-token"
+    )
+    every { mePageService.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
     meStore.init()
 
     // And
@@ -238,34 +275,4 @@ class MeStoreTest {
     disposable.dispose()
     testScope.cancel()
   }
-
-  @Test
-  fun createStoreWithPreloadedMe() = runTest(testDispatcher) {
-    // Given
-    val preloadedMe = LoadedMe(
-      email = "test2@email.com",
-      username = "testuser2",
-      bio = "test bio 2",
-      imageUrl = "test image url 2"
-    )
-    val meStore2 = MeStoreFactory(
-      LoggingStoreFactory(DefaultStoreFactory()),
-      mePageService,
-      Dispatchers.Default,
-    ).createStore(preloadedMe = preloadedMe)
-
-    // Then
-    assertEquals(
-      meStore2.state,
-      MePageState.Loaded(
-        preloadedMe.email,
-        preloadedMe.imageUrl,
-        preloadedMe.username,
-        preloadedMe.bio
-      )
-    )
-
-  }
-
-
 }

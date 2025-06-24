@@ -5,40 +5,31 @@ import mikufan.cx.conduit.common.UserUpdateDto
 import mikufan.cx.conduit.frontend.logic.component.main.me.LoadedMe
 import mikufan.cx.conduit.frontend.logic.repo.api.AuthApi
 import mikufan.cx.conduit.frontend.logic.repo.api.util.getOrThrow
+import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserInfo
 
 
 interface EditProfileService {
-  suspend fun update(profileUpdate: UserUpdateDto): LoadedMe
-  suspend fun updateAndGetUserInfo(profileUpdate: UserUpdateDto): UserInfo
+  suspend fun updateAndSave(profileUpdate: UserUpdateDto)
 }
 
 class DefaultEditProfileService(
   private val authApi: AuthApi,
+  private val userConfigKStore: UserConfigKStore,
 ) : EditProfileService {
 
-  override suspend fun update(profileUpdate: UserUpdateDto): LoadedMe {
+  override suspend fun updateAndSave(profileUpdate: UserUpdateDto) {
     val rsp = authApi.updateCurrentUser(UserReq(profileUpdate))
     val newUser = rsp.getOrThrow().user
 
-    return LoadedMe(
-      email = newUser.email,
-      username = newUser.username,
-      bio = newUser.bio ?: "",
-      imageUrl = newUser.image ?: "",
-    )
-  }
-
-  override suspend fun updateAndGetUserInfo(profileUpdate: UserUpdateDto): UserInfo {
-    val rsp = authApi.updateCurrentUser(UserReq(profileUpdate))
-    val newUser = rsp.getOrThrow().user
-
-    return UserInfo(
+    // Update kstore with new user info
+    val updatedUserInfo = UserInfo(
       email = newUser.email,
       username = newUser.username,
       bio = newUser.bio,
       image = newUser.image,
       token = newUser.token
     )
+    userConfigKStore.setUserInfo(updatedUserInfo)
   }
 }

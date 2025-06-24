@@ -34,8 +34,8 @@ val storeModule = module {
   single { LandingPageStoreFactory(get(), get()) }
   single { MainNavStoreFactory(get(), get()) }
   single { AuthPageStoreFactory(get(), get()) }
-  single { MeStoreFactory(get(), get(), get()) }
-  single { EditProfileStoreFactory(get(), get(), get()) }
+  single { MeStoreFactory(get(), get()) }
+  single { EditProfileStoreFactory(get(), get()) }
   single { AddArticleStoreFactory(get(), get()) }
   single { ArticlesListStoreFactory(get(), get()) }
   single { ArticleDetailStoreFactory(get(), get()) }

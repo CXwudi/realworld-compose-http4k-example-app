@@ -179,15 +179,14 @@ class EditProfileStoreTest {
       bio = "test bio 2",
       imageUrl = "test image url 2"
     )
-    everySuspend { editProfileService.update(any()) } returns newLoadedMe
+    everySuspend { editProfileService.updateAndSave(any()) } returns Unit
      editProfileStore.accept(EditProfileIntent.Save)
 
     // Then
     stateChannel.receive() // ignore the initial state
     val newLabel = labelChannel.receive() // wait until the label is emitted
-    verifySuspend(exactly(1)) { editProfileService.update(any()) }
+    verifySuspend(exactly(1)) { editProfileService.updateAndSave(any()) }
     assertTrue { newLabel is EditProfileLabel.SaveSuccessLabel }
-    assertEquals((newLabel as EditProfileLabel.SaveSuccessLabel).newMe, newLoadedMe)
 
     disposable.dispose()
   }
@@ -199,14 +198,14 @@ class EditProfileStoreTest {
     // When
     val disposable = editProfileStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     val errorMessage = "Failed to update profile"
-    everySuspend { editProfileService.update(any()) } throws RuntimeException(errorMessage)
+    everySuspend { editProfileService.updateAndSave(any()) } throws RuntimeException(errorMessage)
     editProfileStore.accept(EditProfileIntent.Save)
 
     // Then
     stateChannel.receive() // ignore the initial state
     val newState = stateChannel.receive()
     assertEquals(errorMessage, newState.errorMsg)
-    verifySuspend(exactly(1)) { editProfileService.update(any()) }
+    verifySuspend(exactly(1)) { editProfileService.updateAndSave(any()) }
 
     disposable.dispose()
   }

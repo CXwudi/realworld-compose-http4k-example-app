@@ -25,7 +25,7 @@ val serviceModule = module {
   single<LandingService> { DefaultLandingService(get(), get()) }
   single<AuthService> { DefaultAuthService(get(), get()) }
   single<MePageService> { DefaultMePageService(get(), get()) }
-  single<EditProfileService> { DefaultEditProfileService(get()) }
+  single<EditProfileService> { DefaultEditProfileService(get(), get()) }
   single<AddArticleService> { DefaultAddArticleService(get()) }
   single<ArticlesListService> { DefaultArticlesListService(get()) }
   single<ArticleDetailService> { DefaultArticleDetailService(get()) }

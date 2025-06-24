@@ -11,13 +11,10 @@ import kotlinx.coroutines.withContext
 import mikufan.cx.conduit.common.UserUpdateDto
 import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
 import mikufan.cx.conduit.frontend.logic.service.main.EditProfileService
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserInfo
 
 class EditProfileStoreFactory(
   private val storeFactory: StoreFactory,
   private val editProfileService: EditProfileService,
-  private val userConfigKStore: UserConfigKStore,
   private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) {
 
@@ -45,8 +42,8 @@ class EditProfileStoreFactory(
     onIntent<EditProfileIntent.Save> {
       launch {
         try {
-          val newUserInfo = withContext(Dispatchers.Default) {
-            editProfileService.updateAndGetUserInfo(
+          withContext(Dispatchers.Default) {
+            editProfileService.updateAndSave(
               UserUpdateDto(
                 email = state().email,
                 username = state().username,
@@ -56,9 +53,6 @@ class EditProfileStoreFactory(
               )
             )
           }
-          
-          // Update kstore with new user info
-          userConfigKStore.setUserInfo(newUserInfo)
           
           publish(EditProfileLabel.SaveSuccessLabel)
         } catch (t: Throwable) {

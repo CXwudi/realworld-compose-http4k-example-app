@@ -13,13 +13,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mikufan.cx.conduit.frontend.logic.component.util.rethrowIfShouldNotBeHandled
 import mikufan.cx.conduit.frontend.logic.service.main.MePageService
-import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigKStore
 import mikufan.cx.conduit.frontend.logic.repo.kstore.UserConfigState
 
 class MeStoreFactory(
   private val storeFactory: StoreFactory,
   private val mePageService: MePageService,
-  private val userConfigKStore: UserConfigKStore,
   private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) {
 
@@ -85,7 +83,7 @@ class MeStoreFactory(
 
   private fun createBootstrapper() = coroutineBootstrapper(mainDispatcher) {
     launch {
-      userConfigKStore.userConfigFlow.collect { userConfigState ->
+      mePageService.userConfigFlow.collect { userConfigState ->
         when (userConfigState) {
           is UserConfigState.OnLogin -> {
             val userInfo = userConfigState.userInfo
