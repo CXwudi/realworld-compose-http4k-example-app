@@ -6,7 +6,6 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
-import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 
@@ -56,9 +55,9 @@ class DefaultMeNavComponent(
           componentContext = componentContext,
           loadedMe = config.loadedMe,
           onSaveSuccess = {
-            // Using replaceAll instead of pop to re-launch the bootstrapper
-            // and refresh the Me page with updated data from kstore
-            stackNavigation.replaceAll(Config.MePage)
+            // the kstore state flow should update the user info properly
+            // when coming back to me page
+            stackNavigation.pop()
           },
           onBackWithoutSave = { stackNavigation.pop() },
         )
@@ -83,6 +82,7 @@ class DefaultMeNavComponent(
 
     @Serializable
     data class EditProfile(val loadedMe: LoadedMe) : Config
+
     @Serializable
     data object AddArticle : Config
   }
