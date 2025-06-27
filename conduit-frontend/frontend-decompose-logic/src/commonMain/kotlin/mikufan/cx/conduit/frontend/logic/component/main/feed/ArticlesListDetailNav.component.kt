@@ -85,7 +85,6 @@ class DefaultArticlesListDetailNavComponent(
     customizableBackHandlerChildPanels(
       source = panelNavigation,
       key = "ArticlesListDetailPanel",
-      // currently K2 mode is having problems interpolating this typing, K1 still works
       serializers = Config.ArticlesList.serializer() to Config.ArticleDetail.serializer(),
       initialPanels = { Panels(Config.ArticlesList) },
       handleBackButton = true,
