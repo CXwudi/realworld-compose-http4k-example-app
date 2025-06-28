@@ -36,6 +36,7 @@ class UserConfigKStoreImpl(
         config == null -> UserConfigState.Landing
         config.url != null && config.userInfo != null -> UserConfigState.OnLogin(config.url, config.userInfo)
         config.url != null -> UserConfigState.OnUrl(config.url)
+        config.userInfo == null -> UserConfigState.Landing // if both are null
         else -> throw IllegalArgumentException("Invalid user config state: $config")
       }
     }
