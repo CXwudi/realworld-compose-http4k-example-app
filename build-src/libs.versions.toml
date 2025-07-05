@@ -9,6 +9,11 @@
 # }
 # 
 [versions]
+# Currently can't use 2.2.0
+# > Task :frontend-decompose-logic:compileKotlinJvm FAILED
+# e: java.lang.NoSuchMethodError: 'org.jetbrains.kotlin.ir.declarations.IrValueParameter org.jetbrains.kotlin.ir.declarations.IrValueParameter.transform(org.jetbrains.kotlin.ir.visitors.IrElementTransformer, java.lang.Object)'
+
+# and no one has reported the issue yet
 kotlin = "2.1.20"
 ksp = "2.1.20-2.0.1"
 java = "21"
