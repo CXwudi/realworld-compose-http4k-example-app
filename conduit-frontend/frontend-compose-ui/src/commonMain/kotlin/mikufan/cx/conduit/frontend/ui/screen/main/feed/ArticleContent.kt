@@ -173,5 +173,5 @@ private fun formatArticleDate(instant: Instant): String {
     12 -> "Dec"
     else -> "Unknown"
   }
-  return "$month ${localDateTime.dayOfMonth}, ${localDateTime.year}"
+  return "$month ${localDateTime.day}, ${localDateTime.year}"
 }

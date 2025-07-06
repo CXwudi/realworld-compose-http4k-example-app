@@ -14,11 +14,13 @@ import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
 import mikufan.cx.conduit.frontend.ui.screen.RootNavigation
 import mikufan.cx.conduit.frontend.ui.util.SetupUI
 import org.koin.compose.KoinContext
+import org.koin.compose.KoinIsolatedContext
 import org.koin.core.Koin
+import org.koin.core.KoinApplication
 
 @Composable
 fun setupAndStartMainUI(
-  koin: Koin,
+  koinApp: KoinApplication,
   rootComponent: DefaultRootNavComponent,
 ) {
   setSingletonImageLoaderFactory { context ->
@@ -29,7 +31,7 @@ fun setupAndStartMainUI(
       .crossfade(true)
       .build()
   }
-  KoinContext(context = koin) { // currently unused, but added in case if we need it
+  KoinIsolatedContext(context = koinApp) { // currently unused, but added in case if we need it
     MainUI(rootComponent)
   }
 }

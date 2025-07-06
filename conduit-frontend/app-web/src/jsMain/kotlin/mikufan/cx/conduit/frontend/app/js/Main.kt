@@ -42,8 +42,8 @@ fun main(args: Array<String>) {
   lifecycle.attachToDocument()
   GlobalScope.launch { // initialize within a global coroutine, workaround to calling suspend function from koin module
     // from https://github.com/InsertKoinIO/koin/issues/388#issuecomment-1195262422
-    val koin = initKoin().koin
-    val rootComponent = koin.get<RootNavComponentFactory>().create(defaultComponentContext)
+    val koinApp = initKoin()
+    val rootComponent = koinApp.koin.get<RootNavComponentFactory>().create(defaultComponentContext)
 
     log.info { "Starting" }
     
@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
       val canvasElementId = "ConduitCanvas"
       setupBrowserUI()
       CanvasBasedWindow(title = "Conduit Web", canvasElementId = canvasElementId) {
-        setupAndStartMainUI(koin, rootComponent)
+        setupAndStartMainUI(koinApp, rootComponent)
       }
     }
   }

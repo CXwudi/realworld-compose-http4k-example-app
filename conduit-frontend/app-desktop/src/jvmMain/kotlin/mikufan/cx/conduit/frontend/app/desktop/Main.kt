@@ -7,6 +7,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.oshai.kotlinlogging.KotlinLogging
+import jdk.internal.net.http.common.Utils.close
 import mikufan.cx.conduit.frontend.app.desktop.util.runOnUiThread
 import mikufan.cx.conduit.frontend.logic.allModules
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
@@ -22,9 +23,9 @@ fun main(args: Array<String>) {
   val defaultComponentContext = runOnUiThread {
     DefaultComponentContext(lifecycle = lifecycle)
   }
-  val koin = initKoin().koin
+  val koinApp = initKoin()
   val rootComponent = runOnUiThread {
-    koin.get<RootNavComponentFactory>().create(defaultComponentContext)
+    koinApp.koin.get<RootNavComponentFactory>().create(defaultComponentContext)
   }
 
   log.info { "Starting" }
@@ -36,12 +37,12 @@ fun main(args: Array<String>) {
 
     Window(
       onCloseRequest = {
-        koin.close()
+        koinApp.close()
         exitApplication()
       },
       title = "Conduit Desktop",
     ) {
-      setupAndStartMainUI(koin, rootComponent)
+      setupAndStartMainUI(koinApp, rootComponent)
     }
   }
 }
