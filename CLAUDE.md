@@ -1,3 +1,3 @@
 # Guidance
 
-Always begin with reading @common-doc/ as it serves both as the prompt for LLMs, and a guide for human contributors.
+Refer to ./common-doc/ for the project documentation.
