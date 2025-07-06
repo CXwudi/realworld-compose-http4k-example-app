@@ -26,7 +26,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Set up Chromenium
-      uses: browser-actions/setup-chrome@v1
+      uses: browser-actions/setup-chrome@v2
       with:
         chrome-version: stable
 
