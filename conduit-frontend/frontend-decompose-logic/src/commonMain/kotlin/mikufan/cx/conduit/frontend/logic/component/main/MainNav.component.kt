@@ -35,13 +35,10 @@ interface MainNavComponent : MviComponent<MainNavIntent, MainNavState> {
 }
 
 sealed interface MainNavComponentChild {
-
-  // TODO: each class need a component class, e.g. LandingPageComponent
   data class MainFeed(val component: ArticlesListDetailNavComponent) : MainNavComponentChild
   data class Favourite(val component: ArticlesListDetailNavComponent) : MainNavComponentChild
   data class Me(val component: MeNavComponent) : MainNavComponentChild
   data class SignInUp(val component: AuthPageComponent) : MainNavComponentChild
-
 }
 
 class DefaultMainNavComponent(
