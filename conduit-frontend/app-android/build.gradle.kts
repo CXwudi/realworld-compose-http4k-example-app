@@ -41,11 +41,11 @@ java {
 
 android {
   namespace = "mikufan.cx.conduit.frontend.app.android"
-  compileSdk = 35
+  compileSdk = libs.versions.android.compileSdk.get().toInt()
   defaultConfig {
     applicationId = "mikufan.cx.conduit.frontend.app.android"
-    minSdk = 26
-    targetSdk = 35
+    minSdk = libs.versions.android.minSdk.get().toInt()
+    targetSdk = libs.versions.android.targetSdk.get().toInt()
     versionCode = 1
     versionName = "1.0"
   }

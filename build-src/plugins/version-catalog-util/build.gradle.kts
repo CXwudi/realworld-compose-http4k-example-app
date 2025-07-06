@@ -9,7 +9,10 @@ buildConfig {
   generateAtSync = false
   useKotlinOutput { internalVisibility = false }
   forClass(packageName = "my.util", className = "Versions") {
-    buildConfigField(Int::class.java, "Java", libs.versions.java.map { it.toInt() })
+    buildConfigIntField("Java", libs.versions.java)
+    buildConfigIntField("AndroidCompileSdk", libs.versions.android.compileSdk)
+    buildConfigIntField("AndroidTargetSdk", libs.versions.android.targetSdk)
+    buildConfigIntField("AndroidMinSdk", libs.versions.android.minSdk)
   }
   forClass(packageName = "my.util", className = "Libs") {
     // Serialization
@@ -56,4 +59,8 @@ buildConfig {
 
 fun BuildConfigClassSpec.buildConfigStringField(name: String, version: Provider<*>) {
   buildConfigField(String::class.java, name, version.map { "$it" })
+}
+
+fun BuildConfigClassSpec.buildConfigIntField(name: String, version: Provider<String>) {
+  buildConfigField(Int::class.java, name, version.map { it.toInt() })
 }
