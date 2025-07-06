@@ -60,7 +60,7 @@ import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime

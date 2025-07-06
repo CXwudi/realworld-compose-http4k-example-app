@@ -4,6 +4,7 @@ import mikufan.cx.conduit.common.ArticleDto
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailInfo
 import mikufan.cx.conduit.frontend.logic.repo.api.ArticleApi
 import mikufan.cx.conduit.frontend.logic.repo.api.util.getOrThrow
+import kotlin.time.ExperimentalTime
 
 interface ArticleDetailService {
   /**

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import mikufan.cx.conduit.frontend.logic.service.main.ArticlesListService
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

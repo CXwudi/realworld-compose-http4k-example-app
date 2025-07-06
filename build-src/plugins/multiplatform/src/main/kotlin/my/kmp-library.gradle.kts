@@ -15,6 +15,9 @@ plugins {
 }
 
 kotlin {
+  compilerOptions {
+    optIn.add("kotlin.time.ExperimentalTime")
+  }
   androidTarget()
   jvm()
   js(IR) {

@@ -1,6 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.component.main.feed
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 
 

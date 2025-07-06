@@ -1,7 +1,8 @@
 package mikufan.cx.conduit.common
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class CreateArticleReq(
