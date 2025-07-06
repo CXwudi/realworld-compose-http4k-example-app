@@ -15,7 +15,9 @@
         'org.jetbrains.compose{/,}**',
         'com.google.devtools.ksp{/,}**',
         'org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom{/,}**',
-        'io.ktor:ktor-bom{/,}**',
+      ],
+      excludePackageNames: [
+        'org.jetbrains.kotlinx{/,}**',
       ],
     }
   ],
