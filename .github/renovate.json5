@@ -19,6 +19,10 @@
       excludePackageNames: [
         'org.jetbrains.kotlinx{/,}**',
       ],
+    },
+    {
+      matchPackageNames: ['org.jetbrains.kotlinx:kotlinx-datetime'],
+      allowedVersions: '!/compat/',
     }
   ],
 }
