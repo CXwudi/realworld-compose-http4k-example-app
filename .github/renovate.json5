@@ -22,7 +22,7 @@
     },
     {
       matchPackageNames: ['org.jetbrains.kotlinx:kotlinx-datetime'],
-      allowedVersions: '!/.*-.*-compat$/',
+      allowedVersions: '!/compat/',
     }
   ],
 }
