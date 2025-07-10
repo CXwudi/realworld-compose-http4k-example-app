@@ -28,7 +28,23 @@ For lazy layouts such as `LazyRow`, `LazyColumn`, `LazyVerticalGrid`, etc, that 
 
 ## Compose Guidance
 
-In a Composable function that has a Decompose Component as a parameter, of course we will have `val state by component.state.collectAsState()`.
-However, any field retrieved from `state` must use `remember` and `derivedStateOf`, in order to avoid recomposition.
+### `State<T>` Usage
+
+In a Composable function that has a Decompose Component as a parameter, of course we will retrieve the state using `val state by component.state.collectAsState()`.
+However, any field retrieved from the Decompose state must use `remember` and `derivedStateOf`, in order to avoid recomposition.
+For example, use `val emailState: State<String> = remember { derivedStateOf { state.email } }` instead of `val email: String = state.email`.
 
 When creating Composable that need to pass retrieved fields delegated from `state`, prefer to pass the `State<T>` variable instead of the `T` variable. This is because `State<T>` is traded as an immutable variable by Compose. Hence value changes in `State<T>` will not trigger a whole recomposition of the Composable like `T` does. And only the part of the Composable that actually read the `State<T>` will be recomposed.
+
+### Performance Optimization
+
+- Use `remember` for expensive computations that don't depend on state changes
+- Prefer `LazyColumn`/`LazyRow` over `Column`/`Row` with `verticalScroll`/`horizontalScroll` for large lists
+- Use `key` parameter in lazy layouts to maintain scroll position and improve performance during data changes
+- Consider using `animateItemPlacement()` for smooth animations in lazy layouts
+
+### Error Handling
+
+- Always provide fallback UI states for loading, error, and empty states
+- Use `AnimatedVisibility` or `Crossfade` for smooth transitions between states
+- Ensure proper error boundaries are in place for crash prevention
