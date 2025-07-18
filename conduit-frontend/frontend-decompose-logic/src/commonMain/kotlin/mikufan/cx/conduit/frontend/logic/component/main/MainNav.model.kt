@@ -10,8 +10,7 @@ data class MainNavState private constructor(
   val currentMenuItem: MainNavMenuItem
     get() = menuItems[pageIndex]
 
-  fun indexOfMenuItem(menuItem: MainNavMenuItem): Int? = 
-    menuItems.withIndex().firstOrNull { it.value == menuItem }?.index
+  fun indexOfMenuItem(menuItem: MainNavMenuItem): Int? = menuItems.indexOf(menuItem).takeIf { it != -1 }
 
   val isLoggedIn: Boolean
     get() = menuItems.any { it is MainNavMenuItem.Favourite }
@@ -26,6 +25,7 @@ data class MainNavState private constructor(
     }
 
     fun loggedIn(username: String, pageIndex: Int = 0): MainNavState {
+      require(username.isNotBlank()) { "Username cannot be blank" }
       val menuItems = listOf(
         MainNavMenuItem.Feed,
         MainNavMenuItem.Favourite(username),

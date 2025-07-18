@@ -36,13 +36,13 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
   val menuItems = remember { derivedStateOf { mainNavState.menuItems } }
 
-  val manuItems = remember(menuItems.value) { // not using derivedStateOf because it updates whenever menuItems changes
+  val navItems = remember(menuItems.value) { // not using derivedStateOf because it updates whenever menuItems changes
     navigationItems(menuItems.value, component::send)
   }
 
   NavigationSuiteScaffold(
     navigationSuiteItems = {
-      manuItems.forEach { item ->
+      navItems.forEach { item ->
         item(
           icon = { Icon(item.icon, contentDescription = item.label) },
           label = { Text(item.label) },

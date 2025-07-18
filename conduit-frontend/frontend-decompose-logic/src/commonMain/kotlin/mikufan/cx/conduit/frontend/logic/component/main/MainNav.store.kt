@@ -39,7 +39,7 @@ class MainNavStoreFactory(
         val newMenuItem = intent.targetMenuItem
         val currentState = state()
         val newIdx: Int = requireNotNull(currentState.indexOfMenuItem(newMenuItem)) {
-          "$newMenuItem not found in $currentState, this should not happen"
+          "MenuItem $newMenuItem not found in state with items: ${currentState.menuItems}. Current pageIndex: ${currentState.pageIndex}"
         }
         if (currentState.pageIndex != newIdx) {
           log.info { "Switching to page at index $newIdx" }
