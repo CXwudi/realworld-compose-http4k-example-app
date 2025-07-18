@@ -6,6 +6,7 @@ on:
       - main
       - master
       - 'renovate/**'
+      - 'claude/**'
     paths:
       - 'conduit-frontend/frontend-decompose-logic/**'
       - 'build-src/**'
