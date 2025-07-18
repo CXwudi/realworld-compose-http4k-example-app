@@ -1,55 +1,67 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
-data class MainNavState(
-  val mode: MainNavMode,
+data class MainNavState private constructor(
+  val menuItems: List<MainNavMenuItem>,
   /**
    * This index is used for navigation bar to indicate which page is selected
    */
   val pageIndex: Int,
 ) {
   val currentMenuItem: MainNavMenuItem
-    get() = mode.menuItems[pageIndex]
+    get() = menuItems[pageIndex]
 
+  fun indexOfMenuItem(menuItem: MainNavMenuItem): Int? = menuItems.indexOf(menuItem).takeIf { it != -1 }
 
-  fun indexOfMenuItem(menuItem: MainNavMenuItem): Int? = mode.indexMap[menuItem]
+  val isLoggedIn: Boolean
+    get() = menuItems.any { it is MainNavMenuItem.Favourite }
+
+  companion object {
+    fun notLoggedIn(pageIndex: Int = 0): MainNavState {
+      val menuItems = listOf(
+        MainNavMenuItem.Feed,
+        MainNavMenuItem.SignInUp
+      )
+      return MainNavState(menuItems, pageIndex.coerceIn(0, menuItems.size - 1))
+    }
+
+    fun loggedIn(username: String, pageIndex: Int = 0): MainNavState {
+      require(username.isNotBlank()) { "Username cannot be blank" }
+      val menuItems = listOf(
+        MainNavMenuItem.Feed,
+        MainNavMenuItem.Favourite(username),
+        MainNavMenuItem.Me
+      )
+      return MainNavState(menuItems, pageIndex.coerceIn(0, menuItems.size - 1))
+    }
+  }
 }
 
-/**
- * This class can probably be inlined,
- * but it is better to keep it as it serves as an indicator telling if the user is logged in
- */
-enum class MainNavMode(
-  val menuItems: List<MainNavMenuItem>,
-) {
-  NOT_LOGGED_IN(
-    listOf(
-      MainNavMenuItem.Feed,
-      MainNavMenuItem.SignInUp
-    )
-  ),
-  LOGGED_IN(
-    listOf(
-      MainNavMenuItem.Feed,
-      MainNavMenuItem.Favourite,
-      MainNavMenuItem.Me
-    )
-  );
-  internal val indexMap: Map<MainNavMenuItem, Int> = menuItems.withIndex().associate { it.value to it.index }
-}
-
-enum class MainNavMenuItem(
-  val menuName: String,
-) {
-  Feed("Feeds"),
-  Favourite("Favourites"),
-  Me("Me"),
-  SignInUp("Sign in/up"),
+sealed interface MainNavMenuItem {
+  val menuName: String
+  
+  data object Feed : MainNavMenuItem {
+    override val menuName: String = "Feeds"
+  }
+  
+  data class Favourite(
+    val username: String
+  ) : MainNavMenuItem {
+    override val menuName: String = "Favourites"
+  }
+  
+  data object Me : MainNavMenuItem {
+    override val menuName: String = "Me"
+  }
+  
+  data object SignInUp : MainNavMenuItem {
+    override val menuName: String = "Sign in/up"
+  }
 }
 
 /**
  * Intents for navigation in the main page
  */
 sealed interface MainNavIntent {
-  data class ModeSwitching(val targetMode: MainNavMode): MainNavIntent
+  data class StateSwitching(val targetState: MainNavState): MainNavIntent
   data class MenuItemSwitching(val targetMenuItem: MainNavMenuItem): MainNavIntent
 }

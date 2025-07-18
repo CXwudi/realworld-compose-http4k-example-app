@@ -86,9 +86,8 @@ class DefaultMainNavComponent(
     Config.MainFeed -> MainNavComponentChild.MainFeed(
       articleListDetailComponentFactory.create(componentContext)
     )
-    Config.Favourite -> {
-      // TODO: need to depend on the user config properly
-      val searchFilter = ArticlesSearchFilter(favoritedByUsername = "CXwudi")
+    is Config.Favourite -> {
+      val searchFilter = ArticlesSearchFilter(favoritedByUsername = config.username)
       MainNavComponentChild.Favourite(
         articleListDetailComponentFactory.create(componentContext, searchFilter)
       )
@@ -103,7 +102,7 @@ class DefaultMainNavComponent(
 
   private fun enumToConfig(enum: MainNavMenuItem): Config = when (enum) {
     MainNavMenuItem.Feed -> Config.MainFeed
-    MainNavMenuItem.Favourite -> Config.Favourite
+    is MainNavMenuItem.Favourite -> Config.Favourite(enum.username)
     MainNavMenuItem.Me -> Config.Me
     MainNavMenuItem.SignInUp -> Config.SignInUp
   }
@@ -115,7 +114,7 @@ class DefaultMainNavComponent(
     data object MainFeed : Config
 
     @Serializable
-    data object Favourite : Config
+    data class Favourite(val username: String) : Config
 
     @Serializable
     data object Me : Config

@@ -22,7 +22,6 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavMenuItem
-import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 import mikufan.cx.conduit.frontend.ui.screen.main.auth.AuthPage
 import mikufan.cx.conduit.frontend.ui.screen.main.feed.ArticlesListDetailPanel
 import mikufan.cx.conduit.frontend.ui.screen.main.me.MeNavPage
@@ -35,15 +34,15 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
   val stack by component.childStack.subscribeAsState()
 
   val selectedIndex by remember { derivedStateOf { mainNavState.pageIndex } }
-  val mainStateMode by remember { derivedStateOf { mainNavState.mode } }
+  val menuItems = remember { derivedStateOf { mainNavState.menuItems } }
 
-  val manuItems = remember(mainStateMode) { // not using derivedStateOf because it updates whenever mainStateMode changes
-    navigationItems(mainStateMode, component::send)
+  val navItems = remember(menuItems.value) { // not using derivedStateOf because it updates whenever menuItems changes
+    navigationItems(menuItems.value, component::send)
   }
 
   NavigationSuiteScaffold(
     navigationSuiteItems = {
-      manuItems.forEach { item ->
+      navItems.forEach { item ->
         item(
           icon = { Icon(item.icon, contentDescription = item.label) },
           label = { Text(item.label) },
@@ -70,10 +69,10 @@ fun MainNavPage(component: MainNavComponent, modifier: Modifier = Modifier) {
 
 
 private fun navigationItems(
-  mainStateMode: MainNavMode,
+  menuItems: List<MainNavMenuItem>,
   onSend: (MainNavIntent) -> Unit,
 ): List<NavigationItem> {
-  return mainStateMode.menuItems.withIndex().map { (index, value) ->
+  return menuItems.withIndex().map { (index, value) ->
     mapMenuItemEnum2NavItem(value, index, onSend)
   }
 }
@@ -92,7 +91,7 @@ private fun mapMenuItemEnum2NavItem(
 ): NavigationItem {
   val icon = when (value) {
     MainNavMenuItem.Feed -> Icons.Filled.Home
-    MainNavMenuItem.Favourite -> Icons.Filled.Favorite
+    is MainNavMenuItem.Favourite -> Icons.Filled.Favorite
     MainNavMenuItem.Me -> Icons.Filled.Person
     MainNavMenuItem.SignInUp -> Icons.Filled.Person
   }
