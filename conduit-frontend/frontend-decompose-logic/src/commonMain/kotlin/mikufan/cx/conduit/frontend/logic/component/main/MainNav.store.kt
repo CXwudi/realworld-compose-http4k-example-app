@@ -22,16 +22,16 @@ class MainNavStoreFactory(
     coroutineExecutorFactory<MainNavIntent, Action, MainNavState, Msg, Nothing>(dispatcher) {
       onAction<Action> {
         val newMsg = it.toMsg()
-        if (newMsg.targetMode != state().mode) {
-          log.info { "Switching main page mode to ${newMsg.targetMode}" }
+        if (newMsg.targetState != state()) {
+          log.info { "Switching main page state to ${newMsg.targetState}" }
           dispatch(newMsg)
         }
       }
-      onIntent<MainNavIntent.ModeSwitching> { intent ->
-        val newMode = intent.targetMode
-        if (newMode != state().mode) {
-          log.info { "Switching main page mode to $newMode" }
-          dispatch(Msg.ModeSwitching(newMode))
+      onIntent<MainNavIntent.StateSwitching> { intent ->
+        val newState = intent.targetState
+        if (newState != state()) {
+          log.info { "Switching main page state to $newState" }
+          dispatch(Msg.StateSwitching(newState))
         }
       }
 
@@ -50,7 +50,7 @@ class MainNavStoreFactory(
 
   private val reducer = Reducer<MainNavState, Msg> { msg ->
     when (msg) {
-      is Msg.ModeSwitching -> copy(mode = msg.targetMode, pageIndex = 0)
+      is Msg.StateSwitching -> msg.targetState
       is Msg.MenuIndexSwitching -> copy(pageIndex = msg.targetIndex)
     }
   }
@@ -66,7 +66,7 @@ class MainNavStoreFactory(
 
   fun createStore() = storeFactory.create(
     name = "MainNavStore",
-    initialState = MainNavState(MainNavMode.NOT_LOGGED_IN, 0),
+    initialState = MainNavState.notLoggedIn(),
     bootstrapper = createBootstrapper(),
     executorFactory = executor,
     reducer = reducer,
@@ -76,14 +76,14 @@ class MainNavStoreFactory(
     val userConfigState: UserConfigState
   ) {
     fun toMsg() = when (userConfigState) {
-      is UserConfigState.Landing -> Msg.ModeSwitching(MainNavMode.NOT_LOGGED_IN)
-      is UserConfigState.OnUrl -> Msg.ModeSwitching(MainNavMode.NOT_LOGGED_IN)
-      is UserConfigState.OnLogin -> Msg.ModeSwitching(MainNavMode.LOGGED_IN)
+      is UserConfigState.Landing -> Msg.StateSwitching(MainNavState.notLoggedIn())
+      is UserConfigState.OnUrl -> Msg.StateSwitching(MainNavState.notLoggedIn())
+      is UserConfigState.OnLogin -> Msg.StateSwitching(MainNavState.loggedIn(userConfigState.userInfo.username))
     }
   }
 
   private sealed interface Msg {
-    data class ModeSwitching(val targetMode: MainNavMode): Msg
+    data class StateSwitching(val targetState: MainNavState): Msg
     data class MenuIndexSwitching(val targetIndex: Int): Msg
   }
 

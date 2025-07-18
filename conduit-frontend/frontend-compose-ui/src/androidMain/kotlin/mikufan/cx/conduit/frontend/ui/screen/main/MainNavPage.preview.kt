@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.flow
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentChild
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavIntent
-import mikufan.cx.conduit.frontend.logic.component.main.MainNavMode
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavState
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
@@ -70,7 +69,7 @@ fun MainPagePreview() {
         )
       )
       override val state: StateFlow<MainNavState> =
-        MutableStateFlow(MainNavState(MainNavMode.NOT_LOGGED_IN, 0))
+        MutableStateFlow(MainNavState.notLoggedIn())
 
       override fun send(intent: MainNavIntent) = Unit
     }
@@ -94,7 +93,7 @@ fun MainPagePreviewForLoginUser() {
         )
       )
       override val state: StateFlow<MainNavState> =
-        MutableStateFlow(MainNavState(MainNavMode.LOGGED_IN, 0))
+        MutableStateFlow(MainNavState.loggedIn("testuser"))
 
       override fun send(intent: MainNavIntent) = Unit
     }
