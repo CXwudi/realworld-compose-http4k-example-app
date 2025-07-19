@@ -51,7 +51,7 @@ class MainNavStoreFactory(
   private val reducer = Reducer<MainNavState, Msg> { msg ->
     when (msg) {
       is Msg.StateSwitching -> msg.targetState
-      is Msg.MenuIndexSwitching -> copy(pageIndex = msg.targetIndex)
+      is Msg.MenuIndexSwitching -> with(pageIndex = msg.targetIndex)
     }
   }
 

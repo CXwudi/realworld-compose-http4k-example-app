@@ -15,6 +15,13 @@ data class MainNavState private constructor(
   val isLoggedIn: Boolean
     get() = menuItems.any { it is MainNavMenuItem.Favourite }
 
+  internal fun with(
+    menuItems: List<MainNavMenuItem> = this.menuItems,
+    pageIndex: Int = this.pageIndex
+  ): MainNavState {
+    return MainNavState(menuItems, pageIndex.coerceIn(0, menuItems.size - 1))
+  }
+
   companion object {
     fun notLoggedIn(pageIndex: Int = 0): MainNavState {
       val menuItems = listOf(

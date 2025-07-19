@@ -39,6 +39,7 @@ inline fun <T> ConduitResponse<T>.fold(
   return
 }
 
+@Suppress("NOTHING_TO_INLINE") // inline needed for non-local return in onSuccess lambda
 inline fun <T> ConduitResponse<T>.getOrThrow(): T {
   fold(
     onError = { errorRsp -> error(errorRsp.messagesAsString) },
