@@ -69,6 +69,5 @@ sealed interface MainNavMenuItem {
  * Intents for navigation in the main page
  */
 sealed interface MainNavIntent {
-  data class StateSwitching(val targetState: MainNavState): MainNavIntent
   data class MenuItemSwitching(val targetMenuItem: MainNavMenuItem): MainNavIntent
 }
