@@ -47,15 +47,15 @@ class MainNavStoreFactory(
         }
       }
 
-      onIntent<MainNavIntent.MenuItemSwitching> { intent ->
-        val newMenuItem = intent.targetMenuItem
+      onIntent<MainNavIntent.MenuIndexSwitching> { intent ->
+        val targetIndex = intent.targetIndex
         val currentState = state()
-        val newIdx: Int = requireNotNull(currentState.indexOfMenuItem(newMenuItem)) {
-          "MenuItem $newMenuItem not found in state with items: ${currentState.menuItems}. Current pageIndex: ${currentState.pageIndex}"
+        require(targetIndex in 0 until currentState.menuItems.size) {
+          "Target index $targetIndex is out of bounds. Valid range: 0-${currentState.menuItems.size - 1}, menuItems: ${currentState.menuItems}"
         }
-        if (currentState.pageIndex != newIdx) {
-          log.info { "Switching to page at index $newIdx" }
-          dispatch(Msg.MenuIndexSwitching(newIdx))
+        if (currentState.pageIndex != targetIndex) {
+          log.info { "Switching to page at index $targetIndex" }
+          dispatch(Msg.MenuIndexSwitching(targetIndex))
         }
       }
     }

@@ -97,7 +97,7 @@ private fun mapMenuItem2NavItem(
   }
 
   val item = NavigationItem(value.menuName, icon, index) {
-    onSend(MainNavIntent.MenuItemSwitching(value))
+    onSend(MainNavIntent.MenuIndexSwitching(index))
   }
 
   return item
