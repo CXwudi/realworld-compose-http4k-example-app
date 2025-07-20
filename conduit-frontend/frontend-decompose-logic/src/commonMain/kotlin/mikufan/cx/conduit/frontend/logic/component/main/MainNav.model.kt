@@ -10,10 +10,10 @@ data class MainNavState private constructor(
   val currentMenuItem: MainNavMenuItem
     get() = menuItems[pageIndex]
 
+  @Deprecated("This method is unused and will be removed in a future version")
   fun indexOfMenuItem(menuItem: MainNavMenuItem): Int? = menuItems.indexOf(menuItem).takeIf { it != -1 }
 
-  val isLoggedIn: Boolean
-    get() = menuItems.any { it is MainNavMenuItem.Favourite }
+  val isLoggedIn: Boolean = menuItems.any { it is MainNavMenuItem.Favourite }
 
   internal fun with(
     menuItems: List<MainNavMenuItem> = this.menuItems,
