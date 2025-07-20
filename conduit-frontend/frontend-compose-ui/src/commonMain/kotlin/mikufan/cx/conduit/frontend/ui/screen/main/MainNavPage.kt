@@ -73,7 +73,7 @@ private fun navigationItems(
   onSend: (MainNavIntent) -> Unit,
 ): List<NavigationItem> {
   return menuItems.withIndex().map { (index, value) ->
-    mapMenuItemEnum2NavItem(value, index, onSend)
+    mapMenuItem2NavItem(value, index, onSend)
   }
 }
 
@@ -84,7 +84,7 @@ data class NavigationItem(
   val onClick: () -> Unit
 )
 
-private fun mapMenuItemEnum2NavItem(
+private fun mapMenuItem2NavItem(
   value: MainNavMenuItem,
   index: Int,
   onSend: (MainNavIntent) -> Unit
