@@ -29,7 +29,7 @@ kstore = "1.0.0"
 ktor = "3.2.2"
 ktorfit = "2.6.1"
 
-junit = "5.13.3"
+junit = "5.13.4"
 http4k = "6.15.1.0"
 exposed = "0.61.0"
 
