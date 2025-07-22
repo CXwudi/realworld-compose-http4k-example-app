@@ -82,13 +82,15 @@ class MainNavStoreFactory(
       }
     }
 
-  fun createStore() = storeFactory.create(
+  fun createStore(autoInit: Boolean = true) = storeFactory.create(
     name = "MainNavStore",
     initialState = MainNavState.notLoggedIn(),
     bootstrapper = createBootstrapper(),
     executorFactory = executor,
     reducer = reducer,
-  )
+  ).apply {
+    if (autoInit) init()
+  }
 
   private sealed interface Action {
     data object SwitchToNotLoggedIn : Action
