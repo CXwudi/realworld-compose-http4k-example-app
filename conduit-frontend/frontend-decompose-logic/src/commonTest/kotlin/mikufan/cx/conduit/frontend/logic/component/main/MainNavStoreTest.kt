@@ -41,10 +41,6 @@ class MainNavStoreTest {
     ).createStore(autoInit = false)
   }
 
-  @AfterTest
-  fun reset() {
-    mainNavStore.dispose()
-  }
 
   @Test
   fun testBootstrapperOnUrlToNotLoggedIn() = runTest(testDispatcher) {
@@ -66,6 +62,7 @@ class MainNavStoreTest {
     assertTrue(newState.menuItems.contains(MainNavMenuItem.SignInUp))
 
     disposable.dispose()
+    mainNavStore.dispose()
   }
 
   @Test
@@ -98,6 +95,7 @@ class MainNavStoreTest {
     assertEquals("testuser", favouriteItem.username)
 
     disposable.dispose()
+    mainNavStore.dispose()
   }
 
   @Test
@@ -106,9 +104,19 @@ class MainNavStoreTest {
     mainNavStore.init()
     
     // Given/Then - bootstrapper should throw IllegalStateException for Landing state
-    assertFailsWith<IllegalStateException> {
+    // Exception is thrown in the bootstrapper coroutine, so we need to catch it there
+    try {
       userConfigStateChannel.send(UserConfigState.Landing)
+      // Give some time for the bootstrapper to process the state and throw
+      advanceUntilIdle()
+      // If we get here without exception, the test should fail
+      throw AssertionError("Expected IllegalStateException was not thrown")
+    } catch (e: IllegalStateException) {
+      // This is the expected exception from bootstrapper
+      assertTrue(e.message?.contains("Should not be Landing state after coming to MainNav") == true)
     }
+    
+    mainNavStore.dispose()
   }
 
   @Test
@@ -141,6 +149,7 @@ class MainNavStoreTest {
     assertTrue(newState.menuItems.contains(MainNavMenuItem.SignInUp))
 
     disposable.dispose()
+    mainNavStore.dispose()
   }
 
   @Test
@@ -173,6 +182,7 @@ class MainNavStoreTest {
     assertEquals("newuser", favouriteItem.username)
 
     disposable.dispose()
+    mainNavStore.dispose()
   }
 
   @Test
@@ -200,6 +210,7 @@ class MainNavStoreTest {
     assertEquals("user2", favouriteItem.username)
 
     disposable.dispose()
+    mainNavStore.dispose()
   }
 
   @Test
@@ -214,6 +225,8 @@ class MainNavStoreTest {
     // Then
     assertEquals(1, mainNavStore.state.pageIndex)
     assertEquals(MainNavMenuItem.SignInUp, mainNavStore.state.currentMenuItem)
+    
+    mainNavStore.dispose()
   }
 
   @Test
@@ -226,6 +239,8 @@ class MainNavStoreTest {
     assertFailsWith<IllegalArgumentException> {
       mainNavStore.accept(MainNavIntent.MenuIndexSwitching(2))
     }
+    
+    mainNavStore.dispose()
   }
 
   @Test
@@ -238,6 +253,8 @@ class MainNavStoreTest {
     assertFailsWith<IllegalArgumentException> {
       mainNavStore.accept(MainNavIntent.MenuIndexSwitching(-1))
     }
+    
+    mainNavStore.dispose()
   }
 
   @Test
@@ -259,14 +276,24 @@ class MainNavStoreTest {
     assertEquals(0, mainNavStore.state.pageIndex)
 
     disposable.dispose()
+    mainNavStore.dispose()
   }
 
   @Test
   fun testMenuIndexSwitchingLoggedInState() = runTest(testDispatcher) {
-    // Given - logged in state (3 menu items: Feed, Favourite, Me)
+    val stateChannel = Channel<MainNavState>()
+    
+    // Given - start with logged in state (3 menu items: Feed, Favourite, Me)
     val userInfo = UserInfo("test@example.com", "testuser", null, null, "token")
+    val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
+
+    // Wait for state to transition to logged in
+    stateChannel.receive() // initial state
+    val loggedInState = stateChannel.receive() // logged in state
+    assertTrue(loggedInState.isLoggedIn)
+    assertEquals(3, loggedInState.menuItems.size)
 
     // When - switch to index 2 (Me)
     mainNavStore.accept(MainNavIntent.MenuIndexSwitching(2))
@@ -274,11 +301,14 @@ class MainNavStoreTest {
     // Then
     assertEquals(2, mainNavStore.state.pageIndex)
     assertEquals(MainNavMenuItem.Me, mainNavStore.state.currentMenuItem)
+    
+    disposable.dispose()
+    mainNavStore.dispose()
   }
 
 
   @Test 
-  fun testInitialStateNotLoggedIn() {
+  fun testInitialStateNotLoggedIn() = runTest(testDispatcher) {
     // Test that initial state is correctly set to not logged in
     val initialState = mainNavStore.state
     assertFalse(initialState.isLoggedIn)
@@ -286,5 +316,7 @@ class MainNavStoreTest {
     assertEquals(2, initialState.menuItems.size)
     assertTrue(initialState.menuItems.contains(MainNavMenuItem.Feed))
     assertTrue(initialState.menuItems.contains(MainNavMenuItem.SignInUp))
+    
+    mainNavStore.dispose()
   }
 }

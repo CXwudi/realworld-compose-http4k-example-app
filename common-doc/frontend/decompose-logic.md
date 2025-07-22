@@ -93,12 +93,24 @@ fun setUp() {
 }
 ```
 
-**Cleanup**: The `@AfterTest` method must call `store.dispose()` to prevent test leakage:
+**Cleanup**: Store cleanup **MUST** be done inside `runTest()` to prevent `UncompletedCoroutinesError`. Do NOT use `@AfterTest` as it executes outside the test coroutine scope:
 
+```kotlin
+@Test
+fun testStoreOperation() = runTest(testDispatcher) {
+  // ... test logic ...
+  
+  // Always dispose resources before runTest completes
+  disposable.dispose() // if using state/label observers
+  landingPageStore.dispose() // CRITICAL: prevents test leakage
+}
+```
+
+**❌ Incorrect Pattern (causes UncompletedCoroutinesError):**
 ```kotlin
 @AfterTest
 fun reset() {
-  landingPageStore.dispose()
+  landingPageStore.dispose() // Wrong! Outside runTest scope
 }
 ```
 
@@ -278,11 +290,23 @@ LandingPageStoreFactory(
 ).createStore()
 ```
 
-**Resource Cleanup**: Always dispose of resources:
+**Resource Cleanup**: Always dispose of resources INSIDE `runTest()` scope:
 
-- Call `store.dispose()` in `@AfterTest`
-- Call `disposable.dispose()` for state observers
+- Call `store.dispose()` at the end of each test method (NOT in `@AfterTest`)
+- Call `disposable.dispose()` for state observers before `store.dispose()`
 - Cancel `TestScope` instances
+
+**Correct Order:**
+```kotlin
+@Test
+fun myTest() = runTest(testDispatcher) {
+  // ... test logic ...
+  
+  disposable.dispose()      // First: dispose observers
+  testScope.cancel()        // Second: cancel scopes  
+  store.dispose()          // Last: dispose store
+}
+```
 
 **Test Data**: Define test data as properties for reuse across test methods:
 
