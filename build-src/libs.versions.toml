@@ -18,7 +18,7 @@ android-targetSdk = "36" # setting targetSdk on per with compileSdk has great be
 android-minSdk = "26"
 compose = "1.8.0"
 compose-adaptive = "1.0.1"
-coil = "3.2.0"
+coil = "3.3.0"
 multiplatform-markdown-renderer = "0.35.0"
 
 essenty = "2.5.0"
