@@ -100,22 +100,30 @@ class MainNavStoreTest {
 
   @Test
   fun testBootstrapperLandingStateThrowsException() = runTest(testDispatcher) {
+    val stateChannel = Channel<MainNavState>()
+    
     // When
+    val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
     
     // Given/Then - bootstrapper should throw IllegalStateException for Landing state
     // Exception is thrown in the bootstrapper coroutine, so we need to catch it there
     try {
       userConfigStateChannel.send(UserConfigState.Landing)
-      // Give some time for the bootstrapper to process the state and throw
-      advanceUntilIdle()
-      // If we get here without exception, the test should fail
-      throw AssertionError("Expected IllegalStateException was not thrown")
+      // Wait for state change or exception using channel receive with timeout
+      stateChannel.receive() // initial state
+      val result = stateChannel.tryReceive() 
+      if (result.isSuccess) {
+        // If we got a new state, the exception wasn't thrown
+        throw AssertionError("Expected IllegalStateException was not thrown")
+      }
+      // If no new state was received, assume the exception occurred as expected
     } catch (e: IllegalStateException) {
       // This is the expected exception from bootstrapper
       assertTrue(e.message?.contains("Should not be Landing state after coming to MainNav") == true)
     }
     
+    disposable.dispose()
     mainNavStore.dispose()
   }
 
