@@ -7,7 +7,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.mokkery.every
 import dev.mokkery.mock
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -24,6 +24,7 @@ import kotlin.test.assertFalse
 
 class MainNavStoreTest {
   private val testDispatcher = StandardTestDispatcher()
+  private val userConfigStateChannel = Channel<UserConfigState>(Channel.UNLIMITED)
 
   private lateinit var userConfigKStore: UserConfigKStore
   private lateinit var mainNavStore: Store<MainNavIntent, MainNavState, Nothing>
@@ -31,6 +32,7 @@ class MainNavStoreTest {
   @BeforeTest
   fun setUp() {
     userConfigKStore = mock()
+    every { userConfigKStore.userConfigFlow } returns userConfigStateChannel.receiveAsFlow()
     mainNavStore = MainNavStoreFactory(
       LoggingStoreFactory(DefaultStoreFactory()),
       userConfigKStore,
@@ -47,12 +49,12 @@ class MainNavStoreTest {
   fun testBootstrapperOnUrlToNotLoggedIn() = runTest(testDispatcher) {
     val stateChannel = Channel<MainNavState>()
 
-    // Given
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
-
     // When
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
+
+    // Given
+    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
 
     // Then - ignore initial state and get the updated state
     stateChannel.receive() // initial state
@@ -77,11 +79,11 @@ class MainNavStoreTest {
       image = "test-image.png",
       token = "test-token"
     )
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
 
     // When
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
 
     // Then - ignore initial state and get the updated state
     stateChannel.receive() // initial state
@@ -91,8 +93,7 @@ class MainNavStoreTest {
     assertTrue(newState.menuItems.contains(MainNavMenuItem.Feed))
     assertTrue(newState.menuItems.contains(MainNavMenuItem.Me))
     
-    val favouriteItem = newState.menuItems.find { it is MainNavMenuItem.Favourite } as? MainNavMenuItem.Favourite
-    assertTrue(favouriteItem != null)
+    val favouriteItem = newState.menuItems.filterIsInstance<MainNavMenuItem.Favourite>().first()
     assertEquals("testuser", favouriteItem.username)
 
     disposable.dispose()
@@ -100,12 +101,12 @@ class MainNavStoreTest {
 
   @Test
   fun testBootstrapperLandingStateThrowsException() = runTest(testDispatcher) {
-    // Given
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.Landing)
-
-    // When/Then - bootstrapper should throw IllegalStateException for Landing state
+    // When
+    mainNavStore.init()
+    
+    // Given/Then - bootstrapper should throw IllegalStateException for Landing state
     assertFailsWith<IllegalStateException> {
-      mainNavStore.init()
+      userConfigStateChannel.send(UserConfigState.Landing)
     }
   }
 
@@ -121,15 +122,15 @@ class MainNavStoreTest {
       image = null,
       token = "test-token"
     )
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
     
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
     stateChannel.receive() // initial state
     stateChannel.receive() // logged in state
 
     // When - switch to OnUrl (not logged in)
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
+    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
 
     // Then - state should switch to not logged in
     val newState = stateChannel.receive()
@@ -146,10 +147,9 @@ class MainNavStoreTest {
     val stateChannel = Channel<MainNavState>()
 
     // Given - start with not logged in state
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
-    
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
     stateChannel.receive() // initial state
     stateChannel.receive() // not logged in state
 
@@ -161,15 +161,14 @@ class MainNavStoreTest {
       image = "new-image.png",
       token = "new-token"
     )
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
 
     // Then - state should switch to logged in
     val newState = stateChannel.receive()
     assertTrue(newState.isLoggedIn)
     assertEquals(3, newState.menuItems.size)
     
-    val favouriteItem = newState.menuItems.find { it is MainNavMenuItem.Favourite } as? MainNavMenuItem.Favourite
-    assertTrue(favouriteItem != null)
+    val favouriteItem = newState.menuItems.filterIsInstance<MainNavMenuItem.Favourite>().first()
     assertEquals("newuser", favouriteItem.username)
 
     disposable.dispose()
@@ -181,23 +180,22 @@ class MainNavStoreTest {
 
     // Given - start with logged in user
     val userInfo1 = UserInfo("test@example.com", "user1", null, null, "token1")
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo1))
     
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo1))
     stateChannel.receive() // initial state
     stateChannel.receive() // first logged in state
 
     // When - username changes
     val userInfo2 = UserInfo("test@example.com", "user2", null, null, "token2")
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo2))
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo2))
 
     // Then - state should update with new username
     val newState = stateChannel.receive()
     assertTrue(newState.isLoggedIn)
     
-    val favouriteItem = newState.menuItems.find { it is MainNavMenuItem.Favourite } as? MainNavMenuItem.Favourite
-    assertTrue(favouriteItem != null)
+    val favouriteItem = newState.menuItems.filterIsInstance<MainNavMenuItem.Favourite>().first()
     assertEquals("user2", favouriteItem.username)
 
     disposable.dispose()
@@ -206,8 +204,8 @@ class MainNavStoreTest {
   @Test
   fun testMenuIndexSwitchingValidIndex() = runTest(testDispatcher) {
     // Given - not logged in state (2 menu items: Feed, SignInUp)
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
 
     // When - switch to index 1 (SignInUp)
     mainNavStore.accept(MainNavIntent.MenuIndexSwitching(1))
@@ -220,8 +218,8 @@ class MainNavStoreTest {
   @Test
   fun testMenuIndexSwitchingInvalidIndexTooHigh() = runTest(testDispatcher) {
     // Given - not logged in state (2 menu items)
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
 
     // When/Then - should throw IllegalArgumentException for index 2 (out of bounds)
     assertFailsWith<IllegalArgumentException> {
@@ -232,8 +230,8 @@ class MainNavStoreTest {
   @Test
   fun testMenuIndexSwitchingInvalidIndexNegative() = runTest(testDispatcher) {
     // Given
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
 
     // When/Then - should throw IllegalArgumentException for negative index
     assertFailsWith<IllegalArgumentException> {
@@ -246,10 +244,9 @@ class MainNavStoreTest {
     val stateChannel = Channel<MainNavState>()
 
     // Given
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
-    
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
     stateChannel.receive() // initial state
     stateChannel.receive() // initialized state (pageIndex = 0)
 
@@ -267,8 +264,8 @@ class MainNavStoreTest {
   fun testMenuIndexSwitchingLoggedInState() = runTest(testDispatcher) {
     // Given - logged in state (3 menu items: Feed, Favourite, Me)
     val userInfo = UserInfo("test@example.com", "testuser", null, null, "token")
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
     mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
 
     // When - switch to index 2 (Me)
     mainNavStore.accept(MainNavIntent.MenuIndexSwitching(2))
@@ -278,28 +275,6 @@ class MainNavStoreTest {
     assertEquals(MainNavMenuItem.Me, mainNavStore.state.currentMenuItem)
   }
 
-  @Test
-  fun testStateConsistencyValidationLoggedInWithoutFavourite() = runTest(testDispatcher) {
-    // This test ensures that the validation logic catches inconsistent states
-    // In practice, this scenario shouldn't occur due to proper state management,
-    // but the validation exists as a safeguard
-
-    // Given - mock a flow that would create inconsistent state (this is theoretical)
-    every { userConfigKStore.userConfigFlow } returns flowOf(UserConfigState.OnUrl("test-url"))
-    mainNavStore.init()
-    
-    // The validation happens inside the executor when actions are processed
-    // Since MainNavState.loggedIn() always creates Favourite menu item correctly,
-    // and MainNavState.notLoggedIn() always creates correct not-logged-in state,
-    // the validation mainly serves as a runtime check for potential bugs
-
-    // Just verify that current state is consistent
-    val currentState = mainNavStore.state
-    if (currentState.isLoggedIn) {
-      val hasFavouriteItem = currentState.menuItems.any { it is MainNavMenuItem.Favourite }
-      assertTrue(hasFavouriteItem, "Logged in state must have Favourite menu item")
-    }
-  }
 
   @Test 
   fun testInitialStateNotLoggedIn() {
