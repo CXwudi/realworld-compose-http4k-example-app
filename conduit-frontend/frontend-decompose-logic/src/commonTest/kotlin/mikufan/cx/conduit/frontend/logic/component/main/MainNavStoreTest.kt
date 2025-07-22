@@ -4,6 +4,7 @@ import com.arkivanov.mvikotlin.core.rx.observer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.mock
 import kotlinx.coroutines.channels.Channel
