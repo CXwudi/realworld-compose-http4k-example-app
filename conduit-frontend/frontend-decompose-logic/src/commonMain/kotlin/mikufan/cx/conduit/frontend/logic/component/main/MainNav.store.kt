@@ -82,8 +82,9 @@ class MainNavStoreFactory(
       }
     }
 
-  fun createStore() = storeFactory.create(
+  fun createStore(autoInit: Boolean = true) = storeFactory.create(
     name = "MainNavStore",
+    autoInit = autoInit,
     initialState = MainNavState.notLoggedIn(),
     bootstrapper = createBootstrapper(),
     executorFactory = executor,

@@ -280,9 +280,10 @@ LandingPageStoreFactory(
 
 **Resource Cleanup**: Always dispose of resources:
 
+- Any coroutine launched by the coroutine scope used by the `runTest()` should be cancelled
+- Any new coroutine scope created should be cancelled, e.g. `myTestScope.cancel()`
+- Any `Disposable` from Decompose library should be disposed by calling `disposable.dispose()`
 - Call `store.dispose()` in `@AfterTest`
-- Call `disposable.dispose()` for state observers
-- Cancel `TestScope` instances
 
 **Test Data**: Define test data as properties for reuse across test methods:
 
@@ -296,5 +297,58 @@ private val testArticles = listOf(
   )
 )
 ```
+
+### Bootstrapper Testing
+
+**AutoInit Parameter**: Stores with bootstrappers require special handling during testing to control when the bootstrapper starts.
+
+**Pattern**: Store factory methods should accept an `autoInit: Boolean = true` parameter:
+
+```kotlin
+fun createStore(autoInit: Boolean = true) = storeFactory.create(
+  name = "MyStore",
+  initialState = MyState.initial(),
+  bootstrapper = createBootstrapper(),
+  executorFactory = executor,
+  reducer = reducer,
+  autoInit = autoInit
+)
+```
+
+**Usage in Tests**: Always pass `autoInit = false` in tests to control bootstrapper timing:
+
+```kotlin
+@BeforeTest
+fun setUp() {
+  myService = mock()
+  myStore = MyStoreFactory(
+    LoggingStoreFactory(DefaultStoreFactory()),
+    myService,
+    testDispatcher,
+  ).createStore(autoInit = false) // Prevents automatic bootstrapper start
+}
+```
+
+**Manual Initialization**: Call `store.init()` when ready to test bootstrapper behavior:
+
+```kotlin
+@Test
+fun testBootstrapperFlow() = runTest(testDispatcher) {
+  // Setup mocks first
+  val someFlowChannel = Channel<SomeFlowValue>()
+  every { myService.someFlow } returns someFlowChannel.receiveAsFlow()
+  
+  // Start bootstrapper manually
+  myStore.init()
+  
+  // Test the resulting state changes
+  // ...
+}
+```
+
+**Why This Pattern is Necessary**: Without `autoInit = false`, the bootstrapper immediately starts executing when the store is created, potentially:
+- Dispatching actions before test setup is complete
+- Causing race conditions with mock setup
+- Making tests unpredictable and hard to debug
 
 These patterns ensure consistent, reliable, and maintainable tests for all MVIKotlin stores in the decompose-logic module.
