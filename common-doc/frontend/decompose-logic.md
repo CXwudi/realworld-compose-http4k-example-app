@@ -93,24 +93,12 @@ fun setUp() {
 }
 ```
 
-**Cleanup**: Store cleanup **MUST** be done inside `runTest()` to prevent `UncompletedCoroutinesError`. Do NOT use `@AfterTest` as it executes outside the test coroutine scope:
+**Cleanup**: The `@AfterTest` method must call `store.dispose()` to prevent test leakage:
 
-```kotlin
-@Test
-fun testStoreOperation() = runTest(testDispatcher) {
-  // ... test logic ...
-  
-  // Always dispose resources before runTest completes
-  disposable.dispose() // if using state/label observers
-  landingPageStore.dispose() // CRITICAL: prevents test leakage
-}
-```
-
-**❌ Incorrect Pattern (causes UncompletedCoroutinesError):**
 ```kotlin
 @AfterTest
 fun reset() {
-  landingPageStore.dispose() // Wrong! Outside runTest scope
+  landingPageStore.dispose()
 }
 ```
 
@@ -290,23 +278,12 @@ LandingPageStoreFactory(
 ).createStore()
 ```
 
-**Resource Cleanup**: Always dispose of resources INSIDE `runTest()` scope:
+**Resource Cleanup**: Always dispose of resources:
 
-- Call `store.dispose()` at the end of each test method (NOT in `@AfterTest`)
-- Call `disposable.dispose()` for state observers before `store.dispose()`
-- Cancel `TestScope` instances
-
-**Correct Order:**
-```kotlin
-@Test
-fun myTest() = runTest(testDispatcher) {
-  // ... test logic ...
-  
-  disposable.dispose()      // First: dispose observers
-  testScope.cancel()        // Second: cancel scopes  
-  store.dispose()          // Last: dispose store
-}
-```
+- Any coroutine launched by the coroutine scope used by the `runTest()` should be cancelled
+- Any new coroutine scope created should be cancelled, e.g. `myTestScope.cancel()`
+- Any `Disposable` from Decompose library should be disposed by calling `disposable.dispose()`
+- Call `store.dispose()` in `@AfterTest`
 
 **Test Data**: Define test data as properties for reuse across test methods:
 
@@ -334,9 +311,8 @@ fun createStore(autoInit: Boolean = true) = storeFactory.create(
   bootstrapper = createBootstrapper(),
   executorFactory = executor,
   reducer = reducer,
-).apply {
-  if (autoInit) init()
-}
+  autoInit = autoInit
+)
 ```
 
 **Usage in Tests**: Always pass `autoInit = false` in tests to control bootstrapper timing:
@@ -359,7 +335,8 @@ fun setUp() {
 @Test
 fun testBootstrapperFlow() = runTest(testDispatcher) {
   // Setup mocks first
-  every { myService.someFlow } returns flowOf(expectedValue)
+  val someFlowChannel = Channel<SomeFlowValue>()
+  every { myService.someFlow } returns someFlowChannel.receiveAsFlow()
   
   // Start bootstrapper manually
   myStore.init()

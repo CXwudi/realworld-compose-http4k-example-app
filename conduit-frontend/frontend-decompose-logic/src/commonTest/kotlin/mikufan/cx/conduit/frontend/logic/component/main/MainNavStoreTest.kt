@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.mock
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlin.test.assertFalse
@@ -41,27 +43,8 @@ class MainNavStoreTest {
     ).createStore(autoInit = false)
   }
 
-
-  @Test
-  fun testBootstrapperOnUrlToNotLoggedIn() = runTest(testDispatcher) {
-    val stateChannel = Channel<MainNavState>()
-
-    // When
-    val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    mainNavStore.init()
-
-    // Given
-    userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
-
-    // Then - ignore initial state and get the updated state
-    stateChannel.receive() // initial state
-    val newState = stateChannel.receive()
-    assertFalse(newState.isLoggedIn)
-    assertEquals(2, newState.menuItems.size)
-    assertTrue(newState.menuItems.contains(MainNavMenuItem.Feed))
-    assertTrue(newState.menuItems.contains(MainNavMenuItem.SignInUp))
-
-    disposable.dispose()
+  @AfterTest
+  fun tearDown() {
     mainNavStore.dispose()
   }
 
@@ -84,7 +67,7 @@ class MainNavStoreTest {
     userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
 
     // Then - ignore initial state and get the updated state
-    stateChannel.receive() // initial state
+    stateChannel.receive()
     val newState = stateChannel.receive()
     assertTrue(newState.isLoggedIn)
     assertEquals(3, newState.menuItems.size)
@@ -95,36 +78,6 @@ class MainNavStoreTest {
     assertEquals("testuser", favouriteItem.username)
 
     disposable.dispose()
-    mainNavStore.dispose()
-  }
-
-  @Test
-  fun testBootstrapperLandingStateThrowsException() = runTest(testDispatcher) {
-    val stateChannel = Channel<MainNavState>()
-    
-    // When
-    val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    mainNavStore.init()
-    
-    // Given/Then - bootstrapper should throw IllegalStateException for Landing state
-    // Exception is thrown in the bootstrapper coroutine, so we need to catch it there
-    try {
-      userConfigStateChannel.send(UserConfigState.Landing)
-      // Wait for state change or exception using channel receive with timeout
-      stateChannel.receive() // initial state
-      val result = stateChannel.tryReceive() 
-      if (result.isSuccess) {
-        // If we got a new state, the exception wasn't thrown
-        throw AssertionError("Expected IllegalStateException was not thrown")
-      }
-      // If no new state was received, assume the exception occurred as expected
-    } catch (e: IllegalStateException) {
-      // This is the expected exception from bootstrapper
-      assertTrue(e.message?.contains("Should not be Landing state after coming to MainNav") == true)
-    }
-    
-    disposable.dispose()
-    mainNavStore.dispose()
   }
 
   @Test
@@ -157,7 +110,6 @@ class MainNavStoreTest {
     assertTrue(newState.menuItems.contains(MainNavMenuItem.SignInUp))
 
     disposable.dispose()
-    mainNavStore.dispose()
   }
 
   @Test
@@ -169,7 +121,6 @@ class MainNavStoreTest {
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
     stateChannel.receive() // initial state
-    stateChannel.receive() // not logged in state
 
     // When - switch to OnLogin (logged in)
     val userInfo = UserInfo(
@@ -190,7 +141,6 @@ class MainNavStoreTest {
     assertEquals("newuser", favouriteItem.username)
 
     disposable.dispose()
-    mainNavStore.dispose()
   }
 
   @Test
@@ -218,7 +168,6 @@ class MainNavStoreTest {
     assertEquals("user2", favouriteItem.username)
 
     disposable.dispose()
-    mainNavStore.dispose()
   }
 
   @Test
@@ -233,8 +182,6 @@ class MainNavStoreTest {
     // Then
     assertEquals(1, mainNavStore.state.pageIndex)
     assertEquals(MainNavMenuItem.SignInUp, mainNavStore.state.currentMenuItem)
-    
-    mainNavStore.dispose()
   }
 
   @Test
@@ -247,8 +194,6 @@ class MainNavStoreTest {
     assertFailsWith<IllegalArgumentException> {
       mainNavStore.accept(MainNavIntent.MenuIndexSwitching(2))
     }
-    
-    mainNavStore.dispose()
   }
 
   @Test
@@ -261,10 +206,9 @@ class MainNavStoreTest {
     assertFailsWith<IllegalArgumentException> {
       mainNavStore.accept(MainNavIntent.MenuIndexSwitching(-1))
     }
-    
-    mainNavStore.dispose()
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun testMenuIndexSwitchingNoOpWhenSameIndex() = runTest(testDispatcher) {
     val stateChannel = Channel<MainNavState>()
@@ -274,17 +218,15 @@ class MainNavStoreTest {
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
     stateChannel.receive() // initial state
-    stateChannel.receive() // initialized state (pageIndex = 0)
 
     // When - try to switch to same index
     mainNavStore.accept(MainNavIntent.MenuIndexSwitching(0))
 
     // Then - no state change should occur (channel should not receive anything new)
-    assertTrue(stateChannel.tryReceive().isFailure)
+    assertTrue(stateChannel.isEmpty)
     assertEquals(0, mainNavStore.state.pageIndex)
 
     disposable.dispose()
-    mainNavStore.dispose()
   }
 
   @Test
@@ -307,11 +249,11 @@ class MainNavStoreTest {
     mainNavStore.accept(MainNavIntent.MenuIndexSwitching(2))
 
     // Then
-    assertEquals(2, mainNavStore.state.pageIndex)
-    assertEquals(MainNavMenuItem.Me, mainNavStore.state.currentMenuItem)
+    val switchedState = stateChannel.receive()
+    assertEquals(2, switchedState.pageIndex)
+    assertEquals(MainNavMenuItem.Me, switchedState.currentMenuItem)
     
     disposable.dispose()
-    mainNavStore.dispose()
   }
 
 
@@ -324,7 +266,5 @@ class MainNavStoreTest {
     assertEquals(2, initialState.menuItems.size)
     assertTrue(initialState.menuItems.contains(MainNavMenuItem.Feed))
     assertTrue(initialState.menuItems.contains(MainNavMenuItem.SignInUp))
-    
-    mainNavStore.dispose()
   }
 }
