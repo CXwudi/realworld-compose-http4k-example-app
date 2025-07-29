@@ -27,7 +27,7 @@ mvikotlin = "4.3.0"
 koin = "4.1.0"
 kstore = "1.0.0"
 ktor = "3.2.2"
-ktorfit = "2.6.3"
+ktorfit = "2.6.4"
 
 junit = "5.13.4"
 http4k = "6.15.1.0"
