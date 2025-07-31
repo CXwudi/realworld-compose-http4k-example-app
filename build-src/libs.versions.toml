@@ -38,7 +38,7 @@ exposed = "0.61.0"
 # multiplatform
 dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
 dev-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
-dev-kotlinLogging = "io.github.oshai:kotlin-logging:7.0.7"
+dev-kotlinLogging = "io.github.oshai:kotlin-logging:7.0.10"
 dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2"
 dev-koinBom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 
