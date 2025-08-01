@@ -43,6 +43,20 @@ jobs:
         with:
           fetch-depth: 0  # Allow Claude to analyze commit history
 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Chromenium
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@beta
