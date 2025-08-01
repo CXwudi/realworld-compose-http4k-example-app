@@ -74,7 +74,7 @@ dev-frontend-ktorfitConverter = { module = "de.jensklingenberg.ktorfit:ktorfit-c
 dev-frontend-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-frontend-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
-dev-frontend-browserWasm = "org.jetbrains.kotlinx:kotlinx-browser:0.3" # see https://kotlinlang.org/docs/wasm-js-interop.html#web-related-browser-apis
+dev-frontend-browserWasm = "org.jetbrains.kotlinx:kotlinx-browser:0.4" # see https://kotlinlang.org/docs/wasm-js-interop.html#web-related-browser-apis
 
 # android
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.16.0"
