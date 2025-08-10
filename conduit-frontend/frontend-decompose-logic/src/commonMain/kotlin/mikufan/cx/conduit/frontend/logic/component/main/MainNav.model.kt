@@ -1,5 +1,6 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
+@ConsistentCopyVisibility
 data class MainNavState private constructor(
   val menuItems: List<MainNavMenuItem>,
   /**
