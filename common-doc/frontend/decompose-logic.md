@@ -53,204 +53,39 @@ Btw, MVIKotlin store itself are already declared as a factory class, following t
 
 ## MVIKotlin Store Testing
 
-The decompose-logic module contains comprehensive test coverage for all MVIKotlin stores. The tests follow consistent patterns and conventions that should be used when writing new store tests.
+### Test Structure
 
-### Test Class Structure and Setup
+- **Naming**: Test classes use `Test` suffix (e.g., `LandingPageStoreTest`)
+- **Setup**: Mock services with `dev.mokkery`, use `StandardTestDispatcher`, wrap `DefaultStoreFactory` with `LoggingStoreFactory`
+- **Cleanup**: Call `store.dispose()` in `@AfterTest`
 
-**Naming Convention**: Test classes are named after the store they test with a `Test` suffix (e.g., `LandingPageStoreTest`).
-
-**Core Components**: Each test class declares:
-
-- A `StandardTestDispatcher` for controlling coroutine execution
-- Mocked service dependencies
-- The store being tested
+### Mocking with Mokkery
 
 ```kotlin
-class LandingPageStoreTest {
-  private val testDispatcher = StandardTestDispatcher()
-  
-  lateinit var landingService: LandingService
-  lateinit var landingPageStore: Store<LandingPageIntent, LandingPageState, LandingPageLabel>
-}
-```
-
-**Setup Pattern**: The `@BeforeTest` method follows this pattern:
-
-1. Mock service dependencies using `dev.mokkery`
-2. Create store using its factory
-3. Inject mocked services and test dispatcher
-4. Wrap `DefaultStoreFactory` with `LoggingStoreFactory` for debugging
-
-```kotlin
-@BeforeTest
-fun setUp() {
-  landingService = mock()
-  landingPageStore = LandingPageStoreFactory(
-    LoggingStoreFactory(DefaultStoreFactory()),
-    landingService,
-    testDispatcher
-  ).createStore()
-}
-```
-
-**Cleanup**: The `@AfterTest` method must call `store.dispose()` to prevent test leakage:
-
-```kotlin
-@AfterTest
-fun reset() {
-  landingPageStore.dispose()
-}
-```
-
-### Dependency Mocking with Mokkery
-
-**Library**: Use `dev.mokkery` exclusively for mocking.
-
-**Creating Mocks**: Use `mock()` to create service mocks:
-
-```kotlin
+// Create mocks
 landingService = mock()
+
+// Stub suspend functions
+everySuspend { service.method(any()) } returns result
+everySuspend { service.method(any()) } throws Exception("error")
+
+// Verify calls
+verifySuspend(exactly(1)) { service.method(any()) }
 ```
 
-**Stubbing Suspend Functions**:
+### Testing Patterns
 
-- Success: `everySuspend { service.method(any()) } returns result`
-- Failure: `everySuspend { service.method(any()) } throws Exception("error")`
+**State Changes**: Use `Channel` for async state observation or direct access for sync changes
 
 ```kotlin
-// Success case
-everySuspend { 
-  articlesListService.getArticles(defaultSearchFilter, offset = 0) 
-} returns testArticles
-
-// Failure case  
-everySuspend { 
-  landingService.checkAccessibilityAndSetUrl(any()) 
-} throws Exception("some error")
+val stateChannel = Channel<State>()
+store.states(observer { launch { stateChannel.send(it) } })
+// OR
+store.accept(intent)
+assertEquals(expected, store.state.property)
 ```
 
-**Stubbing Regular Functions/Flows**: Use `every { ... } returns ...` for non-suspend functions:
-
-```kotlin
-every { mePageService.userConfigFlow } returns flowOf(UserConfigState.OnLogin("test-url", userInfo))
-```
-
-**Verification**: Use `verifySuspend` with `VerifyMode.exactly(1)` to assert method calls:
-
-```kotlin
-verifySuspend(exactly(1)) {
-  landingService.checkAccessibilityAndSetUrl("a change")
-}
-```
-
-### State Change Testing
-
-**Test Runner**: Use `runTest(testDispatcher)` for all coroutine-based tests.
-
-**State Observation Pattern**: Use `Channel` to observe state changes sequentially:
-
-```kotlin
-@Test
-fun testStateChange() = runTest(testDispatcher) {
-  val stateChannel = Channel<ArticlesListState>()
-  
-  val disposable = articlesListStore.states(observer(onNext = { 
-    this.launch { stateChannel.send(it) } 
-  }))
-  
-  // Ignore initial state if not relevant
-  stateChannel.receive()
-  
-  // Send intent
-  articlesListStore.accept(ArticlesListIntent.LoadMore)
-  
-  // Assert state transitions
-  val loadingState = stateChannel.receive()
-  assertEquals(LoadMoreState.Loading, loadingState.loadMoreState)
-  
-  val loadedState = stateChannel.receive()
-  assertEquals(testArticles, loadedState.collectedThumbInfos)
-  
-  disposable.dispose()
-}
-```
-
-**Direct State Access**: For simple synchronous changes, access state directly:
-
-```kotlin
-authPageStore.accept(AuthPageIntent.UsernameChanged("new username"))
-assertEquals(authPageStore.state.username, "new username")
-```
-
-### Label Testing
-
-**Primary Pattern**: Use `store.labelsChannel(scope)` with separate `TestScope`:
-
-```kotlin
-@OptIn(ExperimentalMviKotlinApi::class)
-@Test
-fun testLabel() = runTest(testDispatcher) {
-  val testScope = TestScope(testDispatcher)
-  val labelsChannel = landingPageStore.labelsChannel(testScope)
-  
-  landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
-  
-  val label = labelsChannel.receive()
-  assertEquals(LandingPageLabel.ToNextPage, label)
-  
-  testScope.cancel() // Critical for test completion
-}
-```
-
-**Important**: Always use a separate `TestScope` for `labelsChannel` to prevent deadlocks with `runTest`. Cancel the scope at the end of the test.
-
-### Error Handling Patterns
-
-**Simulating Errors**: Stub service methods to throw exceptions:
-
-```kotlin
-val errorMessage = "Failed to load articles" 
-everySuspend {
-  articlesListService.getArticles(any(), offset = any())
-} throws RuntimeException(errorMessage)
-```
-
-**Testing Error State**: If errors update the store state:
-
-```kotlin
-landingPageStore.accept(LandingPageIntent.CheckAndMoveToMainPage)
-
-val newState = stateChannel.receive()
-assertEquals(errorMessage, newState.errorMsg)
-```
-
-**Testing Error Labels**: If errors are communicated via labels:
-
-```kotlin
-val failureLabel = labelChannel.receive()
-assertIs<LandingPageLabel.Failure>(failureLabel)
-assertEquals("some error", failureLabel.message)
-assertTrue(failureLabel.exception is RuntimeException)
-```
-
-### Async/Coroutine Management
-
-**Test Dispatcher**: Always use `StandardTestDispatcher` for predictable coroutine execution:
-
-```kotlin
-private val testDispatcher = StandardTestDispatcher()
-```
-
-**Test Runner**: Use `runTest(testDispatcher)` for controlled async execution:
-
-```kotlin
-@Test
-fun myTest() = runTest(testDispatcher) {
-  // test code
-}
-```
-
-**Scope Management**: Use `TestScope` for managing coroutine lifecycles, especially for `labelsChannel`:
+**Labels**: Use separate `TestScope` to prevent deadlocks
 
 ```kotlin
 val testScope = TestScope(testDispatcher)
@@ -259,96 +94,8 @@ val labelsChannel = store.labelsChannel(testScope)
 testScope.cancel()
 ```
 
-### Common Test Utilities and Best Practices
+**Bootstrappers**: If the store has a bootstrapper, use `autoInit = false` in tests, call `store.init()` manually when ready
 
-**Required Dependencies**:
+### Resource Management
 
-- `kotlinx-coroutines-test` for `StandardTestDispatcher`, `TestScope`, and `runTest`
-- `com.arkivanov.mvikotlin.extensions.coroutines` for `labelsChannel`
-- `dev.mokkery` for mocking
-- `kotlinx.coroutines.channels.Channel` for state observation
-
-**LoggingStoreFactory**: Always wrap `DefaultStoreFactory` with `LoggingStoreFactory` for better debugging:
-
-```kotlin
-LandingPageStoreFactory(
-  LoggingStoreFactory(DefaultStoreFactory()),
-  landingService,
-  testDispatcher
-).createStore()
-```
-
-**Resource Cleanup**: Always dispose of resources:
-
-- Any coroutine launched by the coroutine scope used by the `runTest()` should be cancelled
-- Any new coroutine scope created should be cancelled, e.g. `myTestScope.cancel()`
-- Any `Disposable` from Decompose library should be disposed by calling `disposable.dispose()`
-- Call `store.dispose()` in `@AfterTest`
-
-**Test Data**: Define test data as properties for reuse across test methods:
-
-```kotlin
-private val testArticles = listOf(
-  ArticleInfo(
-    authorThumbnail = "https://example.com/avatar.png",
-    authorUsername = "testuser",
-    title = "Test Article",
-    // ... other properties
-  )
-)
-```
-
-### Bootstrapper Testing
-
-**AutoInit Parameter**: Stores with bootstrappers require special handling during testing to control when the bootstrapper starts.
-
-**Pattern**: Store factory methods should accept an `autoInit: Boolean = true` parameter:
-
-```kotlin
-fun createStore(autoInit: Boolean = true) = storeFactory.create(
-  name = "MyStore",
-  initialState = MyState.initial(),
-  bootstrapper = createBootstrapper(),
-  executorFactory = executor,
-  reducer = reducer,
-  autoInit = autoInit
-)
-```
-
-**Usage in Tests**: Always pass `autoInit = false` in tests to control bootstrapper timing:
-
-```kotlin
-@BeforeTest
-fun setUp() {
-  myService = mock()
-  myStore = MyStoreFactory(
-    LoggingStoreFactory(DefaultStoreFactory()),
-    myService,
-    testDispatcher,
-  ).createStore(autoInit = false) // Prevents automatic bootstrapper start
-}
-```
-
-**Manual Initialization**: Call `store.init()` when ready to test bootstrapper behavior:
-
-```kotlin
-@Test
-fun testBootstrapperFlow() = runTest(testDispatcher) {
-  // Setup mocks first
-  val someFlowChannel = Channel<SomeFlowValue>()
-  every { myService.someFlow } returns someFlowChannel.receiveAsFlow()
-  
-  // Start bootstrapper manually
-  myStore.init()
-  
-  // Test the resulting state changes
-  // ...
-}
-```
-
-**Why This Pattern is Necessary**: Without `autoInit = false`, the bootstrapper immediately starts executing when the store is created, potentially:
-- Dispatching actions before test setup is complete
-- Causing race conditions with mock setup
-- Making tests unpredictable and hard to debug
-
-These patterns ensure consistent, reliable, and maintainable tests for all MVIKotlin stores in the decompose-logic module.
+Always dispose: coroutine scopes (`cancel()`), Decompose disposables (`.dispose()`)
