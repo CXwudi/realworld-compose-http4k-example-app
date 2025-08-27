@@ -79,7 +79,7 @@ dev-frontend-browserWasm = "org.jetbrains.kotlinx:kotlinx-browser:0.3" # see htt
 # android
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.17.0"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.7.1"
-dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.9.2"
+dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.9.3"
 dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.10.1"
 
 # backend
