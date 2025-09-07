@@ -30,7 +30,7 @@ ktor = "3.2.3"
 ktorfit = "2.6.4"
 
 junit = "5.13.4"
-http4k = "6.15.1.0"
+http4k = "6.17.0.0"
 exposed = "0.61.0"
 
 [libraries]
