@@ -26,7 +26,7 @@ decompose = "3.3.0"
 mvikotlin = "4.3.0"
 koin = "4.1.1"
 kstore = "1.0.0"
-ktor = "3.2.3"
+ktor = "3.3.0"
 ktorfit = "2.6.4"
 
 junit = "5.13.4"
