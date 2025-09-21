@@ -71,3 +71,4 @@ conduit-frontend/report/*
 .qodo
 .claude/
 .env
+ask_human.md

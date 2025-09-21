@@ -36,15 +36,3 @@ For example, use `val emailState: State<String> = remember { derivedStateOf { st
 
 When creating Composable that need to pass retrieved fields delegated from `state`, prefer to pass the `State<T>` variable instead of the `T` variable. This is because `State<T>` is traded as an immutable variable by Compose. Hence value changes in `State<T>` will not trigger a whole recomposition of the Composable like `T` does. And only the part of the Composable that actually read the `State<T>` will be recomposed.
 
-### Performance Optimization
-
-- Use `remember` for expensive computations that don't depend on state changes
-- Prefer `LazyColumn`/`LazyRow` over `Column`/`Row` with `verticalScroll`/`horizontalScroll` for large lists
-- Use `key` parameter in lazy layouts to maintain scroll position and improve performance during data changes
-- Consider using `animateItemPlacement()` for smooth animations in lazy layouts
-
-### Error Handling
-
-- Always provide fallback UI states for loading, error, and empty states
-- Use `AnimatedVisibility` or `Crossfade` for smooth transitions between states
-- Ensure proper error boundaries are in place for crash prevention
