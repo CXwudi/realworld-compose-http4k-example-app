@@ -1,7 +1,7 @@
 import com.github.gmazzo.buildconfig.BuildConfigClassSpec
 
 plugins {
-  alias(libs.plugins.kotlinJvm)
+  `embedded-kotlin`
   alias(libs.plugins.buildConfig)
 }
 

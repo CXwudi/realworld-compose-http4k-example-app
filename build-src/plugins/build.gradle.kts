@@ -1,4 +1,4 @@
 plugins {
-    `kotlin-dsl` apply false
-    alias(libs.plugins.kotlinJvm) apply false
+  `kotlin-dsl` apply false
+  `embedded-kotlin` apply false
 }

@@ -9,14 +9,14 @@
 # }
 # 
 [versions]
-kotlin = "2.2.0"
-ksp = "2.2.0-2.0.2"
+kotlin = "2.2.20"
+ksp = "2.2.20-2.0.3"
 java = "21"
 agp = "8.13.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "36"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
-compose = "1.8.0"
+compose = "1.9.0"
 compose-adaptive = "1.0.1"
 coil = "3.3.0"
 multiplatform-markdown-renderer = "0.37.0"
