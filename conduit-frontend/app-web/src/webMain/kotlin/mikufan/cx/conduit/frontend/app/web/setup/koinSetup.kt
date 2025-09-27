@@ -1,4 +1,4 @@
-package mikufan.cx.conduit.frontend.app.wasm.setup
+package mikufan.cx.conduit.frontend.app.web.setup
 
 import mikufan.cx.conduit.frontend.logic.allModules
 import org.koin.core.KoinApplication
