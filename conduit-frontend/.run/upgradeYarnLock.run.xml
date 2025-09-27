@@ -12,6 +12,8 @@
         <list>
           <option value=":kotlinUpgradeYarnLock" />
           <option value=":kotlinStoreYarnLock" />
+          <option value=":kotlinWasmUpgradeYarnLock" />
+          <option value=":kotlinWasmStoreYarnLock" />
         </list>
       </option>
       <option name="vmOptions" />

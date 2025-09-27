@@ -42,10 +42,8 @@ kotlin {
       }
     }
 
-    val commonWebMain by getting {
-      dependencies {
-        implementation("io.ktor:ktor-client-js")
-      }
+    webMain.dependencies {
+      implementation("io.ktor:ktor-client-js")
     }
 
     androidMain.dependencies {
