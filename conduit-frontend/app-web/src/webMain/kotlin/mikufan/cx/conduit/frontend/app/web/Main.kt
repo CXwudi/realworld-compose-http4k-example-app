@@ -10,7 +10,6 @@ import mikufan.cx.conduit.frontend.app.web.setup.afterComposeSetup
 import mikufan.cx.conduit.frontend.app.web.setup.attachToDocument
 import mikufan.cx.conduit.frontend.app.web.setup.initKoin
 import mikufan.cx.conduit.frontend.app.web.setup.launchApp
-import mikufan.cx.conduit.frontend.app.web.setup.setupBrowserUI
 import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.setupAndStartMainUI
 
@@ -31,9 +30,7 @@ fun main(args: Array<String>) {
 
     log.info { "Starting" }
 
-    setupBrowserUI()
-
-    ComposeViewport {
+    ComposeViewport { // using the default empty <body/> tag if not specified
       afterComposeSetup(newTitle = "Conduit Web")
       setupAndStartMainUI(koinApp, rootComponent)
     }

@@ -32,7 +32,7 @@ import web.events.EventHandler
  */
 fun LifecycleRegistry.attachToDocument() {
   fun onVisibilityChanged() {
-    if (document.visibilityState == DocumentVisibilityState.Companion.visible) {
+    if (document.visibilityState == DocumentVisibilityState.visible) {
       resume()
     } else {
       stop()

@@ -4,6 +4,9 @@ import mikufan.cx.conduit.frontend.logic.allModules
 import org.koin.core.KoinApplication
 import org.koin.dsl.koinApplication
 
+/**
+ * Initialize Koin with coroutine support
+ */
 suspend fun initKoin(): KoinApplication {
   val application = koinApplication {
     modules(allModules)
