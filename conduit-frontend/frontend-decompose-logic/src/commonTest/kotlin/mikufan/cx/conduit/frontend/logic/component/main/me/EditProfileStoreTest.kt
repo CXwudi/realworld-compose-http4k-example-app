@@ -173,12 +173,7 @@ class EditProfileStoreTest {
 
     // When
     val disposable = editProfileStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
-    val newLoadedMe = LoadedMe(
-      email = "test2@email.com",
-      username = "testuser2",
-      bio = "test bio 2",
-      imageUrl = "test image url 2"
-    )
+
     everySuspend { editProfileService.updateAndSave(any()) } returns Unit
      editProfileStore.accept(EditProfileIntent.Save)
 
