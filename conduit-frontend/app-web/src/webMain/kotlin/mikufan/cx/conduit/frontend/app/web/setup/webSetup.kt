@@ -8,7 +8,6 @@ import web.dom.document
  * A setup function that should be called when inside the [ComposeViewport]
  */
 fun afterComposeSetup(newTitle: String) {
-  val titleElement: Element = document.head.getElementsByTagName("title")[0]
-  titleElement.textContent = newTitle
+  document.title = newTitle
 }
 

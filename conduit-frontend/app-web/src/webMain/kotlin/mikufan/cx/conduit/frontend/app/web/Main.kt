@@ -4,6 +4,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
 import mikufan.cx.conduit.frontend.app.web.setup.afterComposeSetup
@@ -27,6 +28,8 @@ fun main(args: Array<String>) {
     // from https://github.com/InsertKoinIO/koin/issues/388#issuecomment-1195262422
     val koinApp = initKoin()
     val rootComponent = koinApp.koin.get<RootNavComponentFactory>().create(defaultComponentContext)
+
+    lifecycle.doOnDestroy { koinApp.close() }
 
     log.info { "Starting" }
 
