@@ -14,9 +14,14 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -37,25 +42,27 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailInfo
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailIntent
 import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 /**
  * Display the article detail screen.
- * 
+ *
  * TODO: Implement the full article detail display with loading the article content.
  */
 @Composable
 fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, modifier: Modifier = Modifier) {
   val state by component.state.collectAsState()
-  
+
   // Use remember and derivedStateOf for fields retrieved from state
   val titleState = remember { derivedStateOf { state.basicInfo.title } }
   val authorThumbnailState = remember { derivedStateOf { state.basicInfo.authorThumbnail } }
   val authorUsernameState = remember { derivedStateOf { state.basicInfo.authorUsername } }
   val createdAtState = remember { derivedStateOf { state.detailInfo?.createdAt } }
   val bodyState = remember { derivedStateOf { state.detailInfo?.bodyMarkdown ?: "Loading content..." } }
-  
+
   Box( // outer box to make sure the column is in the center
     modifier = modifier
       .fillMaxSize(),
@@ -73,7 +80,20 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, mo
         .safeDrawingPadding(),
     ) {
       val horizontalPadding = LocalSpace.current.horizontal.padding
-      
+
+      // Go back button
+      IconButton(
+        onClick = { component.send(ArticleDetailIntent.BackToList) },
+        modifier = Modifier
+          .align(Alignment.Start)
+          .padding(horizontal = horizontalPadding)
+      ) {
+        Icon(
+          imageVector = Icons.AutoMirrored.Default.ArrowBack,
+          contentDescription = "Go back"
+        )
+      }
+
       // Article title
       Text(
         text = titleState.value,

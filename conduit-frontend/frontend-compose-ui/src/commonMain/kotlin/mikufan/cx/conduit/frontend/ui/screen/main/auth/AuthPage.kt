@@ -3,20 +3,14 @@ package mikufan.cx.conduit.frontend.ui.screen.main.auth
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -48,6 +42,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageLabel
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageMode
 import mikufan.cx.conduit.frontend.ui.common.PasswordTextField
+import mikufan.cx.conduit.frontend.ui.common.layout.PageColumn
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 @Composable
@@ -62,84 +57,69 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
   showErrorAlert(labels = component.labels)
 
   val paddingLarge = LocalSpace.current.vertical.paddingLarge
-  Box(
-    modifier = modifier
-      .fillMaxSize(),
-    contentAlignment = Alignment.Center
+
+  PageColumn(
+    modifier = modifier,
+    verticalSpacing = LocalSpace.current.vertical.spacingLarge * 4,
+    verticalPadding = LocalSpace.current.vertical.paddingLarge * 4,
+    verticalArrangementAlignment = Alignment.CenterVertically
   ) {
-    val verticalPadding = LocalSpace.current.vertical.paddingLarge * 4
     val horizontalPadding = LocalSpace.current.horizontal.padding
-    Column(
-      modifier = modifier
-        .fillMaxHeight()
-        .widthIn(max = LocalSpace.current.horizontal.maxContentSpace)
-        .verticalScroll(rememberScrollState())
-        .padding(vertical = verticalPadding)
-        .safeDrawingPadding()
-        .imePadding(),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(
-        space = LocalSpace.current.vertical.spacingLarge * 4,
-        alignment = Alignment.CenterVertically
-      ),
+
+    EmailTextField(
+      emailProvider = email,
+      onEmailChanged = { component.send(AuthPageIntent.EmailChanged(it)) },
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = horizontalPadding)
+    )
+
+    AnimatedVisibility(
+      visible = isRegisterMode.value,
+//      enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+//      exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-      EmailTextField(
-        emailProvider = email,
-        onEmailChanged = { component.send(AuthPageIntent.EmailChanged(it)) },
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = horizontalPadding)
-      )
-
-      AnimatedVisibility(
-        visible = isRegisterMode.value,
-//        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
-//        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
-      ) {
-
-        OutlinedTextField(
-          value = username.value,
-          onValueChange = { component.send(AuthPageIntent.UsernameChanged(it)) },
-          label = { Text("Username") },
-          singleLine = true,
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = horizontalPadding),
-        )
-      }
-
-
-      PasswordTextField(
-        passwordProvider = password,
-        onPasswordChanged = { component.send(AuthPageIntent.PasswordChanged(it)) },
+      OutlinedTextField(
+        value = username.value,
+        onValueChange = { component.send(AuthPageIntent.UsernameChanged(it)) },
+        label = { Text("Username") },
+        singleLine = true,
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = horizontalPadding),
       )
+    }
 
-      Spacer(
-        modifier = Modifier.height(paddingLarge * 2)
-      )
+    PasswordTextField(
+      passwordProvider = password,
+      onPasswordChanged = { component.send(AuthPageIntent.PasswordChanged(it)) },
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = horizontalPadding),
+    )
 
-      Button(
-        onClick = { component.send(AuthPageIntent.AuthAction) },
-      ) {
-        AnimatedText(
-          isRegisterMode = isRegisterMode,
-          textForLoginMode = "Login",
-          textForRegisterMode = "Register"
-        )
-      }
+    Spacer(
+      modifier = Modifier.height(paddingLarge * 2)
+    )
 
-      SwitchModeRow(
+    Button(
+      onClick = { component.send(AuthPageIntent.AuthAction) },
+    ) {
+      AnimatedText(
         isRegisterMode = isRegisterMode,
-        onChangeUrlClick = { component.send(AuthPageIntent.BackToLanding) },
-        onSwitchModeClick = { component.send(AuthPageIntent.SwitchMode) },
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = horizontalPadding)
+        textForLoginMode = "Login",
+        textForRegisterMode = "Register"
       )
     }
+
+    SwitchModeRow(
+      isRegisterMode = isRegisterMode,
+      onChangeUrlClick = { component.send(AuthPageIntent.BackToLanding) },
+      onSwitchModeClick = { component.send(AuthPageIntent.SwitchMode) },
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = horizontalPadding)
+    )
   }
 }
 
