@@ -69,7 +69,7 @@ jobs:
         args: migrate
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
 
     - name: Run Backend Tests
       working-directory: conduit-backend
