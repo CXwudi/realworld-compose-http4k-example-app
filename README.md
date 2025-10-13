@@ -12,7 +12,7 @@ We've gone to great lengths to adhere to the community styleguides & best practi
 
 For more information on how this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
-This project was initially a full task project, but due to the reason mentioned in [this discussion](https://github.com/gothinkster/realworld/discussions/1545#discussioncomment-10984982), it was decided to scale down to a minimal frontend application. However, the gradle setup of the project is still kept as it was a fullstack project. It is also the most sophisticated gradle setup I have ever done, so I decided to keep it as is.
+This project was initially a fullstack project, but due to the reason mentioned in [this discussion](https://github.com/gothinkster/realworld/discussions/1545#discussioncomment-10984982), it was decided to scale down to a minimal frontend application. However, the gradle setup of the project is still kept as it was a fullstack project. It is also the most sophisticated gradle setup I have ever done, so I decided to keep it as is.
 
 ## Documentation
 
