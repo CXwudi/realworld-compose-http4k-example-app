@@ -1,18 +1,18 @@
 # ![RealWorld Example App](logo.png)
 
-<h3>2024.10 Update: I am going to implement a minimal set of features in frontend first, more info in <a href=https://github.com/gothinkster/realworld/discussions/1545#discussioncomment-10984982>this discussion</a></h3>
-
-> <h3>Compose Multiplatform + http4k codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the <a href="https://github.com/gothinkster/realworld">RealWorld</a> spec and API. </h3>
+> <h3>Compose Multiplatform + Decompose + MVIKotlin codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the <a href="https://github.com/gothinkster/realworld">RealWorld</a> spec and API. </h3>
 
 | Phone | Desktop | Web|
 |---|---|---|
 | ![Phone App Screenshot](diagram/screenshots/Screenshot_20240911_105149.png) | ![Desktop App Screenshot](diagram/screenshots/Screenshot%202025-01-11%20230957.png) Click to enlarge | ![Web App Screenshot](diagram/screenshots/Screenshot%202025-01-11%20231502.png) Click to enlarge |
 
-This codebase was created to demonstrate a fully fledged fullstack application built with **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** and **[http4k](https://www.http4k.org/)** including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a minimal frontend application built with **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** and **[Decompose](https://arkivanov.github.io/Decompose/)** and **[MVIKotlin](https://arkivanov.github.io/MVIKotlin/)**, including CRUD operations, authentication, routing, pagination, and more.
 
-We've gone to great lengths to adhere to the community styleguides & best practices of **Compose Multiplatform** and **http4k**.
+We've gone to great lengths to adhere to the community styleguides & best practices of **Compose Multiplatform**, **Decompose** and **MVIKotlin**.
 
 For more information on how this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
+
+This project was initially a full task project, but due to the reason mentioned in [this discussion](https://github.com/gothinkster/realworld/discussions/1545#discussioncomment-10984982), it was decided to scale down to a minimal frontend application. However, the gradle setup of the project is still kept as it was a fullstack project. It is also the most sophisticated gradle setup I have ever done, so I decided to keep it as is.
 
 ## Documentation
 
