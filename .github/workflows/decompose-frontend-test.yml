@@ -40,7 +40,7 @@ jobs:
         ./gradlew :frontend-decompose-logic:cleanAllTests :frontend-decompose-logic:check
 
     - name: Upload build results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: frontend-build-results
