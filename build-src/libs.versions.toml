@@ -19,7 +19,7 @@ android-minSdk = "26"
 compose = "1.9.0"
 compose-adaptive = "1.0.1"
 coil = "3.3.0"
-multiplatform-markdown-renderer = "0.37.0"
+multiplatform-markdown-renderer = "0.38.1"
 
 essenty = "2.5.0"
 decompose = "3.4.0"
